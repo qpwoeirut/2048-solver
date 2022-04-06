@@ -1,11 +1,13 @@
 # 2048 Solver Roadmap
 
 This project is intended to "solve" the popular [2048 tile-merging game](https://github.com/gabrielecirulli/2048).
-My overall goal is to create a ML model that can reach 2048 at least 15% of the time (which is what I define as a "success").
+My overall goal is to create a ML model that can reach 2048 at least 15% of the time.
 Since I have literally never touched ML before, 15% success is probably an extremely ambitious goal.
 
 Although I've done some research on prior work and how successful previous projects have been, I want to write all the solver code on my own.
 My 2048 game implementation, of course, will be referencing the [original game](https://github.com/gabrielecirulli/2048) in order to replicate its mechanics.
+
+For the purposes of this roadmap, a "success" means reaching the 2048 tile, unless another tile is specified.
 
 
 ## Roadmap: Part 1
