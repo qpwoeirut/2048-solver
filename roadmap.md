@@ -76,4 +76,5 @@ There are many more repos out there which didn't list success rates.
 * [datumbox's solver](https://github.com/datumbox/Game-2048-AI-Solver) uses minimax and can reach 2048 "about 70-80%" of the time with a depth of 7
 * [vpn1997's solver](https://github.com/vpn1997/2048-Ai) uses expectimax and reaches 2048 with a 60% success rate
 * [xtrp's solver](https://github.com/xtrp/jupiter) uses Monte Carlo tree search and reaches 2048 with ~60% success rate when using 50 simulations per move
+* [navjindervirdee's solver](https://github.com/navjindervirdee/2048-deep-reinforcement-learning) uses deep reinforcement learning and reaches the 2048 tile 10% of the time
 
