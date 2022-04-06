@@ -41,7 +41,7 @@ This strategy is used by the best two solvers I found ([here](https://github.com
 Expectimax seems similar to minimax, but instead of assuming that the computer will place at the worst possible position, the expected value based on the probabilities of the computer's choice is maximized.
 Again, I'll need to do some more research to fully understand the strategy.
 
-Besides the switch from minimax to expectimax, this solver also uses a very efficient board representation and seems to have more efficient heuristics.
+Besides the switch from minimax to expectimax, these solvers also use a very efficient board representation and seems to have more efficient heuristics.
 
 
 ## Links to Prior Work for non-ML solvers
