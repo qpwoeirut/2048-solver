@@ -10,7 +10,7 @@ My 2048 game implementation, of course, will be referencing the [original game](
 For the purposes of this roadmap, a "success" means reaching the 2048 tile, unless another tile is specified.
 
 
-## Roadmap: Part 1
+## Roadmap: Part 1: "Traditional" solver
 I want to start by writing a traditional algorithmic solver.
 I aim to have a "traditional" solver that can succeed 80% of the time which I can hopefully use to train a ML model.
 There are many possible strategies for the first solver.
@@ -36,7 +36,7 @@ I suppose if one is aiming for high success rate that is fine, but it seems nono
 
 
 ### Expectimax Optimization
-This strategy is used by the best two solvers I found ([here](https://github.com/nneonneo/2048-ai) and [here](https://github.com/MaartenBaert/2048-ai-emscripten)), which completely blow all the other traditional solvers out of the water.
+This strategy is used by the best two traditional solvers I found ([here](https://github.com/nneonneo/2048-ai) and [here](https://github.com/MaartenBaert/2048-ai-emscripten)), which completely blow all the other traditional solvers out of the water.
 
 Expectimax seems similar to minimax, but instead of assuming that the computer will place at the worst possible position, the expected value based on the probabilities of the computer's choice is maximized.
 Again, I'll need to do some more research to fully understand the strategy.
@@ -44,9 +44,29 @@ Again, I'll need to do some more research to fully understand the strategy.
 Besides the switch from minimax to expectimax, these solvers also use a very efficient board representation and seems to have more efficient heuristics.
 
 
-## Links to Prior Work for non-ML solvers
-These are only the solvers that provided the success rates up-front.
+### My Ideas
+I was discussing possible 2048 strategies with a friend, who pointed out the possibility that many positions are "useless," in the sense that the move picked from that position won't heavily affect the outcome of the game.
+If it's possible to identify the "usefullness" of a position, the useless positions can be solved by simply making a random move.
+This strategy should speed up games, especially in the early stages, allowing for more testing and/or training.
+
+
+# Roadmap Part 2: ML-based solver
+This part will probably be even harder.
+There's lots of prior work for non-ML solvers but not as much on ML-based solvers.
+
+Although I have some knowledge of the basic theory behind ML, I have yet to implement an actual project utilizing it.
+My first thought is to feed the model the current board state and then have it pick a move.
+Then to train the model, hundreds or thousands of games can be run, and the average score from these games can be used as feedback.
+I suspect it won't actually be that simple though, otherwise somebody else would have already implemented it.
+
+I'll have to do more research on ML strategies when the time comes.
+
+
+## Links to Prior Work
+These are only the solvers that provided the success rates up-front or seemed good enough that I wanted to write them down.
 There are many more repos out there which didn't list success rates.
+* [macroxue's solver](https://github.com/macroxue/2048-ai) uses some strategy that I don't understand and reaches 32768 with a 74.0% success rate and 65536 with a 3.0% rate. It seems to use a large lookup table for difficult positions, combined with expectimax
+* [aszczepanski's solver](https://github.com/aszczepanski/2048) uses a n-tuple network with expectimax and reaches 32768 with a 69% success rate when making one move per second
 * [nneonneo's solver](https://github.com/nneonneo/2048-ai) uses expectimax and reaches 16384 with a 94% success rate
 * [MaartenBaert's solver](https://github.com/MaartenBaert/2048-ai-emscripten) uses expectimax and seems to be very good, although I didn't poke around enough to find tile success stats. Its README claims that it's slightly better than the above solver
 * [kcwu's solver](https://github.com/kcwu/2048-c) uses expectimax with a helper minimax search to avoid dying and reaches the 8192 tile with a 96% success rate
@@ -56,5 +76,4 @@ There are many more repos out there which didn't list success rates.
 * [datumbox's solver](https://github.com/datumbox/Game-2048-AI-Solver) uses minimax and can reach 2048 "about 70-80%" of the time with a depth of 7
 * [vpn1997's solver](https://github.com/vpn1997/2048-Ai) uses expectimax and reaches 2048 with a 60% success rate
 * [xtrp's solver](https://github.com/xtrp/jupiter) uses Monte Carlo tree search and reaches 2048 with ~60% success rate when using 50 simulations per move
-
 
