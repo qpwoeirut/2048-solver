@@ -1,4 +1,5 @@
 #include <cassert>
+#include <chrono>
 #include <random>
 
 #include "util.cpp"
@@ -103,7 +104,7 @@ namespace game {
         return (dir & 1) ? transpose(board) : board;
     }
 
-    std::mt19937 empty_tile_gen(8);  // seed the rng for now
+    std::mt19937 empty_tile_gen(get_current_time_seconds());  // seed the rng for now
     std::uniform_int_distribution<> empty_tile_distrib(0, 720720 - 1);  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
 
     board_t add_random_tile(const board_t board) {
