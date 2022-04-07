@@ -1,10 +1,10 @@
 namespace merge_player {
     // depth to search, should be positive
     // search space increases exponentially with depth
-    int depth = 4;  // default depth, can be changed externally
+    int depth = 3;  // default depth, can be changed externally
 
     // trials per depth
-    int trials = 3;
+    int trials = 8;
 
     std::pair<float,int> helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
