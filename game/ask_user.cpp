@@ -20,25 +20,6 @@ inline int move_to_int(const char c) {
     return -1;
 }
 
-board_t play_game(int (*player)(board_t)) {
-    board_t board = add_random_tile(0);
-
-    while (!game_over(board)) {
-        const board_t old_board = board;
-
-        while (old_board == board) {
-            int dir = player(board);
-            board = make_move(board, dir);
-
-            if (game_over(board)) return board;
-        } 
-
-        board = add_random_tile(board);
-    }
-
-    return board;
-}
-
 int ask_user(const board_t board) {
     print_board(board);
     std::cout << "Next move? (L, U, R, D)\n";

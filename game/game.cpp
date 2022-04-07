@@ -103,8 +103,8 @@ board_t make_move(board_t board, const int dir) {  // 0=left, 1=up, 2=right, 3=d
     return (dir & 1) ? transpose(board) : board;
 }
 
-std::mt19937 gen(8);  // seed the rng for now
-std::uniform_int_distribution<> distrib(0, 720720 - 1);  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
+std::mt19937 empty_tile_gen(8);  // seed the rng for now
+std::uniform_int_distribution<> empty_tile_distrib(0, 720720 - 1);  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
 
 board_t add_random_tile(const board_t board) {
     const uint16_t tile_mask = to_tile_mask(board);
@@ -114,9 +114,9 @@ board_t add_random_tile(const board_t board) {
     assert(tile_mask != FULL_MASK);
 
     const int option_count = empty_index[tile_mask + 1] - empty_index[tile_mask];
-    const uint8_t option = empty_tiles[empty_index[tile_mask] + (distrib(gen) % option_count)];
+    const uint8_t option = empty_tiles[empty_index[tile_mask] + (empty_tile_distrib(empty_tile_gen) % option_count)];
 
-    const board_t new_board = board | (((distrib(gen) % 10) == 0 ? 2ULL : 1ULL) << option);  // 90% for 2^1 = 2, 10% for 2^2 = 4 
+    const board_t new_board = board | (((empty_tile_distrib(empty_tile_gen) % 10) == 0 ? 2ULL : 1ULL) << option);  // 90% for 2^1 = 2, 10% for 2^2 = 4 
     
     return new_board;
 }
@@ -130,5 +130,24 @@ int get_max_tile(const board_t board) {
     int max_tile = 0;
     for (int i=0; i<64; i+=4) max_tile = std::max(max_tile, (int)((board >> i) & 0xF));
     return max_tile;
+}
+
+board_t play_game(int (*player)(board_t)) {
+    board_t board = add_random_tile(0);
+
+    while (!game_over(board)) {
+        const board_t old_board = board;
+
+        while (old_board == board) {
+            int dir = player(board);
+            board = make_move(board, dir);
+
+            if (game_over(board)) return board;
+        } 
+
+        board = add_random_tile(board);
+    }
+
+    return board;
 }
 

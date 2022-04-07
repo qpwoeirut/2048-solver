@@ -16,3 +16,5 @@ If the move is up or down, the board will be transposed, the lookup table will b
 
 The transposition code is taken from [nneonneo's project](https://github.com/nneonneo/2048-ai/blob/master/2048.cpp#L38-L48) since I do not want to figure it out myself.
 
+Note to self: remember to call `init()`! (surely there must be a way to add a programmatic check for this?)
+
