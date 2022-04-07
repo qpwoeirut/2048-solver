@@ -2,24 +2,27 @@
 #include <iostream>
 #include <random>
 
+#include <bitset>
+
 using board_t = uint64_t;
 using row_t = uint16_t;
 
-const int ROWS = 1 << 16;
-const int EMPTY_MASKS = 1 << 16; // number of empty_masks, where an empty_mask stores whether a tile is empty
-const row_t INVALID_ROW = 65535; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
+const int ROWS = 0x10000;
+const int EMPTY_MASKS = 0x10000; // number of tile_masks, where an tile_mask stores whether a tile is empty
+const row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 
 const board_t START_BOARD = 0;
-const board_t INVALID_BOARD = 18446744073709551615ULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
+const board_t INVALID_BOARD = 18446744073709551614ULL;  // 2^64 - 2, represents grid mostly full of 32768 tiles (which is impossible)
+const board_t WINNING_BOARD = 18446744073709551615ULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
 
-const uint16_t FULL_MASK = 65535;
+const uint16_t FULL_MASK = 0xFFFF;
 
 row_t shift[2][ROWS];  // shift[0] is left shift, shift[1] is right shift
 
 // this uses a fancy way of implementing adjacency lists in competitive programming
-// stores the empty tile positions for each empty_mask
+// stores the empty tile positions for each tile_mask
 uint8_t empty_tiles[15 * EMPTY_MASKS];  // up to 15 empty tiles per mask
-int empty_index[EMPTY_MASKS];  // a pointer to where this empty_mask starts
+int empty_index[EMPTY_MASKS];  // a pointer to where this tile_mask starts
 
 row_t reverse_row(const row_t row) {
     return ((row & 0xF) << 12) | (((row >> 4) & 0xF) << 8) | (((row >> 8) & 0xF) << 4) | ((row >> 12) & 0xF);
@@ -53,15 +56,15 @@ void init() {
         shift[1][reverse_row(row)] = reverse_row(shift[0][row]);
 
         // we can't handle a 65536 tile in this representation
-        if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) shift[0][row] = shift[1][row] = INVALID_ROW;
+        if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) shift[0][row] = shift[1][row] = WINNING_ROW;
     }
 
     int idx = 0;
     for (int em=0; em<EMPTY_MASKS; ++em) {
         empty_index[em] = idx;
         for (int pos=0; pos<16; ++pos) {
-            if (((em >> pos) & 0xF) == 0) {
-                empty_tiles[idx++] = pos;
+            if (((em >> pos) & 1) == 0) {
+                empty_tiles[idx++] = 4 * pos;
             }
         }
     }
@@ -81,12 +84,12 @@ void print_board(const uint64_t board) {
 // https://stackoverflow.com/questions/34154745/efficient-way-to-or-adjacent-bits-in-64-bit-integer
 // https://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
 // but this works for now
-uint16_t to_empty_mask(const board_t board) {
-    uint16_t empty_mask = 0;
-    for (int i=0; i<64; i+=4) {
-        empty_mask |= ((board >> i) & 0xF) > 0;
+uint16_t to_tile_mask(const board_t board) {
+    uint16_t tile_mask = 0;
+    for (int i=0; i<16; ++i) {
+        tile_mask |= (((board >> (4*i)) & 0xF) > 0) << i;
     }
-    return empty_mask;
+    return tile_mask;
 }
 
 // from https://github.com/nneonneo/2048-ai/blob/master/2048.cpp#L38-L48
@@ -105,6 +108,10 @@ board_t make_move(board_t board, const int dir) {  // 0=left, 1=up, 2=right, 3=d
             ((board_t)shift[dir >> 1][(board >> 32) & 0xFFFF] << 32) |
             ((board_t)shift[dir >> 1][(board >> 16) & 0xFFFF] << 16) |
              (board_t)shift[dir >> 1][ board        & 0xFFFF];
+    if (shift[dir >> 1][board >> 48] == WINNING_ROW ||
+        shift[dir >> 1][(board >> 32) & 0xFFFF] == WINNING_ROW ||
+        shift[dir >> 1][(board >> 16) & 0xFFFF] == WINNING_ROW ||
+        shift[dir >> 1][board & 0xFFFF] == WINNING_ROW) return WINNING_BOARD;
     return (dir & 1) ? transpose(board) : board;
 }
 
@@ -112,17 +119,38 @@ std::mt19937 gen(8);  // seed the rng for now
 std::uniform_int_distribution<> distrib(0, 720720 - 1);  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
 
 board_t add_random_tile(const board_t board) {
-    const uint16_t empty_mask = to_empty_mask(board);
-    if (empty_mask == FULL_MASK) {
-        // can't add a tile to a full board
-        // also prevents any possible overflow on the next few lines
-        return INVALID_BOARD;
-    }
+    const uint16_t tile_mask = to_tile_mask(board);
 
-    const int option_count = empty_index[empty_mask + 1] - empty_index[empty_mask];
-    const uint8_t option = (distrib(gen) % option_count) * 4;
+    // can't add a tile to a full board
+    // also prevents any possible overflow on the next few lines
+    assert(tile_mask != FULL_MASK);
 
-    return board | ((distrib(gen) % 10) < 9 ? 1 : 2) << option;  // 90% for 2^1 = 2, 10% for 2^2 = 4 
+    const int option_count = empty_index[tile_mask + 1] - empty_index[tile_mask];
+    const uint8_t option = empty_tiles[empty_index[tile_mask] + (distrib(gen) % option_count)];
+
+    const board_t new_board = board | (((distrib(gen) % 10) == 0 ? 2ULL : 1ULL) << option);  // 90% for 2^1 = 2, 10% for 2^2 = 4 
+    
+    //std::cerr << "---------\n";
+    //print_board(board);
+    //std::cerr << std::bitset<16>(tile_mask).to_string() << std::endl;
+    //std::cerr << (int)option << std::endl;
+    //print_board(new_board);
+    //assert(((board >> option) & 0xF) == 0);
+    //assert(board != new_board);
+    //std::cerr << "---------\n";
+
+    return new_board;
+}
+
+bool game_over(const board_t board) {
+    return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3)) ||
+            board == INVALID_BOARD || board == WINNING_BOARD;
+}
+
+int get_max_tile(const board_t board) {
+    int max_tile = 0;
+    for (int i=0; i<64; i+=4) max_tile = std::max(max_tile, (int)((board >> i) & 0xF));
+    return max_tile;
 }
 
 inline int move_to_int(const char c) {
@@ -133,35 +161,49 @@ inline int move_to_int(const char c) {
     return -1;
 }
 
-int main() {
-    init();
-
-    board_t board = 0;
+int ask_user(const board_t board) {
+    print_board(board);
+    std::cout << "Next move? (L, U, R, D)\n";
 
     char move;
-    while (board != INVALID_BOARD) {
-        board = add_random_tile(board);
+    std::cin >> move;
 
+    int dir = move_to_int(move);
+    if (dir == -1) {
+        std::cout << "Invalid move!\n";
+        return ask_user(board);
+    }
+    if (board == make_move(board, dir)) {
+        std::cout << "No change!\n";
+        return ask_user(board);
+    }
+    return dir;
+}
+
+board_t play_game(int (*player)(board_t)) {
+    board_t board = add_random_tile(0);
+
+    while (!game_over(board)) {
         const board_t old_board = board;
 
         while (old_board == board) {
-            print_board(board);
-            std::cout << "Next move? (L, U, R, D)\n";
-            std::cin >> move;
-
-            int dir = move_to_int(move);
-            if (dir == -1) {
-                std::cout << "Invalid move!\n";
-                continue;
-            }
+            int dir = player(board);
             board = make_move(board, dir);
-            if (old_board == board) {
-                std::cout << "No change!\n";
-                continue;
-            }
-        }
+
+            if (game_over(board)) return board;
+        } 
+
+        board = add_random_tile(board);
     }
 
-    std::cout << "You lose!" << std::endl;
+    return board;
+}
+
+int main() {
+    init();
+    const board_t board = play_game(ask_user);
+    std::cout << "Final board:\n";
+    print_board(board);
+    std::cout << "Score: " << get_max_tile(board) << std::endl;
 }
 
