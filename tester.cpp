@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "../game/game.cpp"
-#include "ask_user.cpp"
-#include "random.cpp"
+#include "game/game.cpp"
+#include "solvers/ask_user.cpp"
+#include "solvers/random.cpp"
 
 int main() {
     game::init();
