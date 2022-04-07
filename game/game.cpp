@@ -133,6 +133,34 @@ namespace game {
         while (!game_over(board)) {
             const board_t old_board = board;
 
+            int attempts = 0x10000;
+            while (old_board == board) {
+                int dir = player(board);
+                board = make_move(board, dir);
+
+                if (game_over(board)) return board;
+
+                assert(--attempts > 0);  // abort the game if it seems stuck
+            } 
+
+            board = add_random_tile(board);
+        }
+
+        return board;
+    }
+    
+    board_t play_slow(int (*player)(board_t)) {
+        board_t board = add_random_tile(0);
+
+        int moves = 0;
+        while (!game_over(board)) {
+            if (moves-- == 0) {
+                print_board(board);
+                std::cout << "Moves to jump? ";
+                std::cin >> moves;
+            }
+            const board_t old_board = board;
+
             while (old_board == board) {
                 int dir = player(board);
                 board = make_move(board, dir);
