@@ -1,8 +1,5 @@
 #include <cassert>
-#include <iostream>
 #include <random>
-
-#include <bitset>
 
 using board_t = uint64_t;
 using row_t = uint16_t;
@@ -70,15 +67,6 @@ void init() {
     }
 }
 
-void print_board(const uint64_t board) {
-    for (int r=48; r>=0; r-=16) {
-        for (int c=12; c>=0; c-=4) {
-            std::cout << ((board >> (r + c)) & 0xF) << ' ';
-        }
-        std::cout << '\n';
-    }
-}
-
 // bitmask of whether a tile is empty or not
 // TODO there are probably faster ways, such as:
 // https://stackoverflow.com/questions/34154745/efficient-way-to-or-adjacent-bits-in-64-bit-integer
@@ -130,15 +118,6 @@ board_t add_random_tile(const board_t board) {
 
     const board_t new_board = board | (((distrib(gen) % 10) == 0 ? 2ULL : 1ULL) << option);  // 90% for 2^1 = 2, 10% for 2^2 = 4 
     
-    //std::cerr << "---------\n";
-    //print_board(board);
-    //std::cerr << std::bitset<16>(tile_mask).to_string() << std::endl;
-    //std::cerr << (int)option << std::endl;
-    //print_board(new_board);
-    //assert(((board >> option) & 0xF) == 0);
-    //assert(board != new_board);
-    //std::cerr << "---------\n";
-
     return new_board;
 }
 
@@ -151,59 +130,5 @@ int get_max_tile(const board_t board) {
     int max_tile = 0;
     for (int i=0; i<64; i+=4) max_tile = std::max(max_tile, (int)((board >> i) & 0xF));
     return max_tile;
-}
-
-inline int move_to_int(const char c) {
-    if (c == 'L') return 0;
-    if (c == 'U') return 1;
-    if (c == 'R') return 2;
-    if (c == 'D') return 3;
-    return -1;
-}
-
-int ask_user(const board_t board) {
-    print_board(board);
-    std::cout << "Next move? (L, U, R, D)\n";
-
-    char move;
-    std::cin >> move;
-
-    int dir = move_to_int(move);
-    if (dir == -1) {
-        std::cout << "Invalid move!\n";
-        return ask_user(board);
-    }
-    if (board == make_move(board, dir)) {
-        std::cout << "No change!\n";
-        return ask_user(board);
-    }
-    return dir;
-}
-
-board_t play_game(int (*player)(board_t)) {
-    board_t board = add_random_tile(0);
-
-    while (!game_over(board)) {
-        const board_t old_board = board;
-
-        while (old_board == board) {
-            int dir = player(board);
-            board = make_move(board, dir);
-
-            if (game_over(board)) return board;
-        } 
-
-        board = add_random_tile(board);
-    }
-
-    return board;
-}
-
-int main() {
-    init();
-    const board_t board = play_game(ask_user);
-    std::cout << "Final board:\n";
-    print_board(board);
-    std::cout << "Score: " << get_max_tile(board) << std::endl;
 }
 
