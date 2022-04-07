@@ -9,8 +9,6 @@ namespace game {
     const int EMPTY_MASKS = 0x10000; // number of tile_masks, where an tile_mask stores whether a tile is empty
     const row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 
-    const board_t START_BOARD = 0;
-    const board_t INVALID_BOARD = 18446744073709551614ULL;  // 2^64 - 2, represents grid mostly full of 32768 tiles (which is impossible)
     const board_t WINNING_BOARD = 18446744073709551615ULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
 
     const uint16_t FULL_MASK = 0xFFFF;
@@ -124,7 +122,7 @@ namespace game {
 
     bool game_over(const board_t board) {
         return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3)) ||
-                board == INVALID_BOARD || board == WINNING_BOARD;
+                board == WINNING_BOARD;
     }
 
     board_t play(int (*player)(board_t)) {
@@ -136,6 +134,7 @@ namespace game {
             int attempts = 0x10000;
             while (old_board == board) {
                 int dir = player(board);
+                assert(0 <= dir && dir < 4);
                 board = make_move(board, dir);
 
                 if (game_over(board)) return board;

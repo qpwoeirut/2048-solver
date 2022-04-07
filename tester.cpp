@@ -7,7 +7,7 @@
 #include "solvers/ordered.cpp"
 #include "solvers/merge.cpp"
 
-const int GAMES = 1e2;
+const int GAMES = 100;
 const int MAX_TILE = 18;
 
 int results[MAX_TILE];
@@ -38,7 +38,7 @@ void test_player(const std::string strategy, int (*player)(board_t)) {
 int main() {
     game::init();
 
-    game::play_slow(merge_player::player);
+    //game::play_slow(merge_player::player);
 
     //game::play(user_player::player);
     
