@@ -7,7 +7,14 @@ There are multiple strategies that are implemented.
 This solver simply picks a random valid move.
 
 
-## Corner Spam
-This solver alternates between up and right.
-If both moves aren't allowed, it picks randomly between down and left.
+## Corner
+This solver randomly picks between left and up;
+If both moves aren't allowed, it picks randomly between right and down.
+
+## Ordered
+This solver tries the same move order each time.
+If left is allowed, it moves left.
+Otherwise if up is allowed, it moves up.
+Otherwise if right is allowed, it moves right.
+Otherwise it moves down.
 
