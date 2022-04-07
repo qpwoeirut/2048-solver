@@ -1,9 +1,9 @@
 using board_t = uint64_t;
 using row_t = uint16_t;
 
-int get_current_time_seconds() {
-    const auto now = std::chrono::system_clock::now();
-    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+long long get_current_time_ms() {
+    const std::chrono::time_point now = std::chrono::system_clock::now();
+    const long long seconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     return seconds;
 }
 

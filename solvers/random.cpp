@@ -1,5 +1,5 @@
 namespace random_player {
-    std::mt19937 move_gen(get_current_time_seconds());
+    std::mt19937 move_gen(get_current_time_ms());
     std::uniform_int_distribution<> move_distrib(0, 3);
 
     int player(const board_t board) {
