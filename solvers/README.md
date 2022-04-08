@@ -58,3 +58,16 @@ Playing 100 games took 119.103 seconds.
 11 12 (12)
 12 0 (0)
 ```
+
+With `depth=4` and `trials=5`:
+```
+Testing merge strategy...
+...
+Playing 100 games took 720.921 seconds.
+...
+9 100 (100)
+10 96 (96)
+11 44 (44)
+12 1 (1)
+13 0 (0)
+```

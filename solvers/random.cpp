@@ -1,5 +1,5 @@
 namespace random_player {
-    int player(const board_t board) {
+    const int player(const board_t board) {
         int move;
         do {  // this *shouldn't* infinite loop but i guess we will see...
             move = random_move();

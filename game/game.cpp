@@ -125,7 +125,7 @@ namespace game {
                 board == WINNING_BOARD;
     }
 
-    board_t play(int (*player)(board_t)) {
+    board_t play(const int (*player)(const board_t)) {
         board_t board = add_random_tile(0);
 
         while (!game_over(board)) {
@@ -148,7 +148,7 @@ namespace game {
         return board;
     }
     
-    board_t play_slow(int (*player)(board_t)) {
+    board_t play_slow(const int (*player)(const board_t)) {
         board_t board = add_random_tile(0);
 
         int moves = 0;

@@ -1,5 +1,5 @@
 namespace user_player {
-    inline int move_to_int(const char c) {
+    const inline int move_to_int(const char c) {
         if (c == 'L') return 0;
         if (c == 'U') return 1;
         if (c == 'R') return 2;
@@ -7,14 +7,14 @@ namespace user_player {
         return -1;
     }
 
-    int player(const board_t board) {
+    const int player(const board_t board) {
         print_board(board);
         std::cout << "Next move? (L, U, R, D)\n";
 
         char move;
         std::cin >> move;
 
-        int dir = move_to_int(move);
+        const int dir = move_to_int(move);
         if (dir == -1) {
             std::cout << "Invalid move!\n";
             return player(board);

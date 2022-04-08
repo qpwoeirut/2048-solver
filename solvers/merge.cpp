@@ -1,35 +1,46 @@
 namespace merge_player {
-    // depth to search, should be positive
-    // search space increases exponentially with depth
-    int depth = 3;  // default depth, can be changed externally
+    /*
+        Parameters:
+            depth: depth to search, should be positive; note that search space increases exponentially with depth
+            trials: trials for each move checked
+    */
 
-    // trials per depth
-    int trials = 8;
+    int depth = 3;
+    int trials = 5;
 
-    std::pair<float,int> helper(const board_t board, const int cur_depth) {
+    const long long MULT = 1e15;  // use integer math to speed up
+
+    const long long helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
-            return std::make_pair(count_empty(game::to_tile_mask(board)), -1);
+            return (count_empty(game::to_tile_mask(board)) * MULT) << 2;  // move doesn't matter
         }
 
-        float best_score = 100 * trials;
-        int best_move = -1;
+        long long best_score = 100 * trials * MULT;
+        int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
         for (int i=0; i<4; ++i) {
-            float current_score = 0;
             const board_t new_board = game::make_move(board, i);
-            if (board == new_board || game::game_over(board)) continue;
+            if (board == new_board || game::game_over(new_board)) continue;
+
+            long long current_score = 0;
             for (int j=0; j<trials; ++j) {
-                current_score += helper(game::add_random_tile(new_board), cur_depth - 1).first;
+                current_score += helper(game::add_random_tile(new_board), cur_depth - 1) >> 2;  // extract score
             }
             if (best_score >= current_score) {
                 best_score = current_score;
                 best_move = i;
             }
         }
-        return std::make_pair(best_score / trials, best_move);
+        return ((best_score / trials) << 2) | best_move;  // pack both score and move
+    }
+    const int player(const board_t board) {
+        return helper(board, depth) & 3;
     }
 
-    int player(const board_t board) {
-        return helper(board, depth).second;
+    // this is ugly as heck but C++ doesn't let you pass capturing lambdas as function pointers so here we are
+    // i tried classes too but those didn't work either
+    void init(const int _depth, const int _trials) {  
+        depth = _depth;
+        trials = _trials;
     }
 }
 
