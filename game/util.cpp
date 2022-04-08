@@ -29,6 +29,19 @@ int get_max_tile(const board_t board) {
     return max_tile;
 }
 
+// assumes that only 2's had spawned, which is a good enough approximation
+// creating a tile of 2^n adds 2^n to the score, and requires two 2^(n-1) tiles
+// creating each of those added 2^(n-1) to the score, and following the recursive pattern gets n * 2^n
+// technically we want (n-1) * 2^n since the 2's spawning don't add to the score
+int approximate_score(const board_t board) {
+    int score = 0;
+    for (int i=0; i<64; i+=4) {
+        const uint8_t tile = (board >> i) & 0xF;
+        score += tile <= 1 ? 0 : (tile - 1) * (1 << tile);
+    }
+    return score;
+}
+
 int count_empty(uint16_t n) {
     // a somewhat understandable way to count set bits
     // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan

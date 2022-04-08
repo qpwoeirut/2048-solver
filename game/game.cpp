@@ -160,11 +160,15 @@ namespace game {
             }
             const board_t old_board = board;
 
+            int attempts = 0x10000;
             while (old_board == board) {
                 int dir = player(board);
+                assert(0 <= dir && dir < 4);
                 board = make_move(board, dir);
 
                 if (game_over(board)) return board;
+
+                assert(--attempts > 0);  // abort the game if it seems stuck
             } 
 
             board = add_random_tile(board);

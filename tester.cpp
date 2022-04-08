@@ -9,8 +9,8 @@
 #include "solvers/corner.cpp"
 #include "solvers/ordered.cpp"
 #include "solvers/merge.cpp"
+#include "solvers/monte_carlo.cpp"
 
-std::ofstream fout("results.csv");  // put results into a CSV
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
@@ -18,16 +18,34 @@ constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
 constexpr int GAMES[5] = {100, 1000, 5000, 50000, 200000};
 constexpr int MAX_THREADS = GAMES[2];
 
-std::future<int> futures[MAX_THREADS];
 int results[MAX_TILE];
 
-int play_game(const int (*player)(const board_t)) {
+const int play_game(const int (*player)(const board_t)) {
     const board_t board = game::play(player);
     return get_max_tile(board);
 }
 
-void test_player(const std::string strategy, const int (*player)(board_t), const int games,
+void save_results(const std::string& strategy, const int games, const bool parallelize) {
+    std::ofstream fout("results/" + strategy + ".csv");  // put results into a one-row CSV for later collation
+    fout << "Strategy,Games,Time,Parallel";
+    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
+        fout << ',' << (1 << i);
+    }
+    fout << std::endl;
+
+    fout << strategy << ',' << games << ',' << time_taken << ',' << (parallelize ? "true" : "false");
+    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
+        fout << ',' << results[i];
+    }
+    fout << std::endl;
+    fout.close();
+}
+
+std::future<int> futures[MAX_THREADS];
+
+void test_player(const std::string& strategy, const int (*player)(board_t), const int games,
                  const bool parallelize = false, const bool print_progress = false) {
+
     std::cout << "\n\nTesting " << strategy << " strategy..." << std::endl;
     std::fill(results, results+MAX_TILE, 0);
 
@@ -62,23 +80,14 @@ void test_player(const std::string strategy, const int (*player)(board_t), const
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
 
-    fout << strategy << ',' << games << ',' << time_taken;
-    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
-        fout << ',' << 100.0 * results[i] / games;
-    }
-    fout << '\n';
+    save_results(strategy, games, parallelize);
 }
 
 int main() {
-    fout << "Strategy,Games,Time";
-    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
-        fout << ',' << (1 << i);
-    }
-    fout << '\n';
 
     game::init();
 
-    //game::play_slow(merge_player::player);
+    //game::play_slow(monte_carlo_player::player);
 
     //game::play(user_player::player);
     
@@ -97,6 +106,13 @@ int main() {
         }
     }
 
-    fout.close();
+    for (int trials=100; trials<1000; trials+=100) {
+        monte_carlo_player::init(trials);
+        test_player("monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
+    }
+    for (int trials=1000; trials<=10000; trials+=1000) {
+        monte_carlo_player::init(trials);
+        test_player("monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
+    }
 }
 
