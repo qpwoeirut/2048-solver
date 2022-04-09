@@ -1,5 +1,7 @@
 # 2048 solvers
 
+See the [results](/results) directory for the performances of each solver.
+
 So far all the strategies implemented are very basic.
 I've categorized each into "Naive" and "Simple".
 
@@ -30,44 +32,14 @@ This strategy attempts to merge as many tiles as possible at a certain search de
 It's essentially a recursive brute force.
 Each move checked runs some amount of trials to simulate the randomly placed tiles.
 
-The success rate of this solver is surprisingly high; setting `depth` to 4 and `trials` to 4 can get the 2048 tile with a 53% success rate (out of 100 games).
-Each game, however, takes around 3.2 seconds to complete.
+The `d` (depth) and `t` (trials) parameters can be changed, although the time to run grows exponentially in `d`, so usually `d <= 4`.
+The number of trials doesn't seem to have much of an effect beyond around 5 or 6.
 
-Here's the abridged output of the run that those numbers are based on:
-```
-Testing merge strategy...
-...
-Playing 100 games took 317.996 seconds.
-...
-8 100 (100)
-9 99 (99)
-10 97 (97)
-11 53 (53)
-12 0 (0)
-```
 
-Using `depth=3` and `trials=6` is faster but only succeeds 12% of the time.
-```
-Testing merge strategy...
-...
-Playing 100 games took 119.103 seconds.
-...
-8 100 (100)
-9 98 (98)
-10 80 (80)
-11 12 (12)
-12 0 (0)
-```
+### Monte Carlo tree search
+For each possible move, this solver runs `t` random games from the resulting board and averages the score from all those games.
+The move that has the best average score is picked.
 
-With `depth=4` and `trials=5`:
-```
-Testing merge strategy...
-...
-Playing 100 games took 720.921 seconds.
-...
-9 100 (100)
-10 96 (96)
-11 44 (44)
-12 1 (1)
-13 0 (0)
-```
+The time it takes for this solver is approximately linear in `t`.
+The rate of improvement starts to decrease as `t` gets to around a thousand.
+

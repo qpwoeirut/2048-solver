@@ -87,27 +87,23 @@ void test_player(const std::string& strategy, const int (*player)(board_t), cons
 int main() {
     game::init();
     
-    test_player("random", random_player::player, GAMES[4]);
-    test_player("corner", corner_player::player, GAMES[4]);
-    test_player("ordered", ordered_player::player, GAMES[4]);
+    //test_player("random", random_player::player, GAMES[4]);
+    //test_player("corner", corner_player::player, GAMES[4]);
+    //test_player("ordered", ordered_player::player, GAMES[4]);
 
-    for (int depth=1; depth<=4; ++depth) {
-        for (int trials=1; trials<=10 - depth; ++trials) {
-            const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";  // avoid printing comma since escaping annoys
-            merge_player::init(depth, trials);
+    //for (int depth=1; depth<=4; ++depth) {
+    //    for (int trials=1; trials<=10 - depth; ++trials) {
+    //        const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";  // avoid printing comma since escaping annoys
+    //        merge_player::init(depth, trials);
 
-            const int order = depth * 10 + trials;
-            const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
+    //        const int order = depth * 10 + trials;
+    //        const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
 
-            test_player(strategy, merge_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
-        }
-    }
+    //        test_player(strategy, merge_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
+    //    }
+    //}
 
     for (int trials=100; trials<1000; trials+=100) {
-        monte_carlo_player::init(trials);
-        test_player("monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
-    }
-    for (int trials=1000; trials<=10000; trials+=1000) {
         monte_carlo_player::init(trials);
         test_player("monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
     }
