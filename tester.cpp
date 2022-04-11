@@ -9,6 +9,7 @@
 #include "solvers/corner.cpp"
 #include "solvers/ordered.cpp"
 #include "solvers/merge.cpp"
+#include "solvers/score.cpp"
 #include "solvers/monte_carlo.cpp"
 
 
@@ -103,9 +104,21 @@ int main() {
     //    }
     //}
 
-    for (int trials=100; trials<1000; trials+=100) {
-        monte_carlo_player::init(trials);
-        test_player("monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
+    for (int depth=1; depth<=4; ++depth) {
+        for (int trials=1; trials<=8-depth; ++trials) {
+            const std::string strategy = "score(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
+            score_player::init(depth, trials);
+
+            const int order = depth * 10 + trials;
+            const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
+
+            test_player(strategy, score_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
+        }
     }
+
+    //for (int trials=100; trials<1000; trials+=100) {
+    //    monte_carlo_player::init(trials);
+    //    test_player("monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
+    //}
 }
 
