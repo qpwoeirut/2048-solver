@@ -46,7 +46,7 @@ Besides the switch from minimax to expectimax, these solvers also use a very eff
 
 ### My Ideas
 I was discussing possible 2048 strategies with a friend, who pointed out the possibility that many positions are "useless," in the sense that the move picked from that position won't heavily affect the outcome of the game.
-If it's possible to identify the "usefullness" of a position, the useless positions can be solved by simply making a random move.
+If it's possible to identify the "usefulness" of a position, the useless positions can be solved by simply making a random move.
 This strategy should speed up games, especially in the early stages, allowing for more testing and/or training.
 
 
