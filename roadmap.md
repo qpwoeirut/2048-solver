@@ -1,7 +1,7 @@
 # 2048 Solver Roadmap
 
 This project is intended to "solve" the popular [2048 tile-merging game](https://github.com/gabrielecirulli/2048).
-My overall goal is to create a ML model that can reach 2048 at least 15% of the time.
+My overall goal is to create an ML model that can reach 2048 at least 15% of the time.
 Since I have literally never touched ML before, 15% success is probably an extremely ambitious goal.
 
 Although I've done some research on prior work and how successful previous projects have been, I want to write all the solver code on my own.
@@ -12,7 +12,7 @@ For the purposes of this roadmap, a "success" means reaching the 2048 tile, unle
 
 ## Roadmap: Part 1: "Traditional" solver
 I want to start by writing a traditional algorithmic solver.
-I aim to have a "traditional" solver that can succeed 80% of the time which I can hopefully use to train a ML model.
+I aim to have a "traditional" solver that can succeed 80% of the time which I can hopefully use to train an ML model.
 There are many possible strategies for the first solver.
 I may end up implementing several of them.
 
@@ -32,7 +32,7 @@ This is from [here](https://github.com/ovolve/2048-AI).
 I will do more research on this technique soon, since I currently haven't taken the time to properly understand it.
 From what I know, one of the downsides of using minimax is that the computer's tile placement is random and not necessarily adversarial.
 As a result, using minimax leads to a very cautious player.
-I suppose if one is aiming for high success rate that is fine, but it seems nonoptimal when attempting to achieve the highest possible score.
+I suppose if one is aiming for high success rate that is fine, but it seems non-optimal when attempting to achieve the highest possible score.
 
 
 ### Expectimax Optimization
@@ -66,7 +66,7 @@ I'll have to do more research on ML strategies when the time comes.
 These are only the solvers that provided the success rates up-front or seemed good enough that I wanted to write them down.
 There are many more repos out there which didn't list success rates.
 * [macroxue's solver](https://github.com/macroxue/2048-ai) uses some strategy that I don't understand and reaches 32768 with a 74.0% success rate and 65536 with a 3.0% rate. It seems to use a large lookup table for difficult positions, combined with expectimax
-* [aszczepanski's solver](https://github.com/aszczepanski/2048) uses a n-tuple network with expectimax and reaches 32768 with a 69% success rate when making one move per second
+* [aszczepanski's solver](https://github.com/aszczepanski/2048) uses an n-tuple network with expectimax and reaches 32768 with a 69% success rate when making one move per second
 * [nneonneo's solver](https://github.com/nneonneo/2048-ai) uses expectimax and reaches 16384 with a 94% success rate
 * [MaartenBaert's solver](https://github.com/MaartenBaert/2048-ai-emscripten) uses expectimax and seems to be very good, although I didn't poke around enough to find tile success stats. Its README claims that it's slightly better than the above solver
 * [kcwu's solver](https://github.com/kcwu/2048-c) uses expectimax with a helper minimax search to avoid dying and reaches the 8192 tile with a 96% success rate
