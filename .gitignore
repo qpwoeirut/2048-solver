@@ -1,5 +1,7 @@
 # 2048-solver
 
+build
+*.egg-info
 .idea
 
 # Prerequisites
