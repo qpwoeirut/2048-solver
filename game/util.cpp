@@ -14,7 +14,7 @@ int random_move() {
     return move_distrib(move_gen);
 }
 
-void print_board(const uint64_t board) {
+void print_board(const board_t board) {
     for (int r=48; r>=0; r-=16) {
         for (int c=12; c>=0; c-=4) {
             std::cout << ((board >> (r + c)) & 0xF) << ' ';
