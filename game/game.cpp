@@ -1,5 +1,6 @@
 #include <cassert>
 #include <chrono>
+#include <iostream>
 #include <random>
 
 #include "util.cpp"
@@ -27,7 +28,12 @@ namespace game {
     // this part doesn't have to be fast
     void init() {
         for (int row=0; row<ROWS; ++row) {
-            uint8_t r[4] = {(row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF};
+            uint8_t r[4] = {
+                static_cast<uint8_t>((row >> 12) & 0xF),
+                static_cast<uint8_t>((row >> 8) & 0xF),
+                static_cast<uint8_t>((row >> 4) & 0xF),
+                static_cast<uint8_t>(row & 0xF)
+            };
 
             // pull values to the left
             for (int i=0; i<3; ++i) {

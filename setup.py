@@ -2,7 +2,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 
 ext_modules = [
-    Pybind11Extension("players", ["players.cpp"]),
+    Pybind11Extension("players", ["demo/selenium/export_players.cpp"]),
 ]
 
 setup(
