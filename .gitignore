@@ -4,6 +4,8 @@ build
 *.egg-info
 .idea
 
+geckodriver.log
+
 # Prerequisites
 *.d
 
