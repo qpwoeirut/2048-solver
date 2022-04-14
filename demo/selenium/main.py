@@ -3,7 +3,7 @@ from typing import Tuple, List
 
 import players
 from selenium import webdriver
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -65,15 +65,20 @@ def main():
                 board = read_board(browser.find_elements(By.CLASS_NAME, "tile"))
                 if board != old_board:
                     break
-                print("board is same")
+
+                # make sure the board is focused
+                browser.find_element(By.CLASS_NAME, "game-container").click()
             except StaleElementReferenceException:
                 time.sleep(0.05)
         else:
-            print("PANIK")
-
-            # try just making some random move and go on
-            players.make_move(board, move)
-
+            try:  # maybe we won! click keep going if that's the case
+                keep_going_button = browser.find_element(By.CLASS_NAME, "keep-playing-button")
+                keep_going_button.click()
+            except NoSuchElementException:
+                # let's just print something and then keep going as if nothing happened
+                print("PANIK")
+            
 
 if __name__ == '__main__':
     main()
+
