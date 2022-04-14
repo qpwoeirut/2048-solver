@@ -44,7 +44,7 @@ def read_board(tiles: List[WebElement]) -> int:
 
 def main():
     players.init_game()
-    players.init_monte_carlo_player(1000)
+    players.init_monte_carlo_player(10000)
 
     browser = webdriver.Firefox()
     browser.get("https://play2048.co/")
