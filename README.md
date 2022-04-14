@@ -1,7 +1,11 @@
 # 2048 Solver
 
 ## Quick Start Instructions
-To set up the demo, run `pip install .`.
+To set up the demo, run `pip install .` at the top level of this repository.
+By default, the demo runs in the Firefox browser.
+To run in Firefox, you may need to install the `geckodriver` executable.
+
+The code in [main.py](/demo/selenium/main.py) should be editable so that it works for any webdriver-supported browser, although I've had some issues when trying to use Chrome.
 
 ## Summary
 
