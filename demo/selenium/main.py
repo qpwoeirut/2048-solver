@@ -3,7 +3,8 @@ from typing import Tuple, List
 
 import players
 from selenium import webdriver
-from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, \
+    ElementNotInteractableException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -43,38 +44,39 @@ def read_board(tiles: List[WebElement]) -> int:
 
 def main():
     players.init_game()
+    players.init_monte_carlo_player(1000)
 
     browser = webdriver.Firefox()
     browser.get("https://play2048.co/")
 
     # keystrokes will be sent to top-level container
     body: WebElement = browser.find_element(By.TAG_NAME, "body")
+    game_container: WebElement = browser.find_element(By.CLASS_NAME, "game-container")
+    tile_container: WebElement = game_container.find_element(By.CLASS_NAME, "tile-container")
 
-    while len(browser.find_elements(By.CLASS_NAME, "game-over")) == 0:  # check if game is over
-        board = read_board(browser.find_elements(By.CLASS_NAME, "tile"))
-
+    while len(game_container.find_elements(By.CLASS_NAME, "game-over")) == 0:  # check if game is over
+        board = read_board(tile_container.find_elements(By.CLASS_NAME, "tile"))
         move = players.monte_carlo_player(board)
 
-        # instead of re-reading the entire board again, we compute it ourselves
-        players.make_move(board, move)
-
         old_board = board
+
         body.send_keys(MOVES[move])
         for _ in range(10):
             try:
-                board = read_board(browser.find_elements(By.CLASS_NAME, "tile"))
+                board = read_board(tile_container.find_elements(By.CLASS_NAME, "tile"))
                 if board != old_board:
                     break
 
                 # make sure the board is focused
-                browser.find_element(By.CLASS_NAME, "game-container").click()
+                game_container.click()
+                print("Board did not change!", board, move)
             except StaleElementReferenceException:
-                time.sleep(0.05)
+                time.sleep(0.025)
         else:
             try:  # maybe we won! click keep going if that's the case
-                keep_going_button = browser.find_element(By.CLASS_NAME, "keep-playing-button")
+                keep_going_button = game_container.find_element(By.CLASS_NAME, "keep-playing-button")
                 keep_going_button.click()
-            except NoSuchElementException:
+            except (NoSuchElementException, ElementNotInteractableException):
                 # let's just print something and then keep going as if nothing happened
                 print("PANIK")
             
