@@ -6,4 +6,3 @@ namespace ordered_player {
         return 3;
     }
 }
-
