@@ -5,10 +5,10 @@ To set up the demo, run `pip install .` at the top level of this repository.
 By default, the demo runs in the Firefox browser.
 To run in Firefox, you may need to install the `geckodriver` executable.
 
-The code in [main.py](/demo/selenium/main.py) should be editable so that it works for any webdriver-supported browser, although I've had some issues when trying to use Chrome.
+The code in [main.py](/demo/selenium/main.py) should be editable so that it works for any webdriver-supported browser.
+It's worth noting that it takes a while for the page to load up in Chrome, which is why Firefox is the default.
 
 ## Summary
-
 This project is intended to "solve" the popular [2048 tile-merging game](https://github.com/gabrielecirulli/2048).
 See the [roadmap](/roadmap.md) for details on the project.
 
@@ -29,6 +29,7 @@ So instead each solver just gets its own namespace.
 Giving each solver its own file means that I don't have to rerun every solver simulation if I only need to test one solver.
 I plan to write a Python program to collate each resulting CSV file into a centralized file soon.
 There are also hopes of writing a program to plot/visualize the data, especially for comparing different parameters on certain solvers.
+
 
 ## Testing
 Each test runs at least 100 games in order to try and minimize random variance.
