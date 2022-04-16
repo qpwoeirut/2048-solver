@@ -26,28 +26,27 @@ const int play_game(const int (*player)(const board_t)) {
     return get_max_tile(board);
 }
 
-void save_results(const std::string& strategy, const int games, const float time_taken, const bool parallelize) {
-    std::ofstream fout("results/" + strategy + ".csv");  // put results into a one-row CSV for later collation
+void write_headings(std::ofstream& fout) {
     assert(fout.is_open());  // might need to create the /results directory if this doesn't work
     fout << "Strategy,Games,Time,Parallel";
     for (int i=MIN_TILE; i<MAX_TILE; ++i) {
         fout << ',' << (1 << i);
     }
     fout << std::endl;
+}
 
+void save_results(std::ofstream& fout, const std::string& strategy, const int games, const float time_taken, const bool parallelize) {
+    assert(fout.is_open());
     fout << strategy << ',' << games << ',' << time_taken << ',' << (parallelize ? "true" : "false");
     for (int i=MIN_TILE; i<MAX_TILE; ++i) {
         fout << ',' << results[i];
     }
     fout << std::endl;
-    fout.close();
 }
 
 std::future<int> futures[MAX_THREADS];
 
-void test_player(const std::string& strategy, const int (*player)(board_t), const int games,
-                 const bool parallelize = false, const bool print_progress = false) {
-
+void test_player(std::ofstream& fout, const std::string& strategy, const int (*player)(board_t), const int games, const bool parallelize, const bool print_progress) {
     std::cout << "\n\nTesting " << strategy << " strategy..." << std::endl;
     std::fill(results, results+MAX_TILE, 0);
 
@@ -81,44 +80,72 @@ void test_player(const std::string& strategy, const int (*player)(board_t), cons
     for (int i=MIN_TILE; i<MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
-
-    save_results(strategy, games, time_taken, parallelize);
+    save_results(fout, strategy, games, time_taken, parallelize);
 }
 
-int main() {
-    game::init();
-    
-    //test_player("random", random_player::player, GAMES[4]);
-    //test_player("corner", corner_player::player, GAMES[4]);
-    //test_player("ordered", ordered_player::player, GAMES[4]);
+void test_single_player(const std::string& strategy, const int (*player)(board_t), const int games,
+                        const bool parallelize = false, const bool print_progress = false) {
+    std::ofstream fout("results/" + strategy + ".csv");  // put results into a one-row CSV for later collation
+    write_headings(fout);
+    test_player(fout, strategy, player, games, parallelize, print_progress);
+    fout.close();
+}
 
-    //for (int depth=1; depth<=4; ++depth) {
-    //    for (int trials=1; trials<=10 - depth; ++trials) {
-    //        const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";  // avoid printing comma since escaping annoys
-    //        merge_player::init(depth, trials);
-
-    //        const int order = depth * 10 + trials;
-    //        const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
-
-    //        test_player(strategy, merge_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
-    //    }
-    //}
-
+void test_merge_player() {
+    std::ofstream fout("results/merge.csv");  // put results into a one-row CSV for later collation
+    write_headings(fout);
     for (int depth=1; depth<=4; ++depth) {
-        for (int trials=1; trials<=8-depth; ++trials) {
+        for (int trials=1; trials<=10 - depth; ++trials) {
+            // avoid printing comma since escaping annoys
+            const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
+            merge_player::init(depth, trials);
+
+            const int order = depth * 10 + trials;
+            const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
+
+            test_player(fout, strategy, merge_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
+        }
+    }
+    fout.close();
+}
+
+void test_score_player() {
+    std::ofstream fout("results/score.csv");
+    write_headings(fout);
+    for (int depth=1; depth<=4; ++depth) {
+        for (int trials=1; trials<=9 - depth; ++trials) {
+            // avoid printing comma since escaping annoys
             const std::string strategy = "score(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
             score_player::init(depth, trials);
 
             const int order = depth * 10 + trials;
             const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
 
-            test_player(strategy, score_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
+            test_player(fout, strategy, score_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
         }
     }
+    fout.close();
+}
 
-    //for (int trials=100; trials<1000; trials+=100) {
-    //    monte_carlo_player::init(trials);
-    //    test_player("monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
-    //}
+void test_monte_carlo_player() {
+    std::ofstream fout("results/monte_carlo.csv");
+    write_headings(fout);
+    for (int trials=100; trials<=1000; trials+=100) {
+        monte_carlo_player::init(trials);
+        test_player(fout, "monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
+    }
+    fout.close();
+}
+
+int main() {
+    game::init();
+    
+    //test_single_player("random", random_player::player, GAMES[4]);
+    //test_single_player("corner", corner_player::player, GAMES[4]);
+    //test_single_player("ordered", ordered_player::player, GAMES[4]);
+
+    //test_merge_player();
+    //test_score_player();
+    test_monte_carlo_player();
 }
 

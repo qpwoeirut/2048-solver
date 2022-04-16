@@ -1,5 +1,6 @@
 # 2048-solver
 
+.DS_Store
 build
 *.egg-info
 .idea
