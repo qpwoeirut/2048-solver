@@ -17,7 +17,7 @@
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
 
-constexpr int GAMES[5] = {500, 5000, 20000, 200000, 1000000};
+constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
 constexpr int MAX_THREADS = GAMES[0];  // this is already probably higher than ideal
 
 int results[MAX_TILE];
@@ -96,7 +96,7 @@ void test_merge_player() {
     std::ofstream fout("results/merge.csv");  // put results into a one-row CSV for later collation
     write_headings(fout);
     for (int depth=1; depth<=5; ++depth) {
-        for (int trials=1; trials<=10; ++trials) {
+        for (int trials=1; trials<=11 - depth; ++trials) {
             // avoid printing comma since escaping annoys
             const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
             merge_player::init(depth, trials);
@@ -114,7 +114,7 @@ void test_score_player() {
     std::ofstream fout("results/score.csv");
     write_headings(fout);
     for (int depth=1; depth<=5; ++depth) {
-        for (int trials=1; trials<=10; ++trials) {
+        for (int trials=1; trials<=11 - depth; ++trials) {
             // avoid printing comma since escaping annoys
             const std::string strategy = "score(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
             score_player::init(depth, trials);
@@ -143,7 +143,7 @@ void test_minimax_player() {
 void test_monte_carlo_player() {
     std::ofstream fout("results/monte_carlo.csv");
     write_headings(fout);
-    for (int trials=100; trials<=1000; trials+=100) {
+    for (int trials=100; trials<=1500; trials+=100) {
         monte_carlo_player::init(trials);
         test_player(fout, "monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
     }
