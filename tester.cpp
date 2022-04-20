@@ -92,9 +92,9 @@ void test_single_player(const std::string& strategy, const int (*player)(board_t
 }
 
 void test_merge_player() {
-    std::ofstream fout("results/merge2.csv");  // put results into a one-row CSV for later collation
+    std::ofstream fout("results/merge.csv");  // put results into a one-row CSV for later collation
     write_headings(fout);
-    for (int depth=5; depth<=5; ++depth) {
+    for (int depth=1; depth<=5; ++depth) {
         for (int trials=1; trials<=15 - 2*depth; ++trials) {
             // avoid printing comma since escaping annoys
             const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
