@@ -59,6 +59,9 @@ My first thought is to feed the model the current board state and then have it p
 Then to train the model, hundreds or thousands of games can be run, and the average score from these games can be used as feedback.
 I suspect it won't actually be that simple though, otherwise somebody else would have already implemented it.
 
+The model could also simply provide a board evaluation (which I think is similar to how Stockfish works).
+Then it can be used as the heuristic for a minimax or expectimax solver.
+
 I'll have to do more research on ML strategies when the time comes.
 
 
