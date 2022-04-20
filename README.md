@@ -38,7 +38,5 @@ As a result, some of the faster solvers (such as the random strategy) run hundre
 
 The slow solvers run games in parallel using C++'s `std::async`.
 
-All games are run locally on my computer.
-The recorded time taken in the [results](/results) directory will vary, since my computer's environment also varies.
-In particular, some runs took place while other things were also happening on my computer, and some games were also run while I was cooling my computer with ice packs.
+Games are run on an AWS EC2 t2.micro or my personal computer, although I'm trying to switch to running on only EC2 and using a faster instance.
 
