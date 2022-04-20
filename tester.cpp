@@ -140,12 +140,12 @@ void test_monte_carlo_player() {
 int main() {
     game::init();
     
-    //test_single_player("random", random_player::player, GAMES[4]);
-    //test_single_player("corner", corner_player::player, GAMES[4]);
-    //test_single_player("ordered", ordered_player::player, GAMES[4]);
+    test_single_player("random", random_player::player, GAMES[4]);
+    test_single_player("corner", corner_player::player, GAMES[4]);
+    test_single_player("ordered", ordered_player::player, GAMES[4]);
 
     test_merge_player();
     test_score_player();
-    //test_monte_carlo_player();
+    test_monte_carlo_player();
 }
 
