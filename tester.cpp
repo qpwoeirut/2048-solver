@@ -11,6 +11,7 @@
 #include "solvers/merge.cpp"
 #include "solvers/score.cpp"
 #include "solvers/minimax.cpp"
+#include "solvers/expectimax.cpp"
 #include "solvers/monte_carlo.cpp"
 
 
@@ -140,6 +141,18 @@ void test_minimax_player() {
     }
 }
 
+void test_expectimax_player() {
+    std::ofstream fout("results/expectimax.csv");
+    write_headings(fout);
+    for (int depth=1; depth<=7; ++depth) {
+        const std::string strategy = "expectimax(d=" + std::to_string(depth) + ")";
+        expectimax_player::init(depth);
+
+        const int speed = std::max(0, 3 - depth);
+        test_player(fout, strategy, expectimax_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
+    }
+}
+
 void test_monte_carlo_player() {
     std::ofstream fout("results/monte_carlo.csv");
     write_headings(fout);
@@ -160,6 +173,7 @@ int main() {
     test_merge_player();
     test_score_player();
     test_minimax_player();
+    test_expectimax_player();
     test_monte_carlo_player();
 }
 
