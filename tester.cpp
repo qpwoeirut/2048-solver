@@ -96,7 +96,7 @@ void test_merge_player() {
     std::ofstream fout("results/merge.csv");  // put results into a one-row CSV for later collation
     write_headings(fout);
     for (int depth=1; depth<=5; ++depth) {
-        for (int trials=1; trials<=11 - depth; ++trials) {
+        for (int trials=1; trials<=11 - depth - (depth == 5); ++trials) {
             // avoid printing comma since escaping annoys
             const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
             merge_player::init(depth, trials);
@@ -114,7 +114,7 @@ void test_score_player() {
     std::ofstream fout("results/score.csv");
     write_headings(fout);
     for (int depth=1; depth<=5; ++depth) {
-        for (int trials=1; trials<=11 - depth; ++trials) {
+        for (int trials=1; trials<=11 - depth - (depth == 5); ++trials) {
             // avoid printing comma since escaping annoys
             const std::string strategy = "score(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
             score_player::init(depth, trials);
@@ -153,11 +153,11 @@ void test_monte_carlo_player() {
 int main() {
     game::init();
     
-    test_single_player("random", random_player::player, GAMES[4]);
-    test_single_player("corner", corner_player::player, GAMES[4]);
-    test_single_player("ordered", ordered_player::player, GAMES[4]);
+    //test_single_player("random", random_player::player, GAMES[4]);
+    //test_single_player("corner", corner_player::player, GAMES[4]);
+    //test_single_player("ordered", ordered_player::player, GAMES[4]);
 
-    test_merge_player();
+    //test_merge_player();
     test_score_player();
     test_minimax_player();
     test_monte_carlo_player();
