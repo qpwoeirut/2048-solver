@@ -20,6 +20,7 @@ constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
 
 constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
+//constexpr int GAMES[5] = {5, 20, 100, 200, 500};
 constexpr int MAX_THREADS = GAMES[0];  // this is already probably higher than ideal
 
 int results[MAX_TILE];
@@ -97,7 +98,7 @@ void test_single_player(const std::string& strategy, const int (*player)(board_t
 void test_merge_player() {
     std::ofstream fout("results/merge.csv");  // put results into a one-row CSV for later collation
     write_headings(fout);
-    for (int depth=1; depth<=5; ++depth) {
+    for (int depth=1; depth<=2; ++depth) {
         for (int trials=1; trials<=11 - depth - (depth == 5); ++trials) {
             // avoid printing comma since escaping annoys
             const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
@@ -133,7 +134,7 @@ void test_score_player() {
 void test_minimax_player() {
     std::ofstream fout("results/minimax.csv");
     write_headings(fout);
-    for (int depth=1; depth<=7; ++depth) {
+    for (int depth=1; depth<=5; ++depth) {
         const std::string strategy = "minimax(d=" + std::to_string(depth) + ")";
         minimax_player::init(depth);
 
@@ -145,7 +146,7 @@ void test_minimax_player() {
 void test_expectimax_player() {
     std::ofstream fout("results/expectimax.csv");
     write_headings(fout);
-    for (int depth=1; depth<=7; ++depth) {
+    for (int depth=1; depth<=5; ++depth) {
         const std::string strategy = "expectimax(d=" + std::to_string(depth) + ")";
         expectimax_player::init(depth);
 
