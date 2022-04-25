@@ -20,10 +20,11 @@ There are some implementation ideas that I'm taking as well (such as the bitwise
 The code for simulating a game is in the [game](/game) directory under the `game` namespace.
 It has a [game.cpp](/game/game.cpp) and a [utils.cpp](/game/utils.cpp).
 
-The solvers are in the [solvers](/solvers) directory.
-All solvers implement a function which provides a move when given a board.
+Each strategy is in the [strategy](/strategy) directory.
+All strategies implement a function which provides a move when given a board.
+Some strategies have parameters and heuristic functions or secondary strategies that are passed in.
 I'm not using classes because I couldn't figure out an easy way to pass around class member functions and I figured that there would probably be some avoidable overhead from instantiating classes.
-So instead each solver just gets its own namespace.
+So instead each strategy just gets its own namespace.
 
 [tester.cpp](/tester.cpp) simulates games for each solver and write the results into the [results](/results) directory as a one-line CSV file.
 Giving each solver its own file means that I don't have to rerun every solver simulation if I only need to test one solver.
