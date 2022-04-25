@@ -18,9 +18,9 @@ namespace minimax_player {
             if (board == new_board || game::game_over(new_board)) continue;
 
             int current_score = 1e9;  // next step will minimize this across all tile placements
-            const uint16_t empty_mask = game::to_tile_mask(new_board);
+            const uint16_t tile_mask = game::to_tile_mask(new_board);
             for (int j=0; j<16; ++j) {
-                if (((empty_mask >> j) & 1) == 0) {
+                if (((tile_mask >> j) & 1) == 0) {
                     current_score = std::min(current_score, helper(new_board | (1 << j), cur_depth - 1) >> 2);
                     current_score = std::min(current_score, helper(new_board | (2 << j), cur_depth - 1) >> 2);
                 }
