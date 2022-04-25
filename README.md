@@ -40,3 +40,7 @@ The slower solvers run games in parallel using C++'s `std::async`.
 
 Games are run on an AWS EC2 Linux c6g.large instance.
 
+## Results
+The best strategy right now is the [Monte Carlo strategy](/solvers/monte_carlo.cpp). When the `trials` parameter is set to 2000, it reaches the 2048 tile 98.8% of the time and the 4096 tile 56.6% of the time.
+
+The [results file](/results.csv) has the statistics for all tested strategies.
