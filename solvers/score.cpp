@@ -8,11 +8,11 @@ namespace score_player {
     int depth = 3;
     int trials = 5;
 
-    const long long MULT = 1e12;  // use integer math to speed up
+    const long long MULT = 1e10;  // use integer math to speed up
 
     const long long helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
-            return (approximate_score(board) * MULT) << 2;  // move doesn't matter
+            return (heuristics::approximate_score(board) * MULT) << 2;  // move doesn't matter
         }
 
         long long best_score = 0;

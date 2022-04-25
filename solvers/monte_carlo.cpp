@@ -11,7 +11,7 @@ namespace monte_carlo_player {
         while (!game::game_over(board)) {
             board = game::add_random_tile(game::make_move(board, secondary_player(board)));
         }
-        return approximate_score(board);
+        return heuristics::approximate_score(board);
     }
 
     const int player(const board_t board) {

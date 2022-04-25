@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "game/game.cpp"
+#include "heuristics.cpp"
 #include "solvers/ask_user.cpp"
 #include "solvers/random.cpp"
 #include "solvers/corner.cpp"
@@ -166,11 +167,11 @@ void test_monte_carlo_player() {
 int main() {
     game::init();
     
-    //test_single_player("random", random_player::player, GAMES[4]);
-    //test_single_player("corner", corner_player::player, GAMES[4]);
-    //test_single_player("ordered", ordered_player::player, GAMES[4]);
+    test_single_player("random", random_player::player, GAMES[4]);
+    test_single_player("corner", corner_player::player, GAMES[4]);
+    test_single_player("ordered", ordered_player::player, GAMES[4]);
 
-    //test_merge_player();
+    test_merge_player();
     test_score_player();
     test_minimax_player();
     test_expectimax_player();

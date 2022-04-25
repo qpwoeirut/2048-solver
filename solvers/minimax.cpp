@@ -8,7 +8,7 @@ namespace minimax_player {
 
     const int helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
-            return approximate_score(board) << 2;  // move doesn't matter
+            return heuristics::approximate_score(board) << 2;  // move doesn't matter
         }
 
         int best_score = 0;

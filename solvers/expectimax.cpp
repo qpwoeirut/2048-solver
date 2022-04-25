@@ -9,7 +9,7 @@ namespace expectimax_player {
 
     const long long helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
-            return (MULT * approximate_score(board)) << 2;  // move doesn't matter
+            return (MULT * heuristics::approximate_score(board)) << 2;  // move doesn't matter
         }
 
         long long best_score = 0;

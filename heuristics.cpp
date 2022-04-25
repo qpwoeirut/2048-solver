@@ -1,7 +1,7 @@
 #define tile_val(r, c) ((board >> (4*r + c)) & 0xF)
 
 namespace heuristics {
-    // assumes that only 2's had spawned, which is a good enough approximation
+    // assumes that only 2's have spawned, which is a good enough approximation
     // creating a tile of 2^n adds 2^n to the score, and requires two 2^(n-1) tiles
     // creating each of those added 2^(n-1) to the score, and following the recursive pattern gets n * 2^n
     // technically we want (n-1) * 2^n since the 2's spawning don't add to the score
@@ -12,17 +12,6 @@ namespace heuristics {
             score += tile <= 1 ? 0 : (tile - 1) * (1 << tile);
         }
         return score;
-    }
-
-    // takes in a tile_mask
-    int count_empty(uint16_t n) {
-        // a somewhat understandable way to count set bits
-        // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
-        int empty_ct;
-        for (empty_ct = 0; n > 0; ++empty_ct) {
-            n &= n - 1;
-        }
-        return empty_ct;
     }
 
     // gives a score based on how the tiles are arranged in the corner, returns max over all 4 corners
@@ -54,7 +43,7 @@ namespace heuristics {
                                 2  * tile_val(1, 0) + 1 * tile_val(1, 1) +
                                 1  * tile_val(0, 0);
 
-        return max(max(lower_left, upper_left), max(lower_right, upper_right));
+        return std::max(std::max(lower_left, upper_left), std::max(lower_right, upper_right));
     }
 }
 
