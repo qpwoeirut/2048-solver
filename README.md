@@ -32,11 +32,11 @@ There are also hopes of writing a program to plot/visualize the data, especially
 
 
 ## Testing
-Each test runs at least 100 games in order to try and minimize random variance.
-In general, the number of games run is increased until it takes a least a few seconds to complete.
+Each test runs at least 500 games in order to try and minimize random variance.
+In general, the number of games run is increased until it takes a least a half minute to complete.
 As a result, some of the faster solvers (such as the random strategy) run hundreds of thousands of games.
 
-The slow solvers run games in parallel using C++'s `std::async`.
+The slower solvers run games in parallel using C++'s `std::async`.
 
-Games are run on an AWS EC2 t2.micro or my personal computer, although I'm trying to switch to running on only EC2 and using a faster instance.
+Games are run on an AWS EC2 Linux c6g.large instance.
 
