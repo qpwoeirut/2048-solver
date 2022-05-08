@@ -15,8 +15,8 @@
 #include "strategies/expectimax.cpp"
 #include "strategies/monte_carlo.cpp"
 
-constexpr int MAX_DEPTH = 3;
-constexpr int MAX_TRIALS = 5;
+constexpr int MAX_DEPTH = 5;
+constexpr int MAX_TRIALS = 10;
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
