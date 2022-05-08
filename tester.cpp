@@ -101,7 +101,7 @@ void test_heuristic(const std::string& name, int (*heuristic)(const board_t)) {
     std::ofstream fout("results/" + name + "-rnd_t.csv");  // put results into a CSV for later collation
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {
-        for (int trials = 1; trials <= ((depth == MAX_DEPTH) ? MAX_TRIALS / 2 : MAX_TRIALS); trials++) {
+        for (int trials = 1; trials <= ((depth == MAX_DEPTH) ? MAX_TRIALS - 6 : MAX_TRIALS); trials++) {
             const std::string strategy = name + "-rnd_t(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
             rand_trials_player::init(depth, trials, heuristic);
 
