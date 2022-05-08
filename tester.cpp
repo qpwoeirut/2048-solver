@@ -21,8 +21,8 @@ constexpr int MAX_TRIALS = 10;
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
 
-//constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
-constexpr int GAMES[5] = {5, 20, 100, 200, 500};
+constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
+//constexpr int GAMES[5] = {5, 20, 100, 200, 500};
 constexpr int MAX_THREADS = GAMES[0];  // this is already probably higher than ideal
 
 int results[MAX_TILE];
