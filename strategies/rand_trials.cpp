@@ -26,7 +26,7 @@ namespace rand_trials_player {
             for (int j=0; j<trials; ++j) {
                 current_score += helper(game::add_random_tile(new_board), cur_depth - 1) >> 2;  // extract score
             }
-            if (best_score >= current_score) {
+            if (best_score <= current_score) {
                 best_score = current_score;
                 best_move = i;
             }
