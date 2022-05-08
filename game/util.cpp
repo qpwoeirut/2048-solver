@@ -29,3 +29,13 @@ int get_max_tile(const board_t board) {
     return max_tile;
 }
 
+// a somewhat understandable way to count set bits
+// https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
+int count_empty(uint16_t mask) {
+    int empty_ct = 16;
+    for (empty_ct = 16; mask > 0; --empty_ct) {
+        mask &= mask - 1;
+    }
+    return empty_ct;
+}
+

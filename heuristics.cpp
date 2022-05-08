@@ -15,14 +15,7 @@ namespace heuristics {
     }
 
     int merge_heuristic(const board_t board) {  // count empty tiles on board
-        uint16_t mask = game::to_tile_mask(board);
-        // a somewhat understandable way to count set bits
-        // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
-        int empty_ct = 16;
-        for (empty_ct = 16; mask > 0; --empty_ct) {
-            mask &= mask - 1;
-        }
-        return empty_ct;
+        return count_empty(game::to_tile_mask(board));
     }
 
     // gives a score based on how the tiles are arranged in the corner, returns max over all 4 corners

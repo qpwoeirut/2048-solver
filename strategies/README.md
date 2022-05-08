@@ -25,7 +25,7 @@ Otherwise it moves down.
 
 ### Rotating
 This solver plays the same moves in order.
-It starts with left, then plays up, then plays right, then plays down, and repeats.
+It starts with up, then plays right, then plays down, then plays left, and repeats.
 
 
 ## Simple

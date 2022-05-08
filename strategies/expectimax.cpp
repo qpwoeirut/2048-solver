@@ -5,11 +5,13 @@ namespace expectimax_player {
     */
 
     int depth = 3;
+    int (*evaluator)(const board_t);
+
     const long long MULT = 1e9;  // speed things up with integer arithmetic
 
     const long long helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
-            return (MULT * heuristics::approximate_score(board)) << 2;  // move doesn't matter
+            return (MULT * evaluator(board)) << 2;  // move doesn't matter
         }
 
         long long best_score = 0;
@@ -38,8 +40,9 @@ namespace expectimax_player {
         return helper(board, depth) & 3;
     }
 
-    void init(const int _depth) {
+    void init(const int _depth, int (*_evaluator)(const board_t)) {
         depth = _depth;
+        evaluator = _evaluator;
     }
 }
 

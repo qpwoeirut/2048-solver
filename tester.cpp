@@ -6,10 +6,11 @@
 #include "game/game.cpp"
 #include "heuristics.cpp"
 #include "strategies/ask_user.cpp"
-#include "strategies/random.cpp"
-#include "strategies/corner.cpp"
-#include "strategies/ordered.cpp"
-#include "strategies/rotating.cpp"
+#include "strategies/blind/random.cpp"
+#include "strategies/blind/spam_corner.cpp"
+#include "strategies/blind/ordered.cpp"
+#include "strategies/blind/rotating.cpp"
+#include "strategies/rand_trials.cpp"
 #include "strategies/minimax.cpp"
 #include "strategies/expectimax.cpp"
 #include "strategies/monte_carlo.cpp"
@@ -96,26 +97,26 @@ void test_single_player(const std::string& strategy, const int (*player)(board_t
     fout.close();
 }
 
-void test_heuristic(const std::string& heuristic_name, const long long (*heuristic)(const board_t)) {
-    std::ofstream fout("results/" + heuristic + "-rnd_t.csv");  // put results into a CSV for later collation
+void test_heuristic(const std::string& name, int (*heuristic)(const board_t)) {
+    std::ofstream fout("results/" + name + "-rnd_t.csv");  // put results into a CSV for later collation
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {
         for (int trials = 1; trials <= (depth == MAX_DEPTH) ? MAX_TRIALS / 2 : MAX_TRIALS; trials++) {
-            const std::strategy = heuristic + "-rnd_t(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
-            random_trials_player::init(depth, trials, heuristic);
+            const std::string strategy = name + "-rnd_t(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
+            rand_trials_player::init(depth, trials, heuristic);
 
             const int order = depth * 10 + trials;
             const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
 
-            test_player(fout, strategy, random_trials_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
+            test_player(fout, strategy, rand_trials_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
         }
     }
     fout.close();
 
-    fout = std::ofstream("results/" + heuristic + "-mnmx.csv");
+    fout = std::ofstream("results/" + name + "-mnmx.csv");
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {
-        const std::strategy = heuristic + "-mnmx(d=" + std::to_string(depth) + ")";
+        const std::string strategy = name + "-mnmx(d=" + std::to_string(depth) + ")";
         minimax_player::init(depth, heuristic);
 
         const int speed = std::max(0, 3 - depth);
@@ -123,10 +124,10 @@ void test_heuristic(const std::string& heuristic_name, const long long (*heurist
     }
     fout.close();
 
-    fout = std::ofstream("results/" + heuristic + "-expmx.csv");
+    fout = std::ofstream("results/" + name + "-expmx.csv");
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {
-        const std::strategy = heuristic + "-expmx(d=" + std::to_string(depth) + ")";
+        const std::string strategy = name + "-expmx(d=" + std::to_string(depth) + ")";
         expectimax_player::init(depth, heuristic);
 
         const int speed = std::max(0, 3 - depth);

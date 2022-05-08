@@ -5,10 +5,11 @@ namespace minimax_player {
     */
 
     int depth = 3;
+    int (*evaluator)(const board_t);
 
     const int helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
-            return heuristics::approximate_score(board) << 2;  // move doesn't matter
+            return evaluator(board) << 2;  // move doesn't matter
         }
 
         int best_score = 0;
@@ -36,8 +37,9 @@ namespace minimax_player {
         return helper(board, depth) & 3;
     }
 
-    void init(const int _depth) {
+    void init(const int _depth, int (*_evaluator)(const board_t)) {
         depth = _depth;
+        evaluator = _evaluator;
     }
 }
 
