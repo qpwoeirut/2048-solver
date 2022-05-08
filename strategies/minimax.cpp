@@ -22,8 +22,8 @@ namespace minimax_player {
             const uint16_t tile_mask = game::to_tile_mask(new_board);
             for (int j=0; j<16; ++j) {
                 if (((tile_mask >> j) & 1) == 0) {
-                    current_score = std::min(current_score, helper(new_board | (1 << j), cur_depth - 1) >> 2);
-                    current_score = std::min(current_score, helper(new_board | (2 << j), cur_depth - 1) >> 2);
+                    current_score = std::min(current_score, helper(new_board | (1 << (j << 2)), cur_depth - 1) >> 2);
+                    current_score = std::min(current_score, helper(new_board | (2 << (j << 2)), cur_depth - 1) >> 2);
                 }
             }
             if (best_score <= current_score) {

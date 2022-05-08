@@ -24,8 +24,8 @@ namespace expectimax_player {
             const uint16_t empty_mask = game::to_tile_mask(new_board);
             for (int j=0; j<16; ++j) {
                 if (((empty_mask >> j) & 1) == 0) {
-                    expected_score += 9 * (helper(new_board | (1 << j), cur_depth - 1) >> 2);
-                    expected_score += 1 * (helper(new_board | (2 << j), cur_depth - 1) >> 2);
+                    expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1) >> 2);
+                    expected_score += 1 * (helper(new_board | (2LL << (j << 2)), cur_depth - 1) >> 2);
                 }
             }
             expected_score /= count_empty(empty_mask) * 10;  // convert to actual expected score
