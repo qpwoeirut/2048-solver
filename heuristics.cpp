@@ -5,13 +5,24 @@ namespace heuristics {
     // creating a tile of 2^n adds 2^n to the score, and requires two 2^(n-1) tiles
     // creating each of those added 2^(n-1) to the score, and following the recursive pattern gets n * 2^n
     // technically we want (n-1) * 2^n since the 2's spawning don't add to the score
-    int approximate_score(const board_t board) {
+    int score_heuristic(const board_t board) {
         int score = 0;
         for (int i=0; i<64; i+=4) {
             const uint8_t tile = (board >> i) & 0xF;
             score += tile <= 1 ? 0 : (tile - 1) * (1 << tile);
         }
         return score;
+    }
+
+    int merge_heuristic(const board_t board) {  // count empty tiles on board
+        uint16_t mask = game::to_tile_mask(board);
+        // a somewhat understandable way to count set bits
+        // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
+        int empty_ct = 16;
+        for (empty_ct = 16; mask > 0; --empty_ct) {
+            mask &= mask - 1;
+        }
+        return empty_ct;
     }
 
     // gives a score based on how the tiles are arranged in the corner, returns max over all 4 corners
@@ -21,7 +32,7 @@ namespace heuristics {
     // 5 3 1 0
     // 2 1 0 0
     // 1 0 0 0
-    int corner(const board_t board) {
+    int corner_heuristic(const board_t board) {
         const int lower_left =  10 * tile_val(0, 3) + 5 * tile_val(0, 2) + 2 * tile_val(0, 1) + 1 * tile_val(0, 0) +
                                 5  * tile_val(1, 3) + 3 * tile_val(1, 2) + 1 * tile_val(1, 1) +
                                 2  * tile_val(2, 3) + 1 * tile_val(2, 2) +

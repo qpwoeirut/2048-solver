@@ -5,22 +5,23 @@
 
 #include "game/game.cpp"
 #include "heuristics.cpp"
-#include "solvers/ask_user.cpp"
-#include "solvers/random.cpp"
-#include "solvers/corner.cpp"
-#include "solvers/ordered.cpp"
-#include "solvers/merge.cpp"
-#include "solvers/score.cpp"
-#include "solvers/minimax.cpp"
-#include "solvers/expectimax.cpp"
-#include "solvers/monte_carlo.cpp"
+#include "strategies/ask_user.cpp"
+#include "strategies/random.cpp"
+#include "strategies/corner.cpp"
+#include "strategies/ordered.cpp"
+#include "strategies/rotating.cpp"
+#include "strategies/minimax.cpp"
+#include "strategies/expectimax.cpp"
+#include "strategies/monte_carlo.cpp"
 
+constexpr int MAX_DEPTH = 1;
+constexpr int MAX_TRIALS = 2;
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
 
-constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
-//constexpr int GAMES[5] = {5, 20, 100, 200, 500};
+//constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
+constexpr int GAMES[5] = {5, 20, 100, 200, 500};
 constexpr int MAX_THREADS = GAMES[0];  // this is already probably higher than ideal
 
 int results[MAX_TILE];
@@ -89,76 +90,55 @@ void test_player(std::ofstream& fout, const std::string& strategy, const int (*p
 
 void test_single_player(const std::string& strategy, const int (*player)(board_t), const int games,
                         const bool parallelize = false, const bool print_progress = false) {
-    std::ofstream fout("results/" + strategy + ".csv");  // put results into a one-row CSV for later collation
+    std::ofstream fout("results/" + strategy + ".csv");  // put results into a CSV for later collation
     write_headings(fout);
     test_player(fout, strategy, player, games, parallelize, print_progress);
     fout.close();
 }
 
-void test_merge_player() {
-    std::ofstream fout("results/merge.csv");  // put results into a one-row CSV for later collation
+void test_heuristic(const std::string& heuristic_name, const long long (*heuristic)(const board_t)) {
+    std::ofstream fout("results/" + heuristic + "-rnd_t.csv");  // put results into a CSV for later collation
     write_headings(fout);
-    for (int depth=1; depth<=2; ++depth) {
-        for (int trials=1; trials<=11 - depth - (depth == 5); ++trials) {
-            // avoid printing comma since escaping annoys
-            const std::string strategy = "merge(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
-            merge_player::init(depth, trials);
+    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+        for (int trials = 1; trials <= (depth == MAX_DEPTH) ? MAX_TRIALS / 2 : MAX_TRIALS; trials++) {
+            const std::strategy = heuristic + "-rnd_t(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
+            random_trials_player::init(depth, trials, heuristic);
 
             const int order = depth * 10 + trials;
             const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
 
-            test_player(fout, strategy, merge_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
+            test_player(fout, strategy, random_trials_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
         }
     }
     fout.close();
-}
 
-void test_score_player() {
-    std::ofstream fout("results/score.csv");
+    fout = std::ofstream("results/" + heuristic + "-mnmx.csv");
     write_headings(fout);
-    for (int depth=1; depth<=5; ++depth) {
-        for (int trials=1; trials<=11 - depth - (depth == 5); ++trials) {
-            // avoid printing comma since escaping annoys
-            const std::string strategy = "score(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
-            score_player::init(depth, trials);
-
-            const int order = depth * 10 + trials;
-            const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
-
-            test_player(fout, strategy, score_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
-        }
-    }
-    fout.close();
-}
-
-void test_minimax_player() {
-    std::ofstream fout("results/minimax.csv");
-    write_headings(fout);
-    for (int depth=1; depth<=5; ++depth) {
-        const std::string strategy = "minimax(d=" + std::to_string(depth) + ")";
-        minimax_player::init(depth);
+    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+        const std::strategy = heuristic + "-mnmx(d=" + std::to_string(depth) + ")";
+        minimax_player::init(depth, heuristic);
 
         const int speed = std::max(0, 3 - depth);
         test_player(fout, strategy, minimax_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
     }
-}
+    fout.close();
 
-void test_expectimax_player() {
-    std::ofstream fout("results/expectimax.csv");
+    fout = std::ofstream("results/" + heuristic + "-expmx.csv");
     write_headings(fout);
-    for (int depth=1; depth<=5; ++depth) {
-        const std::string strategy = "expectimax(d=" + std::to_string(depth) + ")";
-        expectimax_player::init(depth);
+    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+        const std::strategy = heuristic + "-expmx(d=" + std::to_string(depth) + ")";
+        expectimax_player::init(depth, heuristic);
 
         const int speed = std::max(0, 3 - depth);
         test_player(fout, strategy, expectimax_player::player, GAMES[speed], GAMES[speed] <= MAX_THREADS, speed == 0);
     }
+    fout.close();
 }
 
 void test_monte_carlo_player() {
     std::ofstream fout("results/monte_carlo.csv");
     write_headings(fout);
-    for (int trials=100; trials<=1500; trials+=100) {
+    for (int trials=100; trials<=2000; trials+=100) {
         monte_carlo_player::init(trials);
         test_player(fout, "monte_carlo (t=" + std::to_string(trials) + ")", monte_carlo_player::player, GAMES[0], true, true);
     }
@@ -169,13 +149,13 @@ int main() {
     game::init();
     
     test_single_player("random", random_player::player, GAMES[4]);
-    test_single_player("corner", corner_player::player, GAMES[4]);
+    test_single_player("spam_corner", spam_corner_player::player, GAMES[4]);
     test_single_player("ordered", ordered_player::player, GAMES[4]);
+    test_single_player("rotating", rotating_player::player, GAMES[4]);
 
-    test_merge_player();
-    test_score_player();
-    test_minimax_player();
-    test_expectimax_player();
+    test_heuristic("merge", heuristics::merge_heuristic);
+    test_heuristic("score", heuristics::score_heuristic);
+    test_heuristic("corner", heuristics::corner_heuristic);
     test_monte_carlo_player();
 }
 

@@ -1,18 +1,16 @@
 # 2048 solvers
 
-See the [results](/results) directory for the performances of each solver.
-
-So far all the strategies implemented are very basic.
-I've categorized each into "Naive" and "Simple".
+See the [results](/results) directory for the performances of each strategy.
 
 
-## Naive
+## Blind
+These strategies pick moves without precalculating future outcomes.
 
 ### Random
-This solver simply picks a random valid move.
+This strategy picks a random valid move.
 
 
-### Corner
+### Spam Corner
 This strategy randomly picks between left and up.
 If both moves aren't allowed, it picks randomly between right and down.
 
@@ -23,6 +21,11 @@ If left is allowed, it moves left.
 Otherwise if up is allowed, it moves up.
 Otherwise if right is allowed, it moves right.
 Otherwise it moves down.
+
+
+### Rotating
+This solver plays the same moves in order.
+It starts with left, then plays up, then plays right, then plays down, and repeats.
 
 
 ## Simple
