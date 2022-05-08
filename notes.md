@@ -7,7 +7,8 @@ This stores some loose ideas that I might try in the future.
     * restrict to 2^10 and below?
     * assume that some amount of states are always empty
     * even with above conditions, this will still be at least 10^12 states, probably too big
-* Restructure the solvers to have a strategy and a heuristic
 * "Corner" and "snake" heuristics
 * make the tester use fewer threads to avoid context switching overhead
+* use concept of "afterstates" to cut down the depth searched by one
+* for minimax/expectimax, don't eval states with very low probability
 
