@@ -42,10 +42,7 @@ def read_board(tiles: List[WebElement]) -> int:
     return board
 
 
-def main():
-    players.init_game()
-    players.init_monte_carlo_player(10000)
-
+def play_game(player):
     browser = webdriver.Firefox()
     browser.get("https://play2048.co/")
 
@@ -56,7 +53,7 @@ def main():
 
     while len(game_container.find_elements(By.CLASS_NAME, "game-over")) == 0:  # check if game is over
         board = read_board(tile_container.find_elements(By.CLASS_NAME, "tile"))
-        move = players.monte_carlo_player(board)
+        move = player(board)
 
         old_board = board
 
@@ -79,6 +76,16 @@ def main():
             except (NoSuchElementException, ElementNotInteractableException):
                 # let's just print something and then keep going as if nothing happened
                 print("PANIK")
+
+
+def main():
+    players.init_game()
+
+    # players.init_monte_carlo_player(5000)
+    # play_game(players.monte_carlo_player)
+
+    players.init_expectimax_player_with_corner_heuristic(3)
+    play_game(players.expectimax_player)
             
 
 if __name__ == '__main__':
