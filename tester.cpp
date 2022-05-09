@@ -16,7 +16,7 @@
 #include "strategies/monte_carlo.cpp"
 
 constexpr int MAX_DEPTH = 5;
-constexpr int MAX_TRIALS = 10;
+constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 9, 7, 4};
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
@@ -101,7 +101,7 @@ void test_heuristic(const std::string& name, int (*heuristic)(const board_t)) {
     std::ofstream fout("results/" + name + "-rnd_t.csv");  // put results into a CSV for later collation
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {
-        for (int trials = 1; trials <= ((depth == MAX_DEPTH) ? MAX_TRIALS - 6 : MAX_TRIALS); trials++) {
+        for (int trials = 1; trials <= TRIALS[depth]; trials++) {
             const std::string strategy = name + "-rnd_t(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
             rand_trials_player::init(depth, trials, heuristic);
 
@@ -115,7 +115,7 @@ void test_heuristic(const std::string& name, int (*heuristic)(const board_t)) {
 
     fout = std::ofstream("results/" + name + "-mnmx.csv");
     write_headings(fout);
-    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+    for (int depth = 1; depth < MAX_DEPTH; depth++) {
         const std::string strategy = name + "-mnmx(d=" + std::to_string(depth) + ")";
         minimax_player::init(depth, heuristic);
 
@@ -126,7 +126,7 @@ void test_heuristic(const std::string& name, int (*heuristic)(const board_t)) {
 
     fout = std::ofstream("results/" + name + "-expmx.csv");
     write_headings(fout);
-    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+    for (int depth = 1; depth < MAX_DEPTH; depth++) {
         const std::string strategy = name + "-expmx(d=" + std::to_string(depth) + ")";
         expectimax_player::init(depth, heuristic);
 
