@@ -36,9 +36,5 @@ void init_expectimax_strategy(const int d, const int heuristic_id) {
 int monte_carlo_player(const board_t board) { return monte_carlo_strategy::player(board); }
 void init_monte_carlo_strategy(const int d) { monte_carlo_strategy::init(d); }
 
-board_t test(const board_t x) {
-    return x + 1;
-}
-
 }
 
