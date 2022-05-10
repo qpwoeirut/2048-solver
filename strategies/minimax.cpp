@@ -1,11 +1,11 @@
-namespace minimax_player {
+namespace minimax_strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
     */
 
     int depth = 3;
-    int (*evaluator)(const board_t);
+    heuristic_t evaluator;
 
     const int helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
@@ -37,7 +37,7 @@ namespace minimax_player {
         return helper(board, depth) & 3;
     }
 
-    void init(const int _depth, int (*_evaluator)(const board_t)) {
+    void init(const int _depth, heuristic_t _evaluator) {
         depth = _depth;
         evaluator = _evaluator;
     }

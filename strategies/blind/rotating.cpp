@@ -1,4 +1,4 @@
-namespace rotating_player {
+namespace rotating_strategy {
 
     int current_move = 0;
 

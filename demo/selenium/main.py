@@ -81,11 +81,13 @@ def play_game(player):
 def main():
     players.init_game()
 
-    # players.init_monte_carlo_player(5000)
-    # play_game(players.monte_carlo_player)
+    # players.init_monte_carlo_strategy(5000)
+    # play_game(players.monte_carlo_strategy)
 
-    players.init_expectimax_player_with_corner_heuristic(4)
-    play_game(players.expectimax_player)
+    CORNER_HEURISTIC = 2
+
+    players.init_expectimax_strategy(3, CORNER_HEURISTIC)
+    play_game(players.expectimax_strategy)
             
 
 if __name__ == '__main__':
