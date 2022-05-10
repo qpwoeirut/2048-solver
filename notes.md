@@ -11,4 +11,5 @@ This stores some loose ideas that I might try in the future.
 * make the tester use fewer threads to avoid context switching overhead
 * use concept of "afterstates" to cut down the depth searched by one
 * for minimax/expectimax, don't eval states with very low probability
+* for deterministic strategies, cache calculated states
 
