@@ -10,7 +10,7 @@ namespace game {
     const int EMPTY_MASKS = 0x10000; // number of tile_masks, where an tile_mask stores whether a tile is empty
     const row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 
-    const board_t WINNING_BOARD = 18446744073709551615ULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
+    const board_t WINNING_BOARD = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
 
     const uint16_t FULL_MASK = 0xFFFF;
 
@@ -18,9 +18,10 @@ namespace game {
 
     // this uses a fancy way of implementing adjacency lists in competitive programming
     // stores the empty tile positions for each tile_mask
-    uint8_t empty_tiles[15 * EMPTY_MASKS];  // up to 15 empty tiles per mask
+    uint8_t empty_tiles[524288];  // exactly 524288 different values across all tile_masks
     int empty_index[EMPTY_MASKS];  // a pointer to where this tile_mask starts
 
+    // performance isn't important; this is only used in init()
     row_t reverse_row(const row_t row) {
         return ((row & 0xF) << 12) | (((row >> 4) & 0xF) << 8) | (((row >> 8) & 0xF) << 4) | ((row >> 12) & 0xF);
     }
@@ -57,8 +58,8 @@ namespace game {
             shift[0][row] = (r[0] << 12) | (r[1] << 8) | (r[2] << 4) | r[3];
             shift[1][reverse_row(row)] = reverse_row(shift[0][row]);
 
-            // we can't handle a 65536 tile in this representation
-            if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) shift[0][row] = shift[1][row] = WINNING_ROW;
+            // we can't handle a 65536 tile in this representation, but it's unlikely that this will happen
+            // if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) shift[0][row] = shift[1][row] = WINNING_ROW;
         }
 
         int idx = 0;
@@ -101,10 +102,12 @@ namespace game {
                 ((board_t)shift[dir >> 1][(board >> 32) & 0xFFFF] << 32) |
                 ((board_t)shift[dir >> 1][(board >> 16) & 0xFFFF] << 16) |
                  (board_t)shift[dir >> 1][ board        & 0xFFFF];
-        if (shift[dir >> 1][board >> 48] == WINNING_ROW ||
-            shift[dir >> 1][(board >> 32) & 0xFFFF] == WINNING_ROW ||
-            shift[dir >> 1][(board >> 16) & 0xFFFF] == WINNING_ROW ||
-            shift[dir >> 1][board & 0xFFFF] == WINNING_ROW) return WINNING_BOARD;
+        
+        // checks if the 65536 tile is reached; this won't be happening for a while
+        //if (shift[dir >> 1][board >> 48] == WINNING_ROW ||
+        //    shift[dir >> 1][(board >> 32) & 0xFFFF] == WINNING_ROW ||
+        //    shift[dir >> 1][(board >> 16) & 0xFFFF] == WINNING_ROW ||
+        //    shift[dir >> 1][board & 0xFFFF] == WINNING_ROW) return WINNING_BOARD;
         return (dir & 1) ? transpose(board) : board;
     }
 
@@ -127,8 +130,7 @@ namespace game {
     }
 
     bool game_over(const board_t board) {
-        return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3)) ||
-                board == WINNING_BOARD;
+        return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3));// || board == WINNING_BOARD;
     }
 
     board_t play(const int (*player)(const board_t)) {
