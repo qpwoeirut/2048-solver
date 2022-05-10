@@ -1,5 +1,7 @@
 #define tile_val(r, c) (((board >> (((r << 2) | c) << 2)) & 0xF) == 0 ? 0 : 1 << ((board >> (((r << 2) + c) << 2)) & 0xF))
 
+using heuristic_t = int (*)(const board_t);
+
 namespace heuristics {
     // assumes that only 2's have spawned, which is a good enough approximation
     // creating a tile of 2^n adds 2^n to the score, and requires two 2^(n-1) tiles
@@ -79,5 +81,9 @@ namespace heuristics {
         assert(0);
         return 0;
     }
+
+    constexpr heuristic_t exports[3] = {
+        score_heuristic, merge_heuristic, corner_heuristic
+    };
 }
 

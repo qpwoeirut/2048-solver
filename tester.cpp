@@ -97,7 +97,7 @@ void test_single_player(const std::string& player_name, const int (*player)(boar
     fout.close();
 }
 
-void test_heuristic(const std::string& name, int (*heuristic)(const board_t)) {
+void test_heuristic(const std::string& name, heuristic_t heuristic) {
     std::ofstream fout("results/" + name + "-rnd_t.csv");  // put results into a CSV for later collation
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {

@@ -5,7 +5,7 @@ namespace expectimax_strategy {
     */
 
     int depth = 3;
-    int (*evaluator)(const board_t);
+    heuristic_t evaluator;
 
     const long long MULT = 1e9;  // speed things up with integer arithmetic
 
@@ -40,7 +40,7 @@ namespace expectimax_strategy {
         return helper(board, depth) & 3;
     }
 
-    void init(const int _depth, int (*_evaluator)(const board_t)) {
+    void init(const int _depth, heuristic_t _evaluator) {
         depth = _depth;
         evaluator = _evaluator;
     }
