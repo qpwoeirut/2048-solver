@@ -1,12 +1,13 @@
 # 2048 Solver
 
-## Quick Start Instructions
-To set up the demo, run `pip install .` at the top level of this repository.
-By default, the demo runs in the Firefox browser.
-To run in Firefox, you may need to install the `geckodriver` executable.
+## Demo
+### Website
+To watch the AI yourself, go to this [website](https://qpwoeirut.github.io/2048/) or check out this [repository](https://github.com/qpwoeirut/2048).
 
-The code in [main.py](/demo/selenium/main.py) should be editable so that it works for any webdriver-supported browser.
-It's worth noting that it takes a while for the page to load up in Chrome, which is why Firefox is the default.
+### Selenium Remote Controls
+You can also run this with Selenium, although that's not recommended.
+The instructions for that are [here](/demo/selenium/README.md).
+
 
 ## Summary
 This project is intended to "solve" the popular [2048 tile-merging game](https://github.com/gabrielecirulli/2048).
