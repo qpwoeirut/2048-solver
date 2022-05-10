@@ -11,7 +11,6 @@
 
 extern "C" {
 
-// TODO write some sort of enum to replace init_x_strategy_with_y_heuristic
 void init_game() { game::init(); }
 int random_player(const board_t board) { return random_strategy::player(board); }
 int spam_corner_player(const board_t board) { return spam_corner_strategy::player(board); }
