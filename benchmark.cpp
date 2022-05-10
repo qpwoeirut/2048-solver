@@ -38,6 +38,6 @@ void test_player(const std::string& strategy, const int (*player)(board_t), cons
 int main() {
     game::init();
 
-    test_player("spam_corner", spam_corner_player::player, (int)(5e5));  // spam_corner is the most efficient blind strategy
+    test_player("spam_corner", spam_corner_strategy::player, (int)(5e5));  // spam_corner is the most efficient blind strategy
 }
 

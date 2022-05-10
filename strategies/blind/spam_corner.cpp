@@ -1,4 +1,4 @@
-namespace spam_corner_player {
+namespace spam_corner_strategy {
     const int player(const board_t board) {
         const int move = random_move() & 1;
         if (board != game::make_move(board, move)) return move;

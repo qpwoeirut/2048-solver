@@ -13,17 +13,17 @@
 
 // pybind11 only works with the std::function wrapper, which is slow
 // so instead a workaround with hardcoded function pointers is used
-void init_rand_trials_player_with_merge_heuristic(const int d, const int t) { rand_trials_player::init(d, t, heuristics::merge_heuristic); }
-void init_rand_trials_player_with_score_heuristic(const int d, const int t) { rand_trials_player::init(d, t, heuristics::score_heuristic); }
-void init_rand_trials_player_with_corner_heuristic(const int d, const int t) { rand_trials_player::init(d, t, heuristics::corner_heuristic); }
+void init_rand_trials_strategy_with_merge_heuristic(const int d, const int t) { rand_trials_strategy::init(d, t, heuristics::merge_heuristic); }
+void init_rand_trials_strategy_with_score_heuristic(const int d, const int t) { rand_trials_strategy::init(d, t, heuristics::score_heuristic); }
+void init_rand_trials_strategy_with_corner_heuristic(const int d, const int t) { rand_trials_strategy::init(d, t, heuristics::corner_heuristic); }
 
-void init_minimax_player_with_merge_heuristic(const int d) { minimax_player::init(d, heuristics::merge_heuristic); }
-void init_minimax_player_with_score_heuristic(const int d) { minimax_player::init(d, heuristics::score_heuristic); }
-void init_minimax_player_with_corner_heuristic(const int d) { minimax_player::init(d, heuristics::corner_heuristic); }
+void init_minimax_strategy_with_merge_heuristic(const int d) { minimax_strategy::init(d, heuristics::merge_heuristic); }
+void init_minimax_strategy_with_score_heuristic(const int d) { minimax_strategy::init(d, heuristics::score_heuristic); }
+void init_minimax_strategy_with_corner_heuristic(const int d) { minimax_strategy::init(d, heuristics::corner_heuristic); }
 
-void init_expectimax_player_with_merge_heuristic(const int d) { expectimax_player::init(d, heuristics::merge_heuristic); }
-void init_expectimax_player_with_score_heuristic(const int d) { expectimax_player::init(d, heuristics::score_heuristic); }
-void init_expectimax_player_with_corner_heuristic(const int d) { expectimax_player::init(d, heuristics::corner_heuristic); }
+void init_expectimax_strategy_with_merge_heuristic(const int d) { expectimax_strategy::init(d, heuristics::merge_heuristic); }
+void init_expectimax_strategy_with_score_heuristic(const int d) { expectimax_strategy::init(d, heuristics::score_heuristic); }
+void init_expectimax_strategy_with_corner_heuristic(const int d) { expectimax_strategy::init(d, heuristics::corner_heuristic); }
 
 
 PYBIND11_MODULE(players, m) {
@@ -31,37 +31,37 @@ PYBIND11_MODULE(players, m) {
 
     m.def("init_game", &game::init, "initialize game");
 
-    m.def("random_player", &random_player::player, "random player");
-    m.def("spam_corner_player", &spam_corner_player::player, "corner spam player");
-    m.def("ordered_player", &ordered_player::player, "ordered player");
-    m.def("rotating_player", &rotating_player::player, "rotating player");
+    m.def("random_strategy", &random_strategy::player, "random strategy");
+    m.def("spam_corner_strategy", &spam_corner_strategy::player, "corner spam strategy");
+    m.def("ordered_strategy", &ordered_strategy::player, "ordered strategy");
+    m.def("rotating_strategy", &rotating_strategy::player, "rotating strategy");
 
-    m.def("rand_trials_player", &rand_trials_player::player, "random trials player");
-    m.def("minimax_player", &minimax_player::player, "minimax player");
-    m.def("expectimax_player", &expectimax_player::player, "expectimax player");
+    m.def("rand_trials_strategy", &rand_trials_strategy::player, "random trials strategy");
+    m.def("minimax_strategy", &minimax_strategy::player, "minimax strategy");
+    m.def("expectimax_strategy", &expectimax_strategy::player, "expectimax strategy");
 
-    m.def("init_rand_trials_player_with_merge_heuristic", &init_rand_trials_player_with_merge_heuristic,
-          "initialize rand_trials player with merge heuristic");
-    m.def("init_rand_trials_player_with_score_heuristic", &init_rand_trials_player_with_score_heuristic,
-          "initialize rand_trials player with score heuristic");
-    m.def("init_rand_trials_player_with_corner_heuristic", &init_rand_trials_player_with_corner_heuristic,
-          "initialize rand_trials player with corner heuristic");
+    m.def("init_rand_trials_strategy_with_merge_heuristic", &init_rand_trials_strategy_with_merge_heuristic,
+          "initialize rand_trials strategy with merge heuristic");
+    m.def("init_rand_trials_strategy_with_score_heuristic", &init_rand_trials_strategy_with_score_heuristic,
+          "initialize rand_trials strategy with score heuristic");
+    m.def("init_rand_trials_strategy_with_corner_heuristic", &init_rand_trials_strategy_with_corner_heuristic,
+          "initialize rand_trials strategy with corner heuristic");
 
-    m.def("init_minimax_player_with_merge_heuristic", &init_minimax_player_with_merge_heuristic,
-          "initialize minimax player with merge heuristic");
-    m.def("init_minimax_player_with_score_heuristic", &init_minimax_player_with_score_heuristic,
-          "initialize minimax player with score heuristic");
-    m.def("init_minimax_player_with_corner_heuristic", &init_minimax_player_with_corner_heuristic,
-          "initialize minimax player with corner heuristic");
+    m.def("init_minimax_strategy_with_merge_heuristic", &init_minimax_strategy_with_merge_heuristic,
+          "initialize minimax strategy with merge heuristic");
+    m.def("init_minimax_strategy_with_score_heuristic", &init_minimax_strategy_with_score_heuristic,
+          "initialize minimax strategy with score heuristic");
+    m.def("init_minimax_strategy_with_corner_heuristic", &init_minimax_strategy_with_corner_heuristic,
+          "initialize minimax strategy with corner heuristic");
 
-    m.def("init_expectimax_player_with_merge_heuristic", &init_expectimax_player_with_merge_heuristic,
-          "initialize expectimax player with merge heuristic");
-    m.def("init_expectimax_player_with_score_heuristic", &init_expectimax_player_with_score_heuristic,
-          "initialize expectimax player with score heuristic");
-    m.def("init_expectimax_player_with_corner_heuristic", &init_expectimax_player_with_corner_heuristic,
-          "initialize expectimax player with corner heuristic");
+    m.def("init_expectimax_strategy_with_merge_heuristic", &init_expectimax_strategy_with_merge_heuristic,
+          "initialize expectimax strategy with merge heuristic");
+    m.def("init_expectimax_strategy_with_score_heuristic", &init_expectimax_strategy_with_score_heuristic,
+          "initialize expectimax strategy with score heuristic");
+    m.def("init_expectimax_strategy_with_corner_heuristic", &init_expectimax_strategy_with_corner_heuristic,
+          "initialize expectimax strategy with corner heuristic");
 
-    m.def("monte_carlo_player", &monte_carlo_player::player, "monte carlo tree search player");
-    m.def("init_monte_carlo_player", &monte_carlo_player::init, "initialize monte carlo tree search player");
+    m.def("monte_carlo_strategy", &monte_carlo_strategy::player, "monte carlo tree search strategy");
+    m.def("init_monte_carlo_strategy", &monte_carlo_strategy::init, "initialize monte carlo tree search strategy");
 }
 

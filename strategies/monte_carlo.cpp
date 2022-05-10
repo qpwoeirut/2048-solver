@@ -1,11 +1,11 @@
-namespace monte_carlo_player {
+namespace monte_carlo_strategy {
     /*
         Parameters:
             trials: random trials for each move
     */
 
     int trials = 100;
-    const int (*secondary_player)(const board_t) = random_player::player;
+    const int (*secondary_player)(const board_t) = random_strategy::player;
 
     const int run_trial(board_t board) {
         while (!game::game_over(board)) {

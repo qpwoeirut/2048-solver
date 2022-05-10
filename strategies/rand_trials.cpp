@@ -1,4 +1,4 @@
-namespace rand_trials_player {
+namespace rand_trials_strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth

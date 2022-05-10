@@ -1,4 +1,4 @@
-namespace expectimax_player {
+namespace expectimax_strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
