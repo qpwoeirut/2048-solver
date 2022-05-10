@@ -84,7 +84,8 @@ This is from [here](https://github.com/ovolve/2048-AI).
 
 This stage only has the brute force version of minimax implemented.
 There's no pruning or caching; every single possible state is evaluated.
-As a result, the maximum depth I tested was `d=4`, where the player searches up to 4 moves ahead.
+This makes the player very slow, so the maximum depth I tested was `d=4`, where the player searches up to 4 moves ahead.
+
 From what I know, one of the downsides of using minimax is that the computer's tile placement is random and not necessarily adversarial.
 As a result, using minimax leads to a very cautious player.
 
@@ -96,7 +97,21 @@ Expectimax is similar to minimax, but instead of assuming that the computer will
 This stage's implementation of expectimax also doesn't implement any pruning or caching.
 
 
-### My Ideas
+## Stage 3
+I added a simple [benchmark](/benchmark.cpp) program to speed up the game implementation.
+
+### Heuristics
+* Generalize the weight heuristic
+* Combine the heuristics
+
+### Alpha-Beta Pruning
+Work in progress
+
+### Evaluation Caching
+Work in progress
+
+
+### Other Ideas
 I was discussing possible 2048 strategies with a friend, who pointed out the possibility that many positions are "useless," in the sense that the move picked from that position won't heavily affect the outcome of the game.
 If it's possible to identify the "usefulness" of a position, the useless positions can be solved by simply making a random move.
 This strategy should speed up games, especially in the early stages, allowing for more testing and/or training.
