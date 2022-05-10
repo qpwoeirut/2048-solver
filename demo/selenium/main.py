@@ -84,7 +84,9 @@ def main():
     # players.init_monte_carlo_strategy(5000)
     # play_game(players.monte_carlo_strategy)
 
-    players.init_expectimax_strategy_with_corner_heuristic(4)
+    CORNER_HEURISTIC = 2
+
+    players.init_expectimax_strategy(3, CORNER_HEURISTIC)
     play_game(players.expectimax_strategy)
             
 

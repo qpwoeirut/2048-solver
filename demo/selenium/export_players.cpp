@@ -27,7 +27,7 @@ void init_expectimax_strategy(const int d, const int heuristic_id) {
 PYBIND11_MODULE(players, m) {
     m.doc() = "Solving strategies for 2048 written in C++ and exported to Python";
 
-    m.def("init_game", &game::init, "initialize game");
+    m.def("init_game",                  &game::init,                    "initialize game");
 
     m.def("random_strategy",            &random_strategy::player,       "random strategy");
     m.def("spam_corner_strategy",       &spam_corner_strategy::player,  "corner spam strategy");
