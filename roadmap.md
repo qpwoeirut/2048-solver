@@ -36,7 +36,7 @@ See this [CSV file](/results.csv) for all the results.
 ### Naive Ideas
 I began with simple strategies: a random player and several players that spam moves in some order.
 None of these players do any calculations before picking moves.
-The current board state is irrelevant to them.
+The current board state is irrelevant to them, except when making sure a move is legal.
 
 These players almost always died before reaching the 512 tile.
 
