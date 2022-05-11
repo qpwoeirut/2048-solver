@@ -1,4 +1,4 @@
-#include "../../game/game.cpp"
+#include "../../game.cpp"
 #include "../../heuristics.cpp"
 #include "../../strategies/blind/random.cpp"
 #include "../../strategies/blind/spam_corner.cpp"
