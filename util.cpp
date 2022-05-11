@@ -32,10 +32,19 @@ int get_max_tile(const board_t board) {
 // a somewhat understandable way to count set bits
 // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
 int count_empty(uint16_t mask) {
-    int empty_ct = 16;
+    int empty_ct;
     for (empty_ct = 16; mask > 0; --empty_ct) {
         mask &= mask - 1;
     }
     return empty_ct;
+}
+int count_tiles(const uint16_t mask) {
+    return 16 - count_empty(mask);
+}
+
+int pick_depth(const board_t board) {
+    const int tile_ct = count_tiles(game::to_tile_mask(board));
+    if (tile_ct <= 8) return (tile_ct + 1) >> 1;
+    return 4 + (tile_ct >= 14);
 }
 

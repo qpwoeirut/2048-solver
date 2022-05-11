@@ -2,6 +2,7 @@ namespace minimax_strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
+                   a nonpositive depth argument d will be subtracted from the depth picker's result (increasing the depth)
     */
 
     int depth = 3;
@@ -34,7 +35,7 @@ namespace minimax_strategy {
         return (best_score << 2) | best_move;  // pack both score and move
     }
     const int player(const board_t board) {
-        return helper(board, depth) & 3;
+        return helper(board, depth <= 0 ? pick_depth(board) - depth : depth) & 3;
     }
 
     void init(const int _depth, heuristic_t _evaluator) {
