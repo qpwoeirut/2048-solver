@@ -13,3 +13,5 @@ This stores some loose ideas that I might try in the future.
 * for minimax/expectimax, don't eval states with very low probability
 * use alpha-beta pruning for minimax
 * for deterministic strategies, cache calculated states
+* add heuristic penalty for dying?
+
