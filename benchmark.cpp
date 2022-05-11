@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "game/game.cpp"
+#include "game.cpp"
 #include "strategies/blind/spam_corner.cpp"
 
 constexpr int MIN_TILE = 3;

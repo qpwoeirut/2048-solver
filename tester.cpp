@@ -3,7 +3,7 @@
 #include <future>
 #include <vector>
 
-#include "game/game.cpp"
+#include "game.cpp"
 #include "heuristics.cpp"
 #include "strategies/ask_user.cpp"
 #include "strategies/blind/random.cpp"
@@ -148,6 +148,14 @@ void test_monte_carlo_strategy() {
 
 int main() {
     game::init();
+
+    //while (1) {
+    //    board_t b;
+    //    std::cin >> b;
+    //    print_board(b);
+    //}
+    //
+    //return 0;
 
     test_single_player("random", random_strategy::player, GAMES[4]);
     test_single_player("spam_corner", spam_corner_strategy::player, GAMES[4]);
