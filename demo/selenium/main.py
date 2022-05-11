@@ -86,7 +86,7 @@ def main():
 
     CORNER_HEURISTIC = 2
 
-    players.init_expectimax_strategy(3, CORNER_HEURISTIC)
+    players.init_expectimax_strategy(0, CORNER_HEURISTIC)
     play_game(players.expectimax_strategy)
             
 

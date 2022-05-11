@@ -22,7 +22,7 @@ namespace expectimax_strategy {
             if (board == new_board || game::game_over(new_board)) continue;
 
             long long expected_score = 0;  // expected score times (moves * 10)
-            const uint16_t empty_mask = game::to_tile_mask(new_board);
+            const uint16_t empty_mask = to_tile_mask(new_board);
             for (int j=0; j<16; ++j) {
                 if (((empty_mask >> j) & 1) == 0) {
                     expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1) >> 2);
