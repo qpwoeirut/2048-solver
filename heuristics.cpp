@@ -48,9 +48,6 @@ namespace heuristics {
 
         return std::max(std::max(lower_left, upper_left), std::max(lower_right, upper_right));
     }
-    int wall_heuristic(const board_t board) {
-        return std::max(_wall_heuristic(board), _wall_heuristic(game::transpose(board)));
-    }
 
     int _wall_heuristic(const board_t board) {
         const int top    = 128 * tile_val(3, 3) + 64 * tile_val(3, 2) + 32 * tile_val(3, 1) + 16 * tile_val(3, 0) +
@@ -65,6 +62,10 @@ namespace heuristics {
         const int right  = 128 * tile_val(3, 3) + 64 * tile_val(3, 2) + 32 * tile_val(3, 1) + 16 * tile_val(3, 0) +
                            1   * tile_val(2, 3) + 2  * tile_val(2, 2) + 4  * tile_val(2, 1) + 8  * tile_val(2, 0);
         return std::max(std::max(top, bottom), std::max(left, right));
+    }
+
+    int wall_heuristic(const board_t board) {
+        return std::max(_wall_heuristic(board), _wall_heuristic(game::transpose(board)));
     }
 
     constexpr heuristic_t exports[4] = {
