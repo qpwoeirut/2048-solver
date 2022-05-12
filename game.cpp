@@ -101,6 +101,10 @@ namespace game {
     std::mt19937 empty_tile_gen(get_current_time_ms());  // seed the rng with current time
     std::uniform_int_distribution<> empty_tile_distrib(0, 720720 - 1);  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
 
+    board_t generate_random_tile_val() {
+        return 1ULL + ((empty_tile_distrib(empty_tile_gen) % 10) == 0);
+    }
+
     board_t add_random_tile(const board_t board, const board_t tile_val) {
         const uint16_t tile_mask = to_tile_mask(board);
 
@@ -121,7 +125,8 @@ namespace game {
     }
 
     board_t play(const int (*player)(const board_t), int& move_ct, int& fours) {
-        const board_t start_tile_val = (empty_tile_distrib(empty_tile_gen) % 10) == 0 ? (++fours, 2ULL) : 1ULL;
+        const board_t start_tile_val = generate_random_tile_val();
+        if (start_tile_val == 2) ++fours;
         board_t board = add_random_tile(0, start_tile_val);
 
         while (!game_over(board)) {
@@ -139,7 +144,8 @@ namespace game {
             } 
 
             // 90% for 2^1 = 2, 10% for 2^2 = 4
-            const board_t new_tile_val = (empty_tile_distrib(empty_tile_gen) % 10) == 0 ? (++fours, 2ULL) : 1ULL;
+            const board_t new_tile_val = generate_random_tile_val();
+            if (new_tile_val == 2) ++fours;
             board = add_random_tile(board, new_tile_val);
             ++move_ct;
         }
@@ -148,7 +154,8 @@ namespace game {
     }
     
     board_t play_slow(const int (*player)(const board_t), int& move_ct, int& fours) {
-        const board_t start_tile_val = (empty_tile_distrib(empty_tile_gen) % 10) == 0 ? (++fours, 2ULL) : 1ULL;
+        const board_t start_tile_val = generate_random_tile_val();
+        if (start_tile_val == 2) ++fours;
         board_t board = add_random_tile(0, start_tile_val);
 
         int moves = 0;
@@ -172,7 +179,8 @@ namespace game {
             } 
 
             // 90% for 2^1 = 2, 10% for 2^2 = 4
-            const board_t new_tile_val = (empty_tile_distrib(empty_tile_gen) % 10) == 0 ? (++fours, 2ULL) : 1ULL;
+            const board_t new_tile_val = generate_random_tile_val();
+            if (new_tile_val == 2) ++fours;
             board = add_random_tile(board, new_tile_val);
             ++move_ct;
         }

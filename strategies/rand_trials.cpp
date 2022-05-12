@@ -24,7 +24,8 @@ namespace rand_trials_strategy {
 
             long long current_score = 0;
             for (int j=0; j<trials; ++j) {
-                current_score += helper(game::add_random_tile(new_board), cur_depth - 1) >> 2;  // extract score
+                current_score += helper(game::add_random_tile(new_board, game::generate_random_tile_val()),
+                                        cur_depth - 1) >> 2;  // extract score
             }
             if (best_score <= current_score) {
                 best_score = current_score;

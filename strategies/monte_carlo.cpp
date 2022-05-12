@@ -9,7 +9,8 @@ namespace monte_carlo_strategy {
 
     const int run_trial(board_t board) {
         while (!game::game_over(board)) {
-            board = game::add_random_tile(game::make_move(board, secondary_player(board)));
+            board = game::add_random_tile(game::make_move(board, secondary_player(board)),
+                                          game::generate_random_tile_val());
         }
         return heuristics::score_heuristic(board);
     }
@@ -23,7 +24,7 @@ namespace monte_carlo_strategy {
 
             int current_score = 0;
             for (int j=0; j<trials; ++j) {
-                current_score += run_trial(game::add_random_tile(new_board));
+                current_score += run_trial(game::add_random_tile(new_board, game::generate_random_tile_val()));
             }
             if (best_score <= current_score) {
                 best_score = current_score;
