@@ -17,7 +17,6 @@ const int play_game(const int (*player)(const board_t)) {
     const board_t board = game::play(player, move_total, fours);
     const int score = heuristics::score_heuristic(board) - 4 * fours;
     score_total += score;
-    std::cout << score << std::endl;
     return get_max_tile(board);
 }
 
@@ -48,9 +47,9 @@ void test_player(const std::string& strategy, const int (*player)(board_t), cons
 int main() {
     game::init();
 
-    // test_player("spam_corner", spam_corner_strategy::player, (int)(5e5));  // spam_corner is the most efficient blind strategy
+     test_player("spam_corner", spam_corner_strategy::player, (int)(5e5));  // spam_corner is the most efficient blind strategy
 
-    expectimax_strategy::init(3, heuristics::corner_heuristic);
-    test_player("corner-expmx", expectimax_strategy::player, 50);
+//    expectimax_strategy::init(3, heuristics::corner_heuristic);
+//    test_player("corner-expmx", expectimax_strategy::player, 50);
 }
 
