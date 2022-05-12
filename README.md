@@ -18,8 +18,8 @@ There are some implementation ideas that I'm taking as well (such as the bitwise
 
 
 ## Structure
-The code for simulating a game is in the [game](/game) directory under the `game` namespace.
-It has a [game.cpp](/game/game.cpp) and a [util.cpp](/game/util.cpp).
+The code for simulating a game is in [game.cpp](/game.cpp) under the `game` namespace.
+[util.cpp](/util.cpp) stores helpful utilities for the heuristic and player functions.
 
 Each strategy is in the [strategy](/strategies) directory.
 All strategies implement a function which provides a move when given a board. 

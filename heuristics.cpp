@@ -17,7 +17,7 @@ namespace heuristics {
     }
 
     int merge_heuristic(const board_t board) {  // count empty tiles on board
-        return count_empty(game::to_tile_mask(board));
+        return count_empty(to_tile_mask(board));
     }
 
     int _weight_heuristic(const board_t board, const int weights[]) {

@@ -2,6 +2,7 @@ namespace minimax_strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
+                   a nonpositive depth argument d will be subtracted from the depth picker's result (increasing the depth)
     */
 
     int depth = 3;
@@ -19,7 +20,7 @@ namespace minimax_strategy {
             if (board == new_board || game::game_over(new_board)) continue;
 
             int current_score = 1e9;  // next step will minimize this across all tile placements
-            const uint16_t tile_mask = game::to_tile_mask(new_board);
+            const uint16_t tile_mask = to_tile_mask(new_board);
             for (int j=0; j<16; ++j) {
                 if (((tile_mask >> j) & 1) == 0) {
                     current_score = std::min(current_score, helper(new_board | (1 << (j << 2)), cur_depth - 1) >> 2);
@@ -34,7 +35,7 @@ namespace minimax_strategy {
         return (best_score << 2) | best_move;  // pack both score and move
     }
     const int player(const board_t board) {
-        return helper(board, depth) & 3;
+        return helper(board, depth <= 0 ? pick_depth(board) - depth : depth) & 3;
     }
 
     void init(const int _depth, heuristic_t _evaluator) {

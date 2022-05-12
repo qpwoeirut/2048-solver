@@ -73,19 +73,6 @@ namespace game {
         }
     }
 
-    // bitmask of whether a tile is empty or not
-    // TODO there are probably faster ways, such as:
-    // https://stackoverflow.com/questions/34154745/efficient-way-to-or-adjacent-bits-in-64-bit-integer
-    // https://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
-    // but this works for now
-    uint16_t to_tile_mask(const board_t board) {
-        uint16_t tile_mask = 0;
-        for (int i=0; i<16; ++i) {
-            tile_mask |= (((board >> (4*i)) & 0xF) > 0) << i;
-        }
-        return tile_mask;
-    }
-
     // from https://github.com/nneonneo/2048-ai/blob/master/2048.cpp#L38-L48
     // transposes 0123 to 048c
     //            4567    159d

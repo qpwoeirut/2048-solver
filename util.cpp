@@ -1,6 +1,19 @@
 using board_t = uint64_t;
 using row_t = uint16_t;
 
+// bitmask of whether a tile is empty or not
+// TODO there are probably faster ways, such as:
+// https://stackoverflow.com/questions/34154745/efficient-way-to-or-adjacent-bits-in-64-bit-integer
+// https://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
+// but this works for now
+uint16_t to_tile_mask(const board_t board) {
+    uint16_t tile_mask = 0;
+    for (int i=0; i<16; ++i) {
+        tile_mask |= (((board >> (4*i)) & 0xF) > 0) << i;
+    }
+    return tile_mask;
+}
+
 long long get_current_time_ms() {
     const std::chrono::time_point now = std::chrono::system_clock::now();
     const long long seconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
@@ -32,10 +45,19 @@ int get_max_tile(const board_t board) {
 // a somewhat understandable way to count set bits
 // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
 int count_empty(uint16_t mask) {
-    int empty_ct = 16;
+    int empty_ct;
     for (empty_ct = 16; mask > 0; --empty_ct) {
         mask &= mask - 1;
     }
     return empty_ct;
+}
+int count_tiles(const uint16_t mask) {
+    return 16 - count_empty(mask);
+}
+
+int pick_depth(const board_t board) {
+    const int tile_ct = count_tiles(to_tile_mask(board));
+    if (tile_ct <= 8) return (tile_ct + 1) >> 1;
+    return 4 + (tile_ct >= 14);
 }
 

@@ -1,7 +1,8 @@
 namespace expectimax_strategy {
     /*
         Parameters:
-            depth: depth to search, should be positive; note that search space increases exponentially with depth
+            depth: depth to search; note that search space increases exponentially with depth
+                   a nonpositive depth argument d will be subtracted from the depth picker's result (increasing the depth)
     */
 
     int depth = 3;
@@ -21,7 +22,7 @@ namespace expectimax_strategy {
             if (board == new_board || game::game_over(new_board)) continue;
 
             long long expected_score = 0;  // expected score times (moves * 10)
-            const uint16_t empty_mask = game::to_tile_mask(new_board);
+            const uint16_t empty_mask = to_tile_mask(new_board);
             for (int j=0; j<16; ++j) {
                 if (((empty_mask >> j) & 1) == 0) {
                     expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1) >> 2);
@@ -37,7 +38,7 @@ namespace expectimax_strategy {
         return (best_score << 2) | best_move;  // pack both score and move
     }
     const int player(const board_t board) {
-        return helper(board, depth) & 3;
+        return helper(board, depth <= 0 ? pick_depth(board) - depth : depth) & 3;
     }
 
     void init(const int _depth, heuristic_t _evaluator) {
