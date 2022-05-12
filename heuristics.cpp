@@ -20,27 +20,10 @@ namespace heuristics {
         return count_empty(to_tile_mask(board));
     }
 
-    int _weight_heuristic(const board_t board, const int weights[]) {
-        int a = 0, b = 0, c = 0, d = 0;
-        for (int row = 0; row < 64; row += 16) {
-            for (int col = 0; col < 16; col += 4) {
-                const int tile = ((board >> (row | col)) & 0xF) == 0 ? 0 : 1 << ((board >> (row | col)) & 0xF);
-                a += tile * weights[(row | col) >> 2];
-                b += tile * weights[((64 - row) | (16 - col)) >> 2];
-                c += tile * weights[(col << 2) | (row >> 2)];
-                d += tile * weights[((16 - col) << 2 | (64 - row) >> 2)];
-            }
-        }
-        return std::max(std::max(a, b), std::max(c, d));
-    }
+    // I tried writing a generalized weight heuristic to combine the corner and wall building heuristics but it was a lot slower
 
     // gives a score based on how the tiles are arranged in the corner, returns max over all 4 corners
     // higher value tiles should be closer to the corner
-    // multipliers for now
-    // 10 5 2 1
-    // 5 3 1 0
-    // 2 1 0 0
-    // 1 0 0 0
     int corner_heuristic(const board_t board) {
         const int lower_left =  10 * tile_val(0, 3) + 5 * tile_val(0, 2) + 2 * tile_val(0, 1) + 1 * tile_val(0, 0) +
                                 5  * tile_val(1, 3) + 3 * tile_val(1, 2) + 1 * tile_val(1, 1) +
@@ -65,8 +48,11 @@ namespace heuristics {
 
         return std::max(std::max(lower_left, upper_left), std::max(lower_right, upper_right));
     }
-
     int wall_heuristic(const board_t board) {
+        return std::max(_wall_heuristic(board), _wall_heuristic(game::transpose(board)));
+    }
+
+    int _wall_heuristic(const board_t board) {
         const int top    = 128 * tile_val(3, 3) + 64 * tile_val(3, 2) + 32 * tile_val(3, 1) + 16 * tile_val(3, 0) +
                            1   * tile_val(2, 3) + 2  * tile_val(2, 2) + 4  * tile_val(2, 1) + 8  * tile_val(2, 0);
 
@@ -78,12 +64,11 @@ namespace heuristics {
 
         const int right  = 128 * tile_val(3, 3) + 64 * tile_val(3, 2) + 32 * tile_val(3, 1) + 16 * tile_val(3, 0) +
                            1   * tile_val(2, 3) + 2  * tile_val(2, 2) + 4  * tile_val(2, 1) + 8  * tile_val(2, 0);
-        assert(0);
-        return 0;
+        return std::max(std::max(top, bottom), std::max(left, right));
     }
 
-    constexpr heuristic_t exports[3] = {
-        score_heuristic, merge_heuristic, corner_heuristic
+    constexpr heuristic_t exports[4] = {
+        score_heuristic, merge_heuristic, corner_heuristic, wall_heuristic
     };
 }
 
