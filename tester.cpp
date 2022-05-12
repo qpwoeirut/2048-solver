@@ -28,7 +28,8 @@ constexpr int MAX_THREADS = GAMES[0];  // this is already probably higher than i
 int results[MAX_TILE];
 
 const int play_game(const int (*player)(const board_t)) {
-    const board_t board = game::play(player);
+    int moves = 0, fours = 0;
+    const board_t board = game::play(player, moves, fours);
     return get_max_tile(board);
 }
 

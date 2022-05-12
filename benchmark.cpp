@@ -1,15 +1,23 @@
 #include <iostream>
 
 #include "game.cpp"
+#include "heuristics.cpp"
 #include "strategies/blind/spam_corner.cpp"
+#include "strategies/expectimax.cpp"
 
 constexpr int MIN_TILE = 3;
 constexpr int MAX_TILE = 18;
 
 int results[MAX_TILE];
+long long score_total = 0;
+int move_total = 0;
 
 const int play_game(const int (*player)(const board_t)) {
-    const board_t board = game::play(player);
+    int fours = 0;
+    const board_t board = game::play(player, move_total, fours);
+    const int score = heuristics::score_heuristic(board) - 4 * fours;
+    score_total += score;
+    std::cout << score << std::endl;
     return get_max_tile(board);
 }
 
@@ -33,11 +41,16 @@ void test_player(const std::string& strategy, const int (*player)(board_t), cons
     for (int i=MIN_TILE; i<MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
+    std::cout << "Average score: " << score_total / games << std::endl;
+    std::cout << "Total moves: " << move_total << std::endl;
 }
 
 int main() {
     game::init();
 
-    test_player("spam_corner", spam_corner_strategy::player, (int)(5e5));  // spam_corner is the most efficient blind strategy
+    // test_player("spam_corner", spam_corner_strategy::player, (int)(5e5));  // spam_corner is the most efficient blind strategy
+
+    expectimax_strategy::init(3, heuristics::corner_heuristic);
+    test_player("corner-expmx", expectimax_strategy::player, 50);
 }
 
