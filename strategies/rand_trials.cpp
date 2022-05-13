@@ -9,20 +9,22 @@ namespace rand_trials_strategy {
     int trials = 5;
     heuristic_t evaluator = heuristics::score_heuristic;
 
-    const long long MULT = 1e10;  // use integer math to speed up
+    // speed things up with integer arithmetic
+    // 4 moves, 20 max depth, multiplied by 4 to pack score and move
+    constexpr eval_t MULT = 1e18 / (heuristics::MAX_EVAL * 4 * 20 * 4);
 
-    const long long helper(const board_t board, const int cur_depth) {
+    const eval_t helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
             return (evaluator(board) * MULT) << 2;  // move doesn't matter
         }
 
-        long long best_score = 0;
+        eval_t best_score = 0;
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
         for (int i=0; i<4; ++i) {
             const board_t new_board = game::make_move(board, i);
             if (board == new_board || game::game_over(new_board)) continue;
 
-            long long current_score = 0;
+            eval_t current_score = 0;
             for (int j=0; j<trials; ++j) {
                 current_score += helper(game::add_random_tile(new_board, game::generate_random_tile_val()),
                                         cur_depth - 1) >> 2;  // extract score
