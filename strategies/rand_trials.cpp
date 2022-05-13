@@ -7,7 +7,7 @@ namespace rand_trials_strategy {
 
     int depth = 3;
     int trials = 5;
-    int (*evaluator)(const board_t) = heuristics::score_heuristic;
+    heuristic_t evaluator = heuristics::score_heuristic;
 
     const long long MULT = 1e10;  // use integer math to speed up
 
@@ -40,7 +40,7 @@ namespace rand_trials_strategy {
 
     // this is ugly as heck but C++ doesn't let you pass capturing lambdas as function pointers so here we are
     // i tried classes too but those didn't work either
-    void init(const int _depth, const int _trials, int (*_evaluator)(const board_t)) {  
+    void init(const int _depth, const int _trials, heuristic_t _evaluator) {
         depth = _depth;
         trials = _trials;
         evaluator = _evaluator;

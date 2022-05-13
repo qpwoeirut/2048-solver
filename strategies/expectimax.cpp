@@ -8,20 +8,22 @@ namespace expectimax_strategy {
     int depth = 3;
     heuristic_t evaluator;
 
-    const long long MULT = 1e9;  // speed things up with integer arithmetic
+    // speed things up with integer arithmetic
+    // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move
+    constexpr eval_t MULT = 1e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4);
 
-    const long long helper(const board_t board, const int cur_depth) {
+    const eval_t helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
             return (MULT * evaluator(board)) << 2;  // move doesn't matter
         }
 
-        long long best_score = 0;
+        eval_t best_score = heuristics::MIN_EVAL;
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
         for (int i=0; i<4; ++i) {
             const board_t new_board = game::make_move(board, i);
             if (board == new_board || game::game_over(new_board)) continue;
 
-            long long expected_score = 0;  // expected score times (moves * 10)
+            eval_t expected_score = 0;  // expected score times (moves * 10)
             const uint16_t empty_mask = to_tile_mask(new_board);
             for (int j=0; j<16; ++j) {
                 if (((empty_mask >> j) & 1) == 0) {
