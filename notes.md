@@ -13,8 +13,7 @@ This stores some loose ideas that I might try in the future.
 * for minimax/expectimax, don't eval states with very low probability
 * use alpha-beta pruning for minimax
 * for deterministic strategies, cache calculated states
+  * for cache of board evaluations, use gp_hash_table or cc_hash_table
 * add heuristic penalty for dying?
 * for wall heuristics, increase depth if the ordering has an "inversion"
-* figure out why minimax with builder heuristics is so awful
 * use geo mean instead of arith mean for expectimax?
-
