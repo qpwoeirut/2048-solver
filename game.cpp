@@ -6,13 +6,13 @@
 #include "util.cpp"
 
 namespace game {
-    const int ROWS = 0x10000;
-    const int EMPTY_MASKS = 0x10000; // number of tile_masks, where an tile_mask stores whether a tile is empty
-    const row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
+    constexpr int ROWS = 0x10000;
+    constexpr int EMPTY_MASKS = 0x10000; // number of tile_masks, where an tile_mask stores whether a tile is empty
+    constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 
-    const board_t WINNING_BOARD = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
+    constexpr board_t WINNING_BOARD = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
 
-    const uint16_t FULL_MASK = 0xFFFF;
+    constexpr uint16_t FULL_MASK = 0xFFFF;
 
     row_t shift[2][ROWS];  // shift[0] is left shift, shift[1] is right shift
 
