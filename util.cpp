@@ -57,7 +57,7 @@ int count_tiles(const uint16_t mask) {
 
 int pick_depth(const board_t board) {
     const int tile_ct = count_tiles(to_tile_mask(board));
-    if (tile_ct <= 8) return (tile_ct + 1) >> 1;
+    if (tile_ct <= 10) return tile_ct == 0 ? 1 : (tile_ct - 1) >> 1;
     return 4 + (tile_ct >= 14);
 }
 

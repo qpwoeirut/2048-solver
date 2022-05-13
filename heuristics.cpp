@@ -49,40 +49,54 @@ namespace heuristics {
         return std::max(std::max(lower_left, upper_left), std::max(lower_right, upper_right));
     }
 
+    constexpr int WALL_GAP[9] = {
+        0x7000, 0x6000, 0x4000,
+        0x0010, 0x0040, 0x0400,
+        0x0004, 0x0002, 0x0001
+    };
     int _wall_gap_heuristic(const board_t board) {
-        const int top    = 128 * tile_val(3, 3) + 64 * tile_val(3, 2) + 32 * tile_val(3, 1) +
-                           4   * tile_val(2, 3) + 8  * tile_val(2, 2) + 16 * tile_val(2, 1) +
-                           2   * tile_val(1, 3) + 1  * tile_val(1, 2) + 1  * tile_val(1, 1);
+        const int top    = WALL_GAP[0] * tile_val(3, 3) + WALL_GAP[1] * tile_val(3, 2) + WALL_GAP[2] * tile_val(3, 1) +
+                           WALL_GAP[3] * tile_val(2, 3) + WALL_GAP[4] * tile_val(2, 2) + WALL_GAP[5] * tile_val(2, 1) +
+                           WALL_GAP[6] * tile_val(1, 3) + WALL_GAP[7] * tile_val(1, 2) + WALL_GAP[8] * tile_val(1, 1);
 
-        const int bottom = 128 * tile_val(0, 3) + 64 * tile_val(0, 2) + 32 * tile_val(0, 1) +
-                           4   * tile_val(1, 3) + 8  * tile_val(1, 2) + 16 * tile_val(1, 1) +
-                           2   * tile_val(2, 3) + 1  * tile_val(2, 2) + 1  * tile_val(2, 1);
+        const int bottom = WALL_GAP[0] * tile_val(0, 0) + WALL_GAP[1] * tile_val(0, 1) + WALL_GAP[2] * tile_val(0, 2) +
+                           WALL_GAP[3] * tile_val(1, 0) + WALL_GAP[4] * tile_val(1, 1) + WALL_GAP[5] * tile_val(1, 2) +
+                           WALL_GAP[6] * tile_val(2, 0) + WALL_GAP[7] * tile_val(2, 1) + WALL_GAP[8] * tile_val(2, 2);
 
-        const int left   = 128 * tile_val(3, 3) + 64 * tile_val(2, 3) + 32 * tile_val(1, 3) +
-                           4   * tile_val(3, 2) + 8  * tile_val(2, 2) + 16 * tile_val(1, 2) +
-                           2   * tile_val(3, 1) + 1  * tile_val(2, 1) + 1  * tile_val(1, 1);
+        const int left   = WALL_GAP[0] * tile_val(0, 3) + WALL_GAP[1] * tile_val(1, 3) + WALL_GAP[2] * tile_val(2, 3) +
+                           WALL_GAP[3] * tile_val(0, 2) + WALL_GAP[4] * tile_val(1, 2) + WALL_GAP[5] * tile_val(2, 2) +
+                           WALL_GAP[6] * tile_val(0, 1) + WALL_GAP[7] * tile_val(1, 1) + WALL_GAP[8] * tile_val(2, 1);
 
-        const int right  = 128 * tile_val(3, 0) + 64 * tile_val(2, 0) + 32 * tile_val(1, 0) +
-                           4   * tile_val(3, 1) + 8  * tile_val(2, 1) + 16 * tile_val(1, 1) +
-                           2   * tile_val(3, 2) + 1  * tile_val(2, 2) + 1  * tile_val(1, 2);
+        const int right  = WALL_GAP[0] * tile_val(3, 0) + WALL_GAP[1] * tile_val(2, 0) + WALL_GAP[2] * tile_val(1, 0) +
+                           WALL_GAP[3] * tile_val(3, 1) + WALL_GAP[4] * tile_val(2, 1) + WALL_GAP[5] * tile_val(1, 1) +
+                           WALL_GAP[6] * tile_val(3, 2) + WALL_GAP[7] * tile_val(2, 2) + WALL_GAP[8] * tile_val(1, 2);
         return std::max(std::max(top, bottom), std::max(left, right));
     }
     int wall_gap_heuristic(const board_t board) {
         return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(game::transpose(board)));
     }
 
+    constexpr int FULL_WALL[9] = {
+        0x7000, 0x6000, 0x4000, 0x2000,
+        0x0002, 0x0008, 0x0020, 0x0200,
+        0x0001
+    };
     int _full_wall_heuristic(const board_t board) {
-        const int top    = 128 * tile_val(3, 3) + 64 * tile_val(3, 2) + 32 * tile_val(3, 1) + 16 * tile_val(3, 0) +
-                           1   * tile_val(2, 3) + 2  * tile_val(2, 2) + 4  * tile_val(2, 1) + 8  * tile_val(2, 0);
+        const int top    = FULL_WALL[0] * tile_val(3, 3) + FULL_WALL[1] * tile_val(3, 2) + FULL_WALL[2] * tile_val(3, 1) + FULL_WALL[3] * tile_val(3, 0) +
+                           FULL_WALL[4] * tile_val(2, 3) + FULL_WALL[5] * tile_val(2, 2) + FULL_WALL[6] * tile_val(2, 1) + FULL_WALL[7] * tile_val(2, 0) +
+                           FULL_WALL[8] * tile_val(1, 3);
 
-        const int bottom = 128 * tile_val(0, 3) + 64 * tile_val(0, 2) + 32 * tile_val(0, 1) + 16 * tile_val(0, 0) +
-                           1   * tile_val(1, 3) + 2  * tile_val(1, 2) + 4  * tile_val(1, 1) + 8  * tile_val(0, 0);
+        const int bottom = FULL_WALL[0] * tile_val(0, 0) + FULL_WALL[1] * tile_val(0, 1) + FULL_WALL[2] * tile_val(0, 2) + FULL_WALL[3] * tile_val(0, 3) +
+                           FULL_WALL[4] * tile_val(1, 0) + FULL_WALL[5] * tile_val(1, 1) + FULL_WALL[6] * tile_val(1, 2) + FULL_WALL[7] * tile_val(0, 3) +
+                           FULL_WALL[8] * tile_val(2, 0);
 
-        const int left   = 128 * tile_val(3, 3) + 64 * tile_val(2, 3) + 32 * tile_val(1, 3) + 16 * tile_val(0, 3) +
-                           1   * tile_val(3, 2) + 2  * tile_val(2, 2) + 4  * tile_val(1, 2) + 8  * tile_val(0, 2);
+        const int left   = FULL_WALL[0] * tile_val(0, 3) + FULL_WALL[1] * tile_val(1, 3) + FULL_WALL[2] * tile_val(2, 3) + FULL_WALL[3] * tile_val(3, 3) +
+                           FULL_WALL[4] * tile_val(0, 2) + FULL_WALL[5] * tile_val(1, 2) + FULL_WALL[6] * tile_val(2, 2) + FULL_WALL[7] * tile_val(3, 2) +
+                           FULL_WALL[8] * tile_val(0, 1);
 
-        const int right  = 128 * tile_val(3, 0) + 64 * tile_val(2, 0) + 32 * tile_val(1, 0) + 16 * tile_val(0, 0) +
-                           1   * tile_val(3, 1) + 2  * tile_val(2, 1) + 4  * tile_val(1, 1) + 8  * tile_val(0, 1);
+        const int right  = FULL_WALL[0] * tile_val(3, 0) + FULL_WALL[1] * tile_val(2, 0) + FULL_WALL[2] * tile_val(1, 0) + FULL_WALL[3] * tile_val(0, 0) +
+                           FULL_WALL[4] * tile_val(3, 1) + FULL_WALL[5] * tile_val(2, 1) + FULL_WALL[6] * tile_val(1, 1) + FULL_WALL[7] * tile_val(0, 1) +
+                           FULL_WALL[8] * tile_val(3, 2);
         return std::max(std::max(top, bottom), std::max(left, right));
     }
     int full_wall_heuristic(const board_t board) {
