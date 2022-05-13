@@ -27,7 +27,7 @@ constexpr int MAX_THREADS = GAMES[0];  // this is already probably higher than i
 
 int results[MAX_TILE];
 
-const int play_game(const int (*player)(const board_t)) {
+const int play_game(const player_t player) {
     int moves = 0, fours = 0;
     const board_t board = game::play(player, moves, fours);
     return get_max_tile(board);
@@ -53,7 +53,7 @@ void save_results(std::ofstream& fout, const std::string& player_name, const int
 
 std::future<int> futures[MAX_THREADS];
 
-void test_player(std::ofstream& fout, const std::string& player_name, const int (*player)(board_t), const int games, const bool parallelize, const bool print_progress) {
+void test_player(std::ofstream& fout, const std::string& player_name, const player_t player, const int games, const bool parallelize, const bool print_progress) {
     std::cout << "\n\nTesting " << player_name << " player..." << std::endl;
     std::fill(results, results+MAX_TILE, 0);
 
@@ -90,7 +90,7 @@ void test_player(std::ofstream& fout, const std::string& player_name, const int 
     save_results(fout, player_name, games, time_taken, parallelize);
 }
 
-void test_single_player(const std::string& player_name, const int (*player)(board_t), const int games,
+void test_single_player(const std::string& player_name, const player_t player, const int games,
                         const bool parallelize = false, const bool print_progress = false) {
     std::ofstream fout("results/" + player_name + ".csv");  // put results into a CSV for later collation
     write_headings(fout);

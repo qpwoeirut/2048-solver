@@ -5,7 +5,7 @@ namespace monte_carlo_strategy {
     */
 
     int trials = 100;
-    const int (*secondary_player)(const board_t) = random_strategy::player;
+    const player_t secondary_player = random_strategy::player;
 
     const int run_trial(board_t board) {
         while (!game::game_over(board)) {

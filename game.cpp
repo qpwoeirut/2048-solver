@@ -124,7 +124,7 @@ namespace game {
         return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3));// || board == WINNING_BOARD;
     }
 
-    board_t play(const int (*player)(const board_t), int& move_ct, int& fours) {
+    board_t play(const player_t player, int& move_ct, int& fours) {
         const board_t start_tile_val = generate_random_tile_val();
         if (start_tile_val == 2) ++fours;
         board_t board = add_random_tile(0, start_tile_val);
@@ -153,7 +153,7 @@ namespace game {
         return board;
     }
     
-    board_t play_slow(const int (*player)(const board_t), int& move_ct, int& fours) {
+    board_t play_slow(const player_t player, int& move_ct, int& fours) {
         const board_t start_tile_val = generate_random_tile_val();
         if (start_tile_val == 2) ++fours;
         board_t board = add_random_tile(0, start_tile_val);

@@ -12,7 +12,7 @@ int results[MAX_TILE];
 long long score_total = 0;
 int move_total = 0;
 
-const int play_game(const int (*player)(const board_t)) {
+const int play_game(const player_t player) {
     int fours = 0;
     const board_t board = game::play(player, move_total, fours);
     const int score = heuristics::score_heuristic(board) - 4 * fours;
@@ -20,7 +20,7 @@ const int play_game(const int (*player)(const board_t)) {
     return get_max_tile(board);
 }
 
-void test_player(const std::string& strategy, const int (*player)(board_t), const int games) {
+void test_player(const std::string& strategy, const player_t player, const int games) {
     std::fill(results, results+MAX_TILE, 0);
 
     const long long start_time = get_current_time_ms();

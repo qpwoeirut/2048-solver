@@ -1,5 +1,6 @@
 using board_t = uint64_t;
 using row_t = uint16_t;
+using player_t = const int (*)(const board_t);
 
 // bitmask of whether a tile is empty or not
 // TODO there are probably faster ways, such as:
