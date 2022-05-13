@@ -98,11 +98,22 @@ This stage's implementation of expectimax also doesn't implement any pruning or 
 
 
 ## Stage 3
-I added a simple [benchmark](/benchmark.cpp) program to speed up the game implementation.
+I added a simple [benchmark](/benchmark.cpp) program to provide some direction in speeding up the game implementation.
+I also added `-funroll-loops` to the compilation flags, which sped things up.
+
+I've decided that from Stage 3 onwards, I'll focus more on the strategies that are very successful.
+The "blind" strategies won't be run in the final tests and the less effective heuristics (`score` and `merge`) will be dropped as well.
+Hopefully this will make testing run a little faster (and lower my AWS bill).
+
+### Website
+While waiting for the testing of Stage 2 to finish, I put together a [website demo](https://qpwoeirut.github.io/2048/).
 
 ### Heuristics
-* Generalize the weight heuristic
-* Combine the heuristics
+I added two heuristics designed to make the AI build tiles against the wall.
+
+### Depth Picker
+Both the minimax and expectimax strategies take a long time to evaluate boards with lots of empty tiles, but those positions are usually not very important.
+I added a depth picker, which decreases the depth to search for boards with few tiles and increases the depth on boards that are nearly full.
 
 ### Alpha-Beta Pruning
 Work in progress
