@@ -15,3 +15,6 @@ This stores some loose ideas that I might try in the future.
 * for deterministic strategies, cache calculated states
 * add heuristic penalty for dying?
 * for wall heuristics, increase depth if the ordering has an "inversion"
+* figure out why minimax with builder heuristics is so awful
+* use geo mean instead of arith mean for expectimax?
+
