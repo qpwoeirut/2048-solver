@@ -14,4 +14,4 @@ This stores some loose ideas that I might try in the future.
 * use alpha-beta pruning for minimax
 * for deterministic strategies, cache calculated states
 * add heuristic penalty for dying?
-
+* for wall heuristics, increase depth if the ordering has an "inversion"
