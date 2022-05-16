@@ -52,13 +52,20 @@ int count_empty(uint16_t mask) {
     }
     return empty_ct;
 }
-int count_tiles(const uint16_t mask) {
+int count_set(const uint16_t mask) {
     return 16 - count_empty(mask);
 }
 
+int count_distinct_tiles(const board_t board) {
+    uint16_t tile_exists = 0;
+    for (int i=0; i<64; i+=4) if (((board >> i) & 0xF) != 0) tile_exists |= 1 << ((board >> i) & 0xF);
+    return count_set(tile_exists);
+}
+
 int pick_depth(const board_t board) {
-    const int tile_ct = count_tiles(to_tile_mask(board));
-    if (tile_ct <= 10) return tile_ct == 0 ? 1 : (tile_ct - 1) >> 1;
-    return 4 + (tile_ct >= 14);
+    const int tile_ct = count_set(to_tile_mask(board));
+    const int score = count_distinct_tiles(board) + (tile_ct >> 2);
+    std::cout << tile_ct << ' ' << count_distinct_tiles(board) << ' ' << score << std::endl;
+    return score <= 9 ? 3 : (score <= 12 ? 4 : (score <= 14 ? 5 : 6 + (score >= 16)));
 }
 
