@@ -61,54 +61,54 @@ namespace heuristics {
 
 
     eval_t _wall_gap_heuristic(const board_t board) {
-        const eval_t top    = (tile_exp(3, 3) << 32) | (tile_exp(3, 2) << 28) | (tile_exp(3, 1) << 24) |
-                              (tile_exp(2, 3) << 12) | (tile_exp(2, 2) << 16) | (tile_exp(2, 1) << 20) |
-                              (tile_exp(1, 3) << 8)  | (tile_exp(1, 2) << 4)  |  tile_exp(1, 1);
+        const eval_t top    = (tile_exp(3, 3) << 40) | (tile_exp(3, 2) << 36) | (tile_exp(3, 1) << 32) |
+                              (tile_exp(2, 3) << 20) | (tile_exp(2, 2) << 24) | (tile_exp(2, 1) << 28) |
+                              (tile_exp(1, 3) << 16) | (tile_exp(1, 2) << 12) | (tile_exp(1, 1) << 8);
 
-        const eval_t bottom = (tile_exp(0, 0) << 32) | (tile_exp(0, 1) << 28) | (tile_exp(0, 2) << 24) |
-                              (tile_exp(1, 0) << 12) | (tile_exp(1, 1) << 16) | (tile_exp(1, 2) << 20) |
-                              (tile_exp(2, 0) << 8)  | (tile_exp(2, 1) << 4)  |  tile_exp(2, 2);
+        const eval_t bottom = (tile_exp(0, 0) << 40) | (tile_exp(0, 1) << 36) | (tile_exp(0, 2) << 32) |
+                              (tile_exp(1, 0) << 20) | (tile_exp(1, 1) << 24) | (tile_exp(1, 2) << 28) |
+                              (tile_exp(2, 0) << 16) | (tile_exp(2, 1) << 12) | (tile_exp(2, 2) << 8);
 
-        const eval_t left   = (tile_exp(0, 3) << 32) | (tile_exp(1, 3) << 28) | (tile_exp(2, 3) << 24) |
-                              (tile_exp(0, 2) << 12) | (tile_exp(1, 2) << 16) | (tile_exp(2, 2) << 20) |
-                              (tile_exp(0, 1) << 8)  | (tile_exp(1, 1) << 4)  |  tile_exp(2, 1);
+        const eval_t left   = (tile_exp(0, 3) << 40) | (tile_exp(1, 3) << 36) | (tile_exp(2, 3) << 32) |
+                              (tile_exp(0, 2) << 20) | (tile_exp(1, 2) << 24) | (tile_exp(2, 2) << 28) |
+                              (tile_exp(0, 1) << 16) | (tile_exp(1, 1) << 12) | (tile_exp(2, 1) << 8);
 
-        const eval_t right  = (tile_exp(3, 0) << 32) | (tile_exp(2, 0) << 28) | (tile_exp(1, 0) << 24) |
-                              (tile_exp(3, 1) << 12) | (tile_exp(2, 1) << 16) | (tile_exp(1, 1) << 20) |
-                              (tile_exp(3, 2) << 8)  | (tile_exp(2, 2) << 4)  |  tile_exp(1, 2);
+        const eval_t right  = (tile_exp(3, 0) << 40) | (tile_exp(2, 0) << 36) | (tile_exp(1, 0) << 32) |
+                              (tile_exp(3, 1) << 20) | (tile_exp(2, 1) << 24) | (tile_exp(1, 1) << 28) |
+                              (tile_exp(3, 2) << 16) | (tile_exp(2, 2) << 12) | (tile_exp(1, 2) << 8);
 
-        return std::max(std::max(top, bottom), std::max(left, right));
+        return std::max(std::max(top, bottom), std::max(left, right)) + score_heuristic(board);
     }
     eval_t wall_gap_heuristic(const board_t board) {
-        return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(game::transpose(board)));
+        return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(game::transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
     eval_t _full_wall_heuristic(const board_t board) {
-        const eval_t top    = (tile_exp(3, 3) << 32) | (tile_exp(3, 2) << 28) | (tile_exp(3, 1) << 24) | (tile_exp(3, 0) << 20) |
-                              (tile_exp(2, 3) << 4)  | (tile_exp(2, 2) << 8)  | (tile_exp(2, 1) << 12) | (tile_exp(2, 0) << 16) |
-                               tile_exp(1, 3);
+        const eval_t top    = (tile_exp(3, 3) << 40) | (tile_exp(3, 2) << 36) | (tile_exp(3, 1) << 32) | (tile_exp(3, 0) << 28) |
+                              (tile_exp(2, 3) << 12) | (tile_exp(2, 2) << 16) | (tile_exp(2, 1) << 20) | (tile_exp(2, 0) << 24) |
+                              (tile_exp(1, 3) << 8);
 
-        const eval_t bottom = (tile_exp(0, 0) << 32) | (tile_exp(0, 1) << 28) | (tile_exp(0, 2) << 24) | (tile_exp(0, 3) << 20) |
-                              (tile_exp(1, 0) << 4)  | (tile_exp(1, 1) << 8)  | (tile_exp(1, 2) << 12) | (tile_exp(0, 3) << 16) |
-                               tile_exp(2, 0);
+        const eval_t bottom = (tile_exp(0, 0) << 40) | (tile_exp(0, 1) << 36) | (tile_exp(0, 2) << 32) | (tile_exp(0, 3) << 28) |
+                              (tile_exp(1, 0) << 12) | (tile_exp(1, 1) << 16) | (tile_exp(1, 2) << 20) | (tile_exp(0, 3) << 24) |
+                              (tile_exp(2, 0) << 8);
 
-        const eval_t left   = (tile_exp(0, 3) << 32) | (tile_exp(1, 3) << 28) | (tile_exp(2, 3) << 24) | (tile_exp(3, 3) << 20) |
-                              (tile_exp(0, 2) << 4)  | (tile_exp(1, 2) << 8)  | (tile_exp(2, 2) << 12) | (tile_exp(3, 2) << 16) |
-                               tile_exp(0, 1);
+        const eval_t left   = (tile_exp(0, 3) << 40) | (tile_exp(1, 3) << 36) | (tile_exp(2, 3) << 32) | (tile_exp(3, 3) << 28) |
+                              (tile_exp(0, 2) << 12) | (tile_exp(1, 2) << 16) | (tile_exp(2, 2) << 20) | (tile_exp(3, 2) << 24) |
+                              (tile_exp(0, 1) << 8);
 
-        const eval_t right  = (tile_exp(3, 0) << 32) | (tile_exp(2, 0) << 28) | (tile_exp(1, 0) << 24) | (tile_exp(0, 0) << 20) |
-                              (tile_exp(3, 1) << 4)  | (tile_exp(2, 1) << 8)  | (tile_exp(1, 1) << 12) | (tile_exp(0, 1) << 16) |
-                               tile_exp(3, 2);
+        const eval_t right  = (tile_exp(3, 0) << 40) | (tile_exp(2, 0) << 36) | (tile_exp(1, 0) << 32) | (tile_exp(0, 0) << 28) |
+                              (tile_exp(3, 1) << 12) | (tile_exp(2, 1) << 16) | (tile_exp(1, 1) << 20) | (tile_exp(0, 1) << 24) |
+                              (tile_exp(3, 2) << 8);
 
         return std::max(std::max(top, bottom), std::max(left, right));
     }
     eval_t full_wall_heuristic(const board_t board) {
-        return std::max(_full_wall_heuristic(board), _full_wall_heuristic(game::transpose(board)));
+        return std::max(_full_wall_heuristic(board), _full_wall_heuristic(game::transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
     #undef tile_exp
 
-    constexpr eval_t MAX_EVAL = 16ULL << 32;  // from wall heuristics
+    constexpr eval_t MAX_EVAL = 16ULL << 40;  // from wall heuristics
     constexpr eval_t MIN_EVAL = 0;  // all evaluations are positive
 
     constexpr heuristic_t exports[5] = {
