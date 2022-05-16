@@ -21,3 +21,4 @@ This stores some loose ideas that I might try in the future.
 * increase depth if # of distinct tiles is high
 * write a strict full wall builder heuristic which penalizes inversions
 * tiebreak wall builder with score or merge
+* write a tester for difficult board positions to tune heuristics
