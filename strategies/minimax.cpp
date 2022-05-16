@@ -6,7 +6,7 @@ namespace minimax_strategy {
     */
 
     int depth = 3;
-    heuristic_t evaluator;
+    heuristic_t evaluator = heuristics::dummy_heuristic;
 
     const eval_t helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {

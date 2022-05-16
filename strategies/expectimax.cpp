@@ -6,7 +6,7 @@ namespace expectimax_strategy {
     */
 
     int depth = 3;
-    heuristic_t evaluator;
+    heuristic_t evaluator = heuristics::dummy_heuristic;
 
     // speed things up with integer arithmetic
     // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move

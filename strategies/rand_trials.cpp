@@ -7,7 +7,7 @@ namespace rand_trials_strategy {
 
     int depth = 3;
     int trials = 5;
-    heuristic_t evaluator = heuristics::score_heuristic;
+    heuristic_t evaluator = heuristics::dummy_heuristic;
 
     // speed things up with integer arithmetic
     // 4 moves, 20 max depth, multiplied by 4 to pack score and move

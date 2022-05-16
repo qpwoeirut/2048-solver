@@ -2,6 +2,12 @@ using eval_t = int64_t;
 using heuristic_t = eval_t (*)(const board_t);
 
 namespace heuristics {
+    // used initialization value only; should be replaced when init strategy function is invoked
+    eval_t dummy_heuristic(const board_t board) {
+        std::cout << "strategy not initialized properly!" << std::endl;
+        assert(false);
+    }
+
     // assumes that only 2's have spawned, which is a good enough approximation
     // creating a tile of 2^n adds 2^n to the score, and requires two 2^(n-1) tiles
     // creating each of those added 2^(n-1) to the score, and following the recursive pattern gets n * 2^n
