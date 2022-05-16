@@ -14,6 +14,8 @@ This stores some loose ideas that I might try in the future.
 * use alpha-beta pruning for minimax
 * for deterministic strategies, cache calculated states
   * for cache of board evaluations, use gp_hash_table or cc_hash_table
-* add heuristic penalty for dying?
+* change heuristic penalty for dying?
 * for wall heuristics, increase depth if the ordering has an "inversion"
 * use geo mean instead of arith mean for expectimax?
+* increase depth if # of distinct tiles is high
+
