@@ -17,6 +17,7 @@ This stores some loose ideas that I might try in the future.
 * change heuristic penalty for dying?
 * for wall heuristics, increase depth if the ordering has an "inversion"
 * use geo mean instead of arith mean for expectimax?
+  * issues with overflow; GMP? seems rather slow
 * increase depth if # of distinct tiles is high
 * write a strict full wall builder heuristic which penalizes inversions
 * tiebreak wall builder with score or merge
