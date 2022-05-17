@@ -1,6 +1,3 @@
-using eval_t = int64_t;
-using heuristic_t = eval_t (*)(const board_t);
-
 namespace heuristics {
     // used initialization value only; should be replaced when init strategy function is invoked
     eval_t dummy_heuristic(const board_t board) {
