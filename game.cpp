@@ -1,5 +1,4 @@
 #include <cassert>
-#include <chrono>
 #include <iostream>
 #include <random>
 
@@ -11,6 +10,7 @@ namespace game {
     constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 
     constexpr board_t WINNING_BOARD = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
+    constexpr board_t INVALID_BOARD = WINNING_BOARD - 1;  // used as the empty_key for the dense_hash_map cache
 
     constexpr uint16_t FULL_MASK = 0xFFFF;
 

@@ -12,8 +12,6 @@ This stores some loose ideas that I might try in the future.
 * use concept of "afterstates" to cut down the depth searched by one
 * for minimax/expectimax, don't eval states with very low probability
 * use alpha-beta pruning for minimax
-* for deterministic strategies, cache calculated states
-  * for cache of board evaluations, use gp_hash_table or cc_hash_table
 * change heuristic penalty for dying?
 * for wall heuristics, increase depth if the ordering has an "inversion"
 * use geo mean instead of arith mean for expectimax?

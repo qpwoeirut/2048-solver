@@ -1,3 +1,7 @@
+#include <chrono>
+#include <sparsehash/dense_hash_map>
+
+using row_t = uint16_t;
 using board_t = uint64_t;
 
 using eval_t = int64_t;
@@ -69,8 +73,6 @@ int count_distinct_tiles(const board_t board) {
 
 int pick_depth(const board_t board) {
     const int tile_ct = count_set(to_tile_mask(board));
-    const int score = count_distinct_tiles(board) + (tile_ct >> 2);
-    std::cout << tile_ct << ' ' << count_distinct_tiles(board) << ' ' << score << std::endl;
-    return score <= 9 ? 3 : (score <= 12 ? 4 : (score <= 14 ? 5 : 6 + (score >= 16)));
+    const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
+    return score <= 7 ? 3 : (score <= 10 ? 4 : (score <= 13 ? 5 : 6 + (score >= 15)));
 }
-
