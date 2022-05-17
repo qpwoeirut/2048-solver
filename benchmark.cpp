@@ -29,14 +29,13 @@ void test_player(const std::string& strategy, const player_t player, const int g
         ++results[max_tile];  // suffix sum type thing
     }
     const long long end_time = get_current_time_ms();
-    for (int i=MAX_TILE-2; i>=0; --i) {
-        results[i] += results[i+1];
-    }
-
     float time_taken = (end_time - start_time) / 1000.0;
 
     std::cout << "Playing " << games << " games took " << time_taken << " seconds (" << time_taken / games << " seconds per game)\n";
 
+    for (int i=MAX_TILE-2; i>=0; --i) {
+        results[i] += results[i+1];
+    }
     for (int i=MIN_TILE; i<MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
