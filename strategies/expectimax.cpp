@@ -12,23 +12,24 @@ namespace expectimax_strategy {
     // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move
     constexpr eval_t MULT = 1e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4);
 
+    #ifdef USE_CACHE
     constexpr int CACHE_DEPTH = 2;
     cache_t cache;
-    int cache_hits = 0, cache_misses = 0;
+    #endif
 
-    const eval_t helper(const board_t board, const int cur_depth, const int fours) {
+    const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
         if (cur_depth == 0 || fours >= 5) {  // selecting 5 fours has a 0.001% chance, which is negligible
             return (MULT * evaluator(board)) << 2;  // move doesn't matter
         }
 
+        #ifdef USE_CACHE
         if (cur_depth >= CACHE_DEPTH) {
             const cache_t::iterator it = cache.find(board);
             if (it != cache.end() && (it->second & 3) >= cur_depth) {
-                ++cache_hits;
                 return it->second;
             }
-            ++cache_misses;
         }
+        #endif
 
         eval_t best_score = heuristics::MIN_EVAL;
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
@@ -44,8 +45,8 @@ namespace expectimax_strategy {
                 const uint16_t empty_mask = to_tile_mask(new_board);
                 for (int j=0; j<16; ++j) {
                     if (((empty_mask >> j) & 1) == 0) {
-                        expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1, fours) >> 2);
-                        expected_score += 1 * (helper(new_board | (2LL << (j << 2)), cur_depth - 1, fours + 1) >> 2);
+                        expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1, add_to_cache, fours) >> 2);
+                        expected_score += 1 * (helper(new_board | (2LL << (j << 2)), cur_depth - 1, add_to_cache, fours + 1) >> 2);
                     }
                 }
                 expected_score /= count_empty(empty_mask) * 10;  // convert to actual expected score * MULT
@@ -57,16 +58,18 @@ namespace expectimax_strategy {
             }
         }
 
-        if (cur_depth >= CACHE_DEPTH) {
+        #ifdef USE_CACHE
+        if (add_to_cache && cur_depth >= CACHE_DEPTH) {
             cache[board] = (best_score << 2) | best_move;
         }
+        #endif
+
         return (best_score << 2) | best_move;  // pack both score and move
     }
     const int player(const board_t board) {
-        cache_hits = 0;
-        cache_misses = 0;
-        const int move = helper(board, depth <= 0 ? pick_depth(board) - depth : depth, 0) & 3;
-        std::cout << (depth <= 0 ? pick_depth(board) - depth : depth) << ' ' << cache_hits << ' ' << cache_misses << std::endl;
+        const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
+        // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
+        const int move = helper(board, depth_to_use, depth_to_use > CACHE_DEPTH + 1, 0) & 3;
         return move;
     }
 
@@ -74,8 +77,10 @@ namespace expectimax_strategy {
         depth = _depth;
         evaluator = _evaluator;
 
+        #ifdef USE_CACHE
         cache = cache_t();
         cache.set_empty_key(game::INVALID_BOARD);
+        #endif
     }
 }
 
