@@ -22,3 +22,9 @@ This stores some loose ideas that I might try in the future.
 * write a strict full wall builder heuristic which penalizes inversions
 * tiebreak wall builder with score or merge
 * write a tester for difficult board positions to tune heuristics
+* deal with parallel accesses/writes when testing minimax/expectimax solvers in parallel
+  * or just ignore it? it'll slow things down a little but nothing will be *wrong*
+* figure out some import system
+  * hardcoding the path to sparsehash in export.sh nonideal
+* clear up cache parts that aren't needed
+* look into [emscripten optimizations](https://emscripten.org/docs/optimizing/Optimizing-Code.html)
