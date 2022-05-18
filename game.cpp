@@ -21,13 +21,17 @@ namespace game {
     uint8_t empty_tiles[524288];  // exactly 524288 different values across all tile_masks
     int empty_index[EMPTY_MASKS];  // a pointer to where this tile_mask starts
 
+    std::mt19937 empty_tile_gen;
+    std::uniform_int_distribution<> empty_tile_distrib(0, 720720 - 1);  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
+
     // performance isn't important; this is only used in init()
     row_t reverse_row(const row_t row) {
         return ((row & 0xF) << 12) | (((row >> 4) & 0xF) << 8) | (((row >> 8) & 0xF) << 4) | ((row >> 12) & 0xF);
     }
 
     // this part doesn't have to be fast
-    void init() {
+    void init(const long long rng_seed = get_current_time_ms()) {
+        empty_tile_gen.seed(rng_seed);  // seed the rng with current time
         for (int row=0; row<ROWS; ++row) {
             uint8_t r[4] = {
                 static_cast<uint8_t>((row >> 12) & 0xF),
@@ -97,9 +101,6 @@ namespace game {
         //    shift[dir >> 1][board & 0xFFFF] == WINNING_ROW) return WINNING_BOARD;
         return (dir & 1) ? transpose(board) : board;
     }
-
-    std::mt19937 empty_tile_gen(get_current_time_ms());  // seed the rng with current time
-    std::uniform_int_distribution<> empty_tile_distrib(0, 720720 - 1);  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
 
     board_t generate_random_tile_val() {
         return 1ULL + ((empty_tile_distrib(empty_tile_gen) % 10) == 0);
