@@ -11,7 +11,7 @@ namespace rand_trials_strategy {
 
     // speed things up with integer arithmetic
     // 4 moves, 20 max depth, multiplied by 4 to pack score and move
-    constexpr eval_t MULT = 1e18 / (heuristics::MAX_EVAL * 4 * 20 * 4);
+    constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 4 * 20 * 4);
 
     const eval_t helper(const board_t board, const int cur_depth) {
         if (cur_depth == 0) {
