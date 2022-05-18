@@ -2,4 +2,3 @@ g++ -std=c++20 -O3 -Wall -pthread -funroll-loops -DUSE_CACHE tester.cpp -o teste
 echo "Compiled tester.cpp!"
 ./tester.out
 rm tester.out
-
