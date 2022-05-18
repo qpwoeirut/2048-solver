@@ -8,14 +8,18 @@ namespace expectimax_strategy {
     int depth = 3;
     heuristic_t evaluator = heuristics::dummy_heuristic;
 
-    // speed things up with integer arithmetic
-    // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move
-    constexpr eval_t MULT = 1e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4);
-
     #ifdef USE_CACHE
     constexpr int CACHE_DEPTH = 2;
     cache_t cache;
+    // speed things up with integer arithmetic
+    // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move, times 16 to pack cache
+    constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4 * 16);
+    #else
+    // speed things up with integer arithmetic
+    // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move
+    constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4);
     #endif
+    static_assert(MULT > 1);
 
     const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
         if (game::game_over(board)) {
@@ -30,9 +34,9 @@ namespace expectimax_strategy {
         if (cur_depth >= CACHE_DEPTH) {
             const cache_t::iterator it = cache.find(board);
             #ifdef REQUIRE_DETERMINISTIC
-            if (it != cache.end() && (it->second & 3) == cur_depth) return it->second;
+            if (it != cache.end() && (it->second & 0xF) == cur_depth) return it->second >> 4;
             #else
-            if (it != cache.end() && (it->second & 3) >= cur_depth) return it->second;
+            if (it != cache.end() && (it->second & 0xF) >= cur_depth) return it->second >> 4;
             #endif
         }
         #endif
@@ -63,7 +67,7 @@ namespace expectimax_strategy {
 
         #ifdef USE_CACHE
         if (add_to_cache && cur_depth >= CACHE_DEPTH) {
-            cache[board] = (best_score << 2) | best_move;
+            cache[board] = (((best_score << 2) | best_move) << 4) | cur_depth;
         }
         #endif
 
@@ -71,8 +75,8 @@ namespace expectimax_strategy {
     }
     const int player(const board_t board) {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
-        // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
         #ifdef USE_CACHE
+        // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
         const int move = helper(board, depth_to_use, depth_to_use > CACHE_DEPTH + 1, 0) & 3;
         #else
         const int move = helper(board, depth_to_use, false, 0) & 3;

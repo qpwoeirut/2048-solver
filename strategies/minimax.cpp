@@ -25,8 +25,8 @@ namespace minimax_strategy {
         #ifdef USE_CACHE
         if (cur_depth >= CACHE_DEPTH) {
             const cache_t::iterator it = cache.find(board);
-            if (it != cache.end() && (it->second & 3) >= cur_depth) {
-                return it->second;
+            if (it != cache.end() && (it->second & 0xF) >= cur_depth) {
+                return it->second>> 4;
             }
         }
         #endif
@@ -55,7 +55,7 @@ namespace minimax_strategy {
 
         #ifdef USE_CACHE
         if (cur_depth >= CACHE_DEPTH) {
-            cache[board] = (best_score << 2) | best_move;
+            cache[board] = (((best_score << 2) | best_move) << 4) | cur_depth;
         }
         #endif
 
