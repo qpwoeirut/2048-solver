@@ -11,6 +11,8 @@ namespace game {
 
     constexpr board_t WINNING_BOARD = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
     constexpr board_t INVALID_BOARD = WINNING_BOARD - 1;  // used as the empty_key for the dense_hash_map cache
+    constexpr board_t INVALID_BOARD2 = WINNING_BOARD - 2;  // used as the delete_key for the dense_hash_map cache
+
 
     constexpr uint16_t FULL_MASK = 0xFFFF;
 

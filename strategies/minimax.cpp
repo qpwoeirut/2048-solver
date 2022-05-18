@@ -10,15 +10,15 @@ namespace minimax_strategy {
 
     #ifdef USE_CACHE
     constexpr int CACHE_DEPTH = 2;
-    cache_t cache;
+    cache_t cache(1 << 20);
     #endif
 
-    const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache) {
+    const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
         if (game::game_over(board)) {
             const eval_t score = evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
-        if (cur_depth == 0) {
+        if (cur_depth == 0 || fours >= 5 ) { // selecting 5 fours has a 0.001% chance, which is negligible
             return evaluator(board) << 2;  // move doesn't matter
         }
 
@@ -44,8 +44,8 @@ namespace minimax_strategy {
                 const uint16_t tile_mask = to_tile_mask(new_board);
                 for (int j=0; j<16; ++j) {
                     if (((tile_mask >> j) & 1) == 0) {
-                        current_score = std::min(current_score, helper(new_board | (1ULL << (j << 2)), cur_depth - 1, add_to_cache) >> 2);
-                        current_score = std::min(current_score, helper(new_board | (2ULL << (j << 2)), cur_depth - 1, add_to_cache) >> 2);
+                        current_score = std::min(current_score, helper(new_board | (1ULL << (j << 2)), cur_depth - 1, add_to_cache, fours) >> 2);
+                        current_score = std::min(current_score, helper(new_board | (2ULL << (j << 2)), cur_depth - 1, add_to_cache, (fours + 1)) >> 2);
                     }
                 }
             }
@@ -65,8 +65,14 @@ namespace minimax_strategy {
     }
     const int player(const board_t board) {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
+        #ifdef USE_CACHE
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
-        const int move = helper(board, depth_to_use, depth_to_use > CACHE_DEPTH + 1) & 3;
+        const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
+        const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
+        if (!add_to_cache) cache.clear_no_resize();
+        #else
+        const int move = helper(board, depth_to_use, false, 0) & 3;
+        #endif
         return move;
     }
 
@@ -75,8 +81,9 @@ namespace minimax_strategy {
         evaluator = _evaluator;
 
         #ifdef USE_CACHE
-        cache = cache_t();
+        cache.min_load_factor(0.0);
         cache.set_empty_key(game::INVALID_BOARD);
+        cache.set_deleted_key(game::INVALID_BOARD2);
         #endif
     }
 }

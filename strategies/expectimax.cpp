@@ -10,7 +10,7 @@ namespace expectimax_strategy {
 
     #ifdef USE_CACHE
     constexpr int CACHE_DEPTH = 2;
-    cache_t cache;
+    cache_t cache(1 << 20);
     // speed things up with integer arithmetic
     // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move, times 16 to pack cache
     constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4 * 16);
@@ -77,7 +77,9 @@ namespace expectimax_strategy {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
         #ifdef USE_CACHE
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
-        const int move = helper(board, depth_to_use, depth_to_use > CACHE_DEPTH + 1, 0) & 3;
+        const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
+        const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
+        if (!add_to_cache) cache.clear_no_resize();
         #else
         const int move = helper(board, depth_to_use, false, 0) & 3;
         #endif
@@ -89,9 +91,27 @@ namespace expectimax_strategy {
         evaluator = _evaluator;
 
         #ifdef USE_CACHE
-        cache = cache_t();
+        cache.min_load_factor(0.0);
         cache.set_empty_key(game::INVALID_BOARD);
+        cache.set_deleted_key(game::INVALID_BOARD2);
         #endif
     }
 }
 
+
+/*
+reached 273M without clearing
+
+around 590k size (49M) with clearing by add_to_cache value
+Playing 3 games took 258.542 seconds (86.1807 seconds per game)
+
+clearing by add_to_cache, init size 1<<20
+memory stayed 65M
+Playing 3 games took 266.666 seconds (88.8887 seconds per game)
+
++ setting min_load_factor to 0
+Playing 3 games took 266.075 seconds (88.6917 seconds per game)
+
+change init size 600000
+Playing 3 games took 261.784 seconds (87.2613 seconds per game)
+*/
