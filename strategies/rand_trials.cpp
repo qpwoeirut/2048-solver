@@ -14,6 +14,10 @@ namespace rand_trials_strategy {
     constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 4 * 20 * 4);
 
     const eval_t helper(const board_t board, const int cur_depth) {
+        if (game::game_over(board)) {
+            const eval_t score = (evaluator(board) * MULT) << 2;
+            return score - (score >> 4);
+        }
         if (cur_depth == 0) {
             return (evaluator(board) * MULT) << 2;  // move doesn't matter
         }
@@ -22,7 +26,7 @@ namespace rand_trials_strategy {
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
         for (int i=0; i<4; ++i) {
             const board_t new_board = game::make_move(board, i);
-            if (board == new_board || game::game_over(new_board)) continue;
+            if (board == new_board) continue;
 
             eval_t current_score = 0;
             for (int j=0; j<trials; ++j) {
