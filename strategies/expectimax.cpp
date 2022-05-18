@@ -18,7 +18,7 @@ namespace expectimax_strategy {
     #endif
 
     const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
-        if (game::game_over(new_board)) {
+        if (game::game_over(board)) {
             const eval_t score = MULT * evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
@@ -29,9 +29,11 @@ namespace expectimax_strategy {
         #ifdef USE_CACHE
         if (cur_depth >= CACHE_DEPTH) {
             const cache_t::iterator it = cache.find(board);
-            if (it != cache.end() && (it->second & 3) >= cur_depth) {
-                return it->second;
-            }
+            #ifdef REQUIRE_DETERMINISTIC
+            if (it != cache.end() && (it->second & 3) == cur_depth) return it->second;
+            #else
+            if (it != cache.end() && (it->second & 3) >= cur_depth) return it->second;
+            #endif
         }
         #endif
 
@@ -62,6 +64,9 @@ namespace expectimax_strategy {
         #ifdef USE_CACHE
         if (add_to_cache && cur_depth >= CACHE_DEPTH) {
             cache[board] = (best_score << 2) | best_move;
+            std::cout << board << ' ' << cache[board] << ' ' << ((best_score << 2) | best_move) << std::endl;
+            assert(cache[board] == ((best_score << 2) | best_move));
+            assert(cache[board] != 0);
         }
         #endif
 

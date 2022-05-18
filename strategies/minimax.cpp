@@ -14,7 +14,7 @@ namespace minimax_strategy {
     #endif
 
     const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache) {
-        if (game::game_over(new_board)) {
+        if (game::game_over(board)) {
             const eval_t score = MULT * evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
