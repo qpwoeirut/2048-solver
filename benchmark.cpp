@@ -17,6 +17,7 @@ const int play_game(const player_t player) {
     const board_t board = game::play(player, move_total, fours);
     const int score = heuristics::score_heuristic(board) - 4 * fours;
     score_total += score;
+    std::cout << score << std::endl;
     return get_max_tile(board);
 }
 
@@ -51,7 +52,36 @@ int main() {
 
     expectimax_strategy::init(0, heuristics::full_wall_heuristic);
 
-    int m = 0, f = 0;
-    game::play_slow(expectimax_strategy::player, m, f);
-//    test_player("full-wall-expmx", expectimax_strategy::player, 3);  // 3 games w/o cache -> 308.7 seconds
+//    int m = 0, f = 0;
+//    game::play_slow(expectimax_strategy::player, m, f);
+    test_player("full-wall-expmx", expectimax_strategy::player, 3);
+    /*
+    Without cache:
+    Compiled benchmark.cpp!
+    132256
+    61416
+    74808
+    Playing 3 games took 749.435 seconds (249.812 seconds per game)
+    ...
+    12 3 (100)
+    13 1 (33.3333)
+    14 0 (0)
+    ...
+    Average score: 89493.3
+    Total moves: 11830
+
+
+    With cache depth = 2:
+    132256
+    61416
+    74808
+    Playing 3 games took 246.179 seconds (82.0597 seconds per game)
+    ...
+    Average score: 89493.3
+    Total moves: 11830
+
+
+    With cache depth = 3:
+    Playing 3 games took 252.757 seconds (84.2523 seconds per game)
+    */
 }
