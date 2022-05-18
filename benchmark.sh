@@ -2,3 +2,5 @@ g++ -std=c++20 -O3 -Wall -pthread -funroll-loops -DUSE_CACHE -DREQUIRE_DETERMINI
 echo "Compiled benchmark.cpp!"
 ./benchmark.out
 rm benchmark.out
+
+# top -stats time,command,cpu,mem,instrs,cycles | grep benchmark
