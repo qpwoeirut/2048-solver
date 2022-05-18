@@ -17,7 +17,7 @@ const int play_game(const player_t player) {
     const board_t board = game::play(player, move_total, fours);
     const int score = heuristics::score_heuristic(board) - 4 * fours;
     score_total += score;
-    std::cout << score << std::endl;
+    std::cout << "Score: " << score << std::endl;
     return get_max_tile(board);
 }
 
