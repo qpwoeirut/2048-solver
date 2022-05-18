@@ -15,7 +15,7 @@ namespace minimax_strategy {
 
     const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache) {
         if (game::game_over(board)) {
-            const eval_t score = MULT * evaluator(board);
+            const eval_t score = evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
         if (cur_depth == 0) {
@@ -25,9 +25,11 @@ namespace minimax_strategy {
         #ifdef USE_CACHE
         if (cur_depth >= CACHE_DEPTH) {
             const cache_t::iterator it = cache.find(board);
-            if (it != cache.end() && (it->second & 0xF) >= cur_depth) {
-                return it->second>> 4;
-            }
+            #ifdef REQUIRE_DETERMINISTIC
+            if (it != cache.end() && (it->second & 0xF) == cur_depth) return it->second >> 4;
+            #else
+            if (it != cache.end() && (it->second & 0xF) >= cur_depth) return it->second >> 4;
+            #endif
         }
         #endif
 
@@ -54,7 +56,7 @@ namespace minimax_strategy {
         }
 
         #ifdef USE_CACHE
-        if (cur_depth >= CACHE_DEPTH) {
+        if (add_to_cache && cur_depth >= CACHE_DEPTH) {
             cache[board] = (((best_score << 2) | best_move) << 4) | cur_depth;
         }
         #endif
