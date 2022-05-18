@@ -14,6 +14,10 @@ namespace minimax_strategy {
     #endif
 
     const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache) {
+        if (game::game_over(new_board)) {
+            const eval_t score = MULT * evaluator(board);
+            return score - (score >> 4);  // subtract score / 16 as penalty for dying
+        }
         if (cur_depth == 0) {
             return evaluator(board) << 2;  // move doesn't matter
         }
@@ -34,9 +38,6 @@ namespace minimax_strategy {
             const board_t new_board = game::make_move(board, i);
             if (board == new_board) {
                 continue;
-            } else if (game::game_over(new_board)) {
-                current_score = evaluator(board);
-                current_score -= current_score >> 4;  // subtract score / 16 as penalty for dying
             } else {
                 const uint16_t tile_mask = to_tile_mask(new_board);
                 for (int j=0; j<16; ++j) {

@@ -18,6 +18,10 @@ namespace expectimax_strategy {
     #endif
 
     const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
+        if (game::game_over(new_board)) {
+            const eval_t score = MULT * evaluator(board);
+            return score - (score >> 4);  // subtract score / 16 as penalty for dying
+        }
         if (cur_depth == 0 || fours >= 5) {  // selecting 5 fours has a 0.001% chance, which is negligible
             return (MULT * evaluator(board)) << 2;  // move doesn't matter
         }
@@ -38,9 +42,6 @@ namespace expectimax_strategy {
             const board_t new_board = game::make_move(board, i);
             if (board == new_board) {
                 continue;
-            } else if (game::game_over(new_board)) {
-                expected_score = (MULT * evaluator(board));
-                expected_score -= expected_score >> 4;  // subtract score / 16 as penalty for dying
             } else {
                 const uint16_t empty_mask = to_tile_mask(new_board);
                 for (int j=0; j<16; ++j) {
