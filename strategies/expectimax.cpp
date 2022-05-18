@@ -64,9 +64,6 @@ namespace expectimax_strategy {
         #ifdef USE_CACHE
         if (add_to_cache && cur_depth >= CACHE_DEPTH) {
             cache[board] = (best_score << 2) | best_move;
-            std::cout << board << ' ' << cache[board] << ' ' << ((best_score << 2) | best_move) << std::endl;
-            assert(cache[board] == ((best_score << 2) | best_move));
-            assert(cache[board] != 0);
         }
         #endif
 
