@@ -8,6 +8,7 @@ This stores some loose ideas that I might try in the future.
     * assume that some amount of states are always empty
     * even with above conditions, this will still be at least 10^12 states, probably too big
 * "wall" and "snake" heuristics
+  * some sort of "distance" heuristic between tiles of adjacent values
 * make the tester use fewer threads to avoid context switching overhead
 * use concept of "afterstates" to cut down the depth searched by one
 * for minimax/expectimax, don't eval states with very low probability
@@ -25,6 +26,15 @@ This stores some loose ideas that I might try in the future.
 * figure out some import system
   * hardcoding the path to sparsehash in export.sh nonideal
 * clear up cache parts that aren't needed
+  * create a deletion queue?
+  * i think this is causing the website to crash from lack of memory: `Uncaught RuntimeError: Aborted(Assertion failed: table, at: /usr/local/Cellar/google-sparsehash/2.0.4/include/sparsehash/internal/densehashtable.h,788,clear_to_size). Build with -s ASSERTIONS=1 for more info.`
 * look into [emscripten optimizations](https://emscripten.org/docs/optimizing/Optimizing-Code.html)
 * i think the actual 2048 game starts with 2 tiles on the board?
   * once this is resolved, move count can be calculated using sum of tiles and # of fours generated
+* make 3 cheater AIs: one that knows tile placements, one that controls tile placements and obviously cheats, one that controls tile placements but pretends that it doesn't              
+
+## Website
+* persist AI settings with localstorage
+* change website's warning from 8s to 10s, make the warning at start actually take 10s
+* add descriptions of each option
+  * add note that the pause time is only a minimum
