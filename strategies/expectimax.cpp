@@ -69,7 +69,11 @@ namespace expectimax_strategy {
     const int player(const board_t board) {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
+        #ifdef USE_CACHE
         const int move = helper(board, depth_to_use, depth_to_use > CACHE_DEPTH + 1, 0) & 3;
+        #else
+        const int move = helper(board, depth_to_use, false, 0) & 3;
+        #endif
         return move;
     }
 
