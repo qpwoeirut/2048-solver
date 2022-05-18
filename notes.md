@@ -27,3 +27,4 @@ This stores some loose ideas that I might try in the future.
 * clear up cache parts that aren't needed
 * look into [emscripten optimizations](https://emscripten.org/docs/optimizing/Optimizing-Code.html)
 * i think the actual 2048 game starts with 2 tiles on the board?
+  * once this is resolved, move count can be calculated using sum of tiles and # of fours generated
