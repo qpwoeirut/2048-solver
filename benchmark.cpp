@@ -39,16 +39,19 @@ void test_player(const std::string& strategy, const player_t player, const int g
     for (int i=MIN_TILE; i<MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
-    std::cout << "Average score: " << score_total / games << std::endl;
+    std::cout << "Average score: " << score_total * 1.0 / games << std::endl;
     std::cout << "Total moves: " << move_total << std::endl;
 }
 
 int main() {
-    game::init();
+    game::init(8);  // make the game repeatable
+    move_gen.seed(8);
 
-     test_player("spam_corner", spam_corner_strategy::player, (int)(5e5));  // spam_corner is the most efficient blind strategy
+//    test_player("spam_corner", spam_corner_strategy::player, int(1e5));  // spam_corner is the most efficient blind strategy
 
-//    expectimax_strategy::init(3, heuristics::corner_heuristic);
-//    test_player("corner-expmx", expectimax_strategy::player, 50);
+    expectimax_strategy::init(0, heuristics::full_wall_heuristic);
+
+    int m = 0, f = 0;
+    game::play_slow(expectimax_strategy::player, m, f);
+//    test_player("full-wall-expmx", expectimax_strategy::player, 3);  // 3 games w/o cache -> 308.7 seconds
 }
-
