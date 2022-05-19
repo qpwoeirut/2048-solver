@@ -9,9 +9,9 @@ namespace game {
     constexpr int EMPTY_MASKS = 0x10000; // number of tile_masks, where an tile_mask stores whether a tile is empty
     constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 
-    constexpr board_t WINNING_BOARD = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
-    constexpr board_t INVALID_BOARD = WINNING_BOARD - 1;  // used as the empty_key for the dense_hash_map cache
-    constexpr board_t INVALID_BOARD2 = WINNING_BOARD - 2;  // used as the delete_key for the dense_hash_map cache
+    constexpr board_t WINNING_BOARD  = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
+    constexpr board_t INVALID_BOARD  = 0x1111111111111111ULL;  // used as the empty_key for the dense_hash_map cache
+    constexpr board_t INVALID_BOARD2 = 0x2222222222222222ULL;  // used as the delete_key for the dense_hash_map cache
 
 
     constexpr uint16_t FULL_MASK = 0xFFFF;
@@ -20,7 +20,8 @@ namespace game {
 
     // this uses a fancy way of implementing adjacency lists in competitive programming
     // stores the empty tile positions for each tile_mask
-    uint8_t empty_tiles[524288];  // exactly 524288 different values across all tile_masks
+    constexpr int EMPTY_TILE_POSITIONS = 524288;  // exactly 524288 different values across all tile_masks
+    uint8_t empty_tiles[EMPTY_TILE_POSITIONS];
     int empty_index[EMPTY_MASKS];  // a pointer to where this tile_mask starts
 
     std::mt19937 empty_tile_gen;
@@ -77,6 +78,7 @@ namespace game {
                 }
             }
         }
+        assert(idx == EMPTY_TILE_POSITIONS);
     }
 
     // from https://github.com/nneonneo/2048-ai/blob/master/2048.cpp#L38-L48

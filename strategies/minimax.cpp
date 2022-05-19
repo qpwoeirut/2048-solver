@@ -81,9 +81,11 @@ namespace minimax_strategy {
         evaluator = _evaluator;
 
         #ifdef USE_CACHE
-        cache.min_load_factor(0.0);
-        cache.set_empty_key(game::INVALID_BOARD);
-        cache.set_deleted_key(game::INVALID_BOARD2);
+        if (cache.hash_funct().use_empty() == false) {  // empty_key hasn't been set, so let's set everything
+            cache.set_empty_key(game::INVALID_BOARD);
+            cache.set_deleted_key(game::INVALID_BOARD2);
+            cache.min_load_factor(0.0);
+        }
         #endif
     }
 }
