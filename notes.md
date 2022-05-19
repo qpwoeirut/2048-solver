@@ -11,15 +11,11 @@ This stores some loose ideas that I might try in the future.
   * some sort of "distance" heuristic between tiles of adjacent values
 * make the tester use fewer threads to avoid context switching overhead
 * use concept of "afterstates" to cut down the depth searched by one
-* for minimax/expectimax, don't eval states with very low probability
 * use alpha-beta pruning for minimax
-* change heuristic penalty for dying?
 * for wall heuristics, increase depth if the ordering has an "inversion"
 * use geo mean instead of arith mean for expectimax?
   * issues with overflow; GMP? seems rather slow
-* increase depth if # of distinct tiles is high
 * write a strict full wall builder heuristic which penalizes inversions
-* tiebreak wall builder with score or merge
 * write a tester for difficult board positions to tune heuristics
 * deal with parallel accesses/writes when testing minimax/expectimax solvers in parallel
   * or just ignore it? it'll slow things down a little but nothing will be *wrong*
@@ -38,3 +34,7 @@ This stores some loose ideas that I might try in the future.
 * change website's warning from 8s to 10s, make the warning at start actually take 10s
 * add descriptions of each option
   * add note that the pause time is only a minimum
+* display the current search depth? and % completion of search?
+* make depth customizable
+* allow user to create their own multiplication weight heuristic
+* hide heuristics section if selected strategy doesn't use heuristic
