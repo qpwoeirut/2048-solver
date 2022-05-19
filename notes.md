@@ -36,3 +36,5 @@ This stores some loose ideas that I might try in the future.
 * make depth customizable
 * allow user to create their own multiplication weight heuristic
 * hide heuristics section if selected strategy doesn't use heuristic
+* remove you win screen?
+* make mobile view look less awful
