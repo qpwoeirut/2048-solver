@@ -9,10 +9,10 @@ STAGE = "stage2"
 
 RESULT_FILES = [
     "random.csv", "spam_corner.csv", "ordered.csv", "rotating.csv",
-    "monte_carlo.csv",
     "merge-rnd_t.csv", "merge-mnmx.csv", "merge-expmx.csv",
     "score-rnd_t.csv", "score-mnmx.csv", "score-expmx.csv",
     "corner-rnd_t.csv", "corner-mnmx.csv", "corner-expmx.csv",
+    "monte_carlo.csv"
 ]
 
 this_directory = os.path.dirname(__file__)
