@@ -33,6 +33,7 @@ So instead each strategy just gets its own namespace.
 Giving each solver its own file means that I don't have to rerun every solver simulation if I only need to test one solver.
 These CSV files are then combined by [collate.py](/results/collate.py).
 In the future I might write a program to plot/visualize the data, especially for comparing different parameters on certain solvers.
+For now, the best visual I have is a [Google Sheet](https://docs.google.com/spreadsheets/d/1wgqyGy-4k6yAPCt85HvR2o7Bwf5hlHvNM6eBblyt5Kg/edit) with conditional formatting.
 
 
 ## Testing
@@ -45,8 +46,13 @@ The slower solvers run games in parallel using C++'s `std::async`.
 Games are run on an AWS EC2 Linux c6g.large instance.
 
 ## Results
-The best strategy right now is the [Monte Carlo strategy](/solvers/monte_carlo.cpp). When the `trials` parameter is set to 2000, it reaches the 2048 tile 98.8% of the time and the 4096 tile 56.6% of the time.
+The best strategy right now is the [expectimax](/strategies/expectimax.cpp) with the [corner building heuristic](/heuristics.cpp).
+When it searches with a depth of 4, it wins 97.6% of the time, reaches 4096 81.6% of the time, and gets the 8192 tile with a 18.6% success rate.
 
 The [results file](/results-stage2.csv) has the latest statistics for all tested strategies.
 
-I'm currently starting a second batch of tests that includes a strategy which has reached the [8192 tile](/images/expectimax/test_run_corner_d4_1.png) on the preliminary tests that I ran, so this section should see an update soon.
+I've made significant improvements to the expectimax implementation which allow it to search more states, and I've recently got to the 16384 tile while testing.
+
+![Image of 16384 tile game](/images/Screen%20Shot%202022-05-18%20at%209.41.32%20AM.png)
+
+The strategy that achieved that score will be tested soon in Stage 3.
