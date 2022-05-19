@@ -11,6 +11,8 @@ namespace minimax_strategy {
     #ifdef USE_CACHE
     constexpr int CACHE_DEPTH = 2;
     cache_t cache(1 << 20);
+    bool cache_empty_key_set = false;
+    // i can't figure out how to check if the empty_key is set; everything is just asserting it exists
     #endif
 
     const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
@@ -81,7 +83,8 @@ namespace minimax_strategy {
         evaluator = _evaluator;
 
         #ifdef USE_CACHE
-        if (cache.hash_funct().use_empty() == false) {  // empty_key hasn't been set, so let's set everything
+        if (!cache_empty_key_set) {  // empty_key hasn't been set, so let's set everything
+            cache_empty_key_set = true;
             cache.set_empty_key(game::INVALID_BOARD);
             cache.set_deleted_key(game::INVALID_BOARD2);
             cache.min_load_factor(0.0);

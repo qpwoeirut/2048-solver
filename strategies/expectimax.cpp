@@ -11,6 +11,9 @@ namespace expectimax_strategy {
     #ifdef USE_CACHE
     constexpr int CACHE_DEPTH = 2;
     cache_t cache(1 << 20);
+    bool cache_empty_key_set = false;
+    // i can't figure out how to check if the empty_key is set; everything is just asserting it exists
+
     // speed things up with integer arithmetic
     // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move, times 16 to pack cache
     constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4 * 16);
@@ -91,7 +94,8 @@ namespace expectimax_strategy {
         evaluator = _evaluator;
 
         #ifdef USE_CACHE
-        if (cache.hash_funct().use_empty() == false) {  // empty_key hasn't been set, so let's set everything
+        if (!cache_empty_key_set) {  // empty_key hasn't been set, so let's set everything
+            cache_empty_key_set = true;
             cache.set_empty_key(game::INVALID_BOARD);
             cache.set_deleted_key(game::INVALID_BOARD2);
             cache.min_load_factor(0.0);
