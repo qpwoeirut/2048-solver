@@ -21,8 +21,6 @@ This stores some loose ideas that I might try in the future.
   * or just ignore it? it'll slow things down a little but nothing will be *wrong*
 * figure out some import system
   * hardcoding the path to sparsehash in export.sh nonideal
-* i think the actual 2048 game starts with 2 tiles on the board?
-  * once this is resolved, move count can be calculated using sum of tiles and # of fours generated
 * make 3 cheater AIs: one that knows tile placements, one that controls tile placements and obviously cheats, one that controls tile placements but pretends that it doesn't              
 * optimize cache time/memory more
 

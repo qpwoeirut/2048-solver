@@ -14,7 +14,12 @@ int move_total = 0;
 
 const int play_game(const player_t player) {
     int fours = 0;
-    const board_t board = game::play(player, move_total, fours);
+    const board_t board = game::play(player, fours);
+
+    move_total += (board_sum(board) >> 1) - fours - 2;
+    // every move, a 2 or 4 tile spawns, so we can calculate move count by board sum
+    // the -2 is because the board starts with two tiles
+
     const int score = heuristics::score_heuristic(board) - 4 * fours;
     score_total += score;
     std::cout << "Score: " << score << std::endl;
@@ -48,13 +53,13 @@ int main() {
     game::init(8);  // make the game repeatable
     move_gen.seed(8);
 
-//    test_player("spam_corner", spam_corner_strategy::player, int(1e5));  // spam_corner is the most efficient blind strategy
+    test_player("spam_corner", spam_corner_strategy::player, int(1e5));  // spam_corner is the most efficient blind strategy
 
-    expectimax_strategy::init(0, heuristics::full_wall_heuristic);
+//    expectimax_strategy::init(0, heuristics::full_wall_heuristic);
 
-//    int m = 0, f = 0;
-//    game::play_slow(expectimax_strategy::player, m, f);
-    test_player("full-wall-expmx", expectimax_strategy::player, 3);
+//    int f = 0;
+//    game::play_slow(expectimax_strategy::player, f);
+//    test_player("full-wall-expmx", expectimax_strategy::player, 3);
     /*
     Without cache:
     Compiled benchmark.cpp!
