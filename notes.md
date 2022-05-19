@@ -38,3 +38,5 @@ This stores some loose ideas that I might try in the future.
 * hide heuristics section if selected strategy doesn't use heuristic
 * remove you win screen?
 * make mobile view look less awful
+* add a board editor?
+* add replay of games?
