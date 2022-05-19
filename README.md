@@ -47,6 +47,6 @@ Games are run on an AWS EC2 Linux c6g.large instance.
 ## Results
 The best strategy right now is the [Monte Carlo strategy](/solvers/monte_carlo.cpp). When the `trials` parameter is set to 2000, it reaches the 2048 tile 98.8% of the time and the 4096 tile 56.6% of the time.
 
-The [results file](/results.csv) has the statistics for all tested strategies.
+The [results file](/results-stage2.csv) has the latest statistics for all tested strategies.
 
 I'm currently starting a second batch of tests that includes a strategy which has reached the [8192 tile](/images/expectimax/test_run_corner_d4_1.png) on the preliminary tests that I ran, so this section should see an update soon.

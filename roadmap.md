@@ -31,7 +31,7 @@ Each stage adds new strategies and heuristics to test.
 
 The best strategy from this stage succeeded 98.8% of the time.
 I ran at least 500 test games for each player using an AWS EC2 Linux c6g.large instance.
-See this [CSV file](/results.csv) for all the results.
+See this [CSV file](/results-stage1.csv) for all the results.
 
 ### Naive Ideas
 I began with simple strategies: a random player and several players that spam moves in some order.
