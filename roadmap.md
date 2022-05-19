@@ -16,7 +16,7 @@ This implementation needed to be as fast as possible, since many of the strategi
 I used the original [2048](https://github.com/gabrielecirulli/2048) repo to ensure that my game worked in the same way.
 
 I wrote all the code except for some [bitwise magic](https://github.com/nneonneo/2048-ai/blob/master/2048.cpp#L38-L48) that transposes the board myself.
-The [README](/game/README.md) for the `game` directory has more information.
+[game.md](/game.md) has more information.
 
 
 # Part 1: "Traditional" solver
