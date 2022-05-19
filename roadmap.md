@@ -88,12 +88,18 @@ This makes the player very slow, so the maximum depth I tested was `d=4`, where 
 
 From what I know, one of the downsides of using minimax is that the computer's tile placement is random and not necessarily adversarial.
 As a result, using minimax leads to a very cautious player.
+At later stages of the game, this backfires because there are some situations where losing is possible no matter what moves are chosen, causing the player to simply panic and move left.
+That might explain why the `corner-mnmx` strategy is actually [less successful](/results/stage2/corner-mnmx.csv) at `d=4` than `d=3`.
+
+I had an overflow bug in my implementation during the original test run that I didn't discover until most of the data had been collected.
+This was fixed by rolling back the project locally to the code that was used for the data collection (since I'd made a lot of improvements since then) and re-running the tests with the fixed code.
 
 
 ### Expectimax Optimization
 This strategy is used by the best two traditional solvers I found ([here](https://github.com/nneonneo/2048-ai) and [here](https://github.com/MaartenBaert/2048-ai-emscripten)), which completely blow all the other traditional solvers out of the water.
 
 Expectimax is similar to minimax, but instead of assuming that the computer will place at the worst possible position, the expected value based on the probabilities of the computer's choice is maximized.
+All the most successful AIs I found seem to use expectimax.
 This stage's implementation of expectimax also doesn't implement any pruning or caching.
 
 
@@ -101,7 +107,7 @@ This stage's implementation of expectimax also doesn't implement any pruning or 
 I added a simple [benchmark](/benchmark.cpp) program to provide some direction in speeding up the game implementation.
 I also added `-funroll-loops` to the compilation flags, which sped things up.
 
-I've decided that from Stage 3 onwards, I'll focus more on the strategies that are very successful.
+I've decided that from Stage 3 onwards, I'll focus more on the strategies that are successful.
 The "blind" strategies won't be run in the final tests and the less effective heuristics (`score` and `merge`) will be dropped as well.
 Hopefully this will make testing run a little faster (and lower my AWS bill).
 
