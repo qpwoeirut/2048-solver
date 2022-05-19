@@ -25,6 +25,8 @@ I originally aimed to have a "traditional" solver that can succeed 80% of the ti
 
 This part has been split into multiple stages.
 Each stage adds new strategies and heuristics to test.
+Although I'll do lots of testing to improve the strategies and heuristics, the final tests that I'll run at the end of each stage will serve as "official" results for how good each strategy is.
+This ensures that I don't have to run the data collection tests that often, since those are computationally expensive.
 
 
 ## Stage 1
