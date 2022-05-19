@@ -5,6 +5,8 @@
 import csv
 import os
 
+STAGE = "stage2"
+
 RESULT_FILES = [
     "random.csv", "spam_corner.csv", "ordered.csv", "rotating.csv",
     "monte_carlo.csv",
@@ -19,7 +21,7 @@ headings = None  # will be overwritten once a CSV file is read
 collated_data = []
 
 for csv_filename in RESULT_FILES:
-    filename = os.fsdecode(csv_filename)
+    filename = os.fsdecode(STAGE + '/' + csv_filename)
 
     with open(filename) as csv_file:
         reader = csv.reader(csv_file)
@@ -32,7 +34,7 @@ for csv_filename in RESULT_FILES:
                 row[i] = round(int(row[i]) * 100 / games, 2)  # convert to percentage
             collated_data.append(row)
 
-with open("../results.csv", 'w') as out_csv_file:
+with open(f"../results-{STAGE}.csv", 'w') as out_csv_file:
     writer = csv.writer(out_csv_file)
     writer.writerow(headings)
     writer.writerows(collated_data)
