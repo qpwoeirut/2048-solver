@@ -8,32 +8,14 @@ namespace minimax_strategy {
     int depth = 3;
     heuristic_t evaluator = heuristics::dummy_heuristic;
 
-    #ifdef USE_CACHE
-    constexpr int CACHE_DEPTH = 2;
-    cache_t cache(1 << 20);
-    bool cache_empty_key_set = false;
-    // i can't figure out how to check if the empty_key is set; everything is just asserting it exists
-    #endif
-
-    const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
+    const eval_t helper(const board_t board, const int cur_depth, eval_t alpha, const eval_t beta0, const int fours) {
         if (game::game_over(board)) {
             const eval_t score = evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
-        if (cur_depth == 0 || fours >= 5 ) { // selecting 5 fours has a 0.001% chance, which is negligible
+        if (cur_depth == 0 || fours >= 5) { // selecting 5 fours has a 0.001% chance, which is negligible
             return evaluator(board) << 2;  // move doesn't matter
         }
-
-        #ifdef USE_CACHE
-        if (cur_depth >= CACHE_DEPTH) {
-            const cache_t::iterator it = cache.find(board);
-            #ifdef REQUIRE_DETERMINISTIC
-            if (it != cache.end() && (it->second & 0xF) == cur_depth) return it->second >> 4;
-            #else
-            if (it != cache.end() && (it->second & 0xF) >= cur_depth) return it->second >> 4;
-            #endif
-        }
-        #endif
 
         eval_t best_score = heuristics::MIN_EVAL;
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
@@ -44,52 +26,39 @@ namespace minimax_strategy {
                 continue;
             } else {
                 const uint16_t tile_mask = to_tile_mask(new_board);
+                eval_t beta = beta0;
                 for (int j=0; j<16; ++j) {
                     if (((tile_mask >> j) & 1) == 0) {
-                        current_score = std::min(current_score, helper(new_board | (1ULL << (j << 2)), cur_depth - 1, add_to_cache, fours) >> 2);
-                        current_score = std::min(current_score, helper(new_board | (2ULL << (j << 2)), cur_depth - 1, add_to_cache, (fours + 1)) >> 2);
+                        current_score = std::min(current_score,
+                                                 helper(new_board | (1ULL << (j << 2)), cur_depth - 1, alpha, beta, fours) >> 2);
+                        current_score = std::min(current_score,
+                                                 helper(new_board | (2ULL << (j << 2)), cur_depth - 1, alpha, beta, (fours + 1)) >> 2);
+
+                        beta = std::min(beta, current_score);
+                        if (current_score < alpha) break;
                     }
                 }
             }
             if (best_score <= current_score) {
                 best_score = current_score;
                 best_move = i;
+
+                alpha = std::max(alpha, best_score);
+                if (best_score > beta0) break;
             }
         }
-
-        #ifdef USE_CACHE
-        if (add_to_cache && cur_depth >= CACHE_DEPTH) {
-            cache[board] = (((best_score << 2) | best_move) << 4) | cur_depth;
-        }
-        #endif
 
         return (best_score << 2) | best_move;  // pack both score and move
     }
     const int player(const board_t board) {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
-        #ifdef USE_CACHE
-        // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
-        const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
-        const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
-        if (!add_to_cache) cache.clear_no_resize();
-        #else
-        const int move = helper(board, depth_to_use, false, 0) & 3;
-        #endif
+        const int move = helper(board, depth_to_use, heuristics::MIN_EVAL, heuristics::MAX_EVAL, 0) & 3;
         return move;
     }
 
     void init(const int _depth, heuristic_t _evaluator) {
         depth = _depth;
         evaluator = _evaluator;
-
-        #ifdef USE_CACHE
-        if (!cache_empty_key_set) {  // empty_key hasn't been set, so let's set everything
-            cache_empty_key_set = true;
-            cache.set_empty_key(game::INVALID_BOARD);
-            cache.set_deleted_key(game::INVALID_BOARD2);
-            cache.min_load_factor(0.0);
-        }
-        #endif
     }
 }
 

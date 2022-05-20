@@ -4,6 +4,7 @@
 #include "heuristics.cpp"
 #include "strategies/blind/spam_corner.cpp"
 #include "strategies/expectimax.cpp"
+#include "strategies/minimax.cpp"
 
 constexpr int MIN_TILE = 3;
 constexpr int MAX_TILE = 18;
@@ -26,7 +27,7 @@ const int play_game(const player_t player) {
     return get_max_tile(board);
 }
 
-void test_player(const std::string& strategy, const player_t player, const int games) {
+void test_player(const player_t player, const int games) {
     std::fill(results, results+MAX_TILE, 0);
 
     const long long start_time = get_current_time_ms();
@@ -53,40 +54,55 @@ int main() {
     game::init(8);  // make the game repeatable
     move_gen.seed(8);
 
-    test_player("spam_corner", spam_corner_strategy::player, int(1e5));  // spam_corner is the most efficient blind strategy
+    //test_player("spam_corner", spam_corner_strategy::player, int(1e5));  // spam_corner is the most efficient blind strategy
+
+    int f = 0;
+
+    minimax_strategy::init(0, heuristics::score_heuristic);
+    //game::play_slow(minimax_strategy::player, f);
+    test_player(minimax_strategy::player, 20);
 
 //    expectimax_strategy::init(0, heuristics::full_wall_heuristic);
-
-//    int f = 0;
 //    game::play_slow(expectimax_strategy::player, f);
 //    test_player("full-wall-expmx", expectimax_strategy::player, 3);
-    /*
-    Without cache:
-    Compiled benchmark.cpp!
-    132256
-    61416
-    74808
-    Playing 3 games took 749.435 seconds (249.812 seconds per game)
-    ...
-    12 3 (100)
-    13 1 (33.3333)
-    14 0 (0)
-    ...
-    Average score: 89493.3
-    Total moves: 11830
-
-
-    With cache depth = 2:
-    132256
-    61416
-    74808
-    Playing 3 games took 246.179 seconds (82.0597 seconds per game)
-    ...
-    Average score: 89493.3
-    Total moves: 11830
-
-
-    With cache depth = 3:
-    Playing 3 games took 252.757 seconds (84.2523 seconds per game)
-    */
 }
+
+/*
+minimax depth=0, score heuristic
+With cache, no pruning
+
+Score: 7340
+Score: 16312
+Score: 14480
+Score: 7320
+Score: 7544
+Score: 12412
+Score: 27468
+Score: 16212
+Score: 14636
+Score: 16220
+Score: 7376
+Score: 23292
+Score: 27312
+Score: 16016
+Score: 15508
+Score: 14840
+Score: 13952
+Score: 16120
+Score: 14300
+Score: 7224
+Playing 20 games took 30.982 seconds (1.5491 seconds per game)
+...
+9 20 (100)
+10 15 (75)
+11 3 (15)
+12 0 (0)
+...
+Average score: 14794.2
+Total moves: 17247
+
+
+With alpha-beta pruning, no cache
+Playing 20 games took 8.402 seconds (0.4201 seconds per game)
+*/
+
