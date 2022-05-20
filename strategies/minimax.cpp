@@ -54,7 +54,7 @@ namespace minimax_strategy {
     const int pick_depth(const board_t board) {
         const int tile_ct = count_set(to_tile_mask(board));
         const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
-        return score <= 7 ? 5 : (score <= 10 ? 6 : (score <= 13 ? 7 : 8 + (score >= 15)));
+        return score <= 7 ? 3 : (score <= 9 ? 4 : (score <= 13 ? 5 : (score <= 15 ? 6 : 7)));
     }
 
     const int player(const board_t board) {
