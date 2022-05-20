@@ -5,7 +5,7 @@ namespace minimax_strategy {
                    a nonpositive depth argument d will be subtracted from the depth picker's result (increasing the depth)
     */
 
-    int depth = 3;
+    int depth = 0;
     heuristic_t evaluator = heuristics::dummy_heuristic;
 
     const eval_t helper(const board_t board, const int cur_depth, eval_t alpha, const eval_t beta0, const int fours) {
