@@ -64,7 +64,7 @@ int main() {
 
     expectimax_strategy::init(-1, heuristics::corner_heuristic);
 //    game::play_slow(expectimax_strategy::player, f);
-    test_player(expectimax_strategy::player, 3);
+    test_player(expectimax_strategy::player, 1);
 }
 
 /*

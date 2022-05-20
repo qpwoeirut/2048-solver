@@ -88,8 +88,8 @@ namespace expectimax_strategy {
         #ifdef USE_CACHE
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
         const bool add_to_cache = true;  //depth_to_use > CACHE_DEPTH + 1;
+        cache.clear_no_resize();
         const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
-        if (!add_to_cache) cache.clear_no_resize();
         std::cout << cache.size() << '\n';
         #else
         const int move = helper(board, depth_to_use, false, 0) & 3;
@@ -113,20 +113,3 @@ namespace expectimax_strategy {
     }
 }
 
-
-/*
-reached 273M without clearing
-
-around 590k size (49M) with clearing by add_to_cache value
-Playing 3 games took 258.542 seconds (86.1807 seconds per game)
-
-clearing by add_to_cache, init size 1<<20
-memory stayed 65M
-Playing 3 games took 266.666 seconds (88.8887 seconds per game)
-
-+ setting min_load_factor to 0
-Playing 3 games took 266.075 seconds (88.6917 seconds per game)
-
-change init size 600000
-Playing 3 games took 261.784 seconds (87.2613 seconds per game)
-*/
