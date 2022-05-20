@@ -58,13 +58,13 @@ int main() {
 
     int f = 0;
 
-    minimax_strategy::init(0, heuristics::score_heuristic);
-    //game::play_slow(minimax_strategy::player, f);
-    test_player(minimax_strategy::player, 20);
+//    minimax_strategy::init(0, heuristics::score_heuristic);
+//    game::play_slow(minimax_strategy::player, f);
+//    test_player(minimax_strategy::player, 20);
 
-//    expectimax_strategy::init(0, heuristics::full_wall_heuristic);
+    expectimax_strategy::init(-1, heuristics::corner_heuristic);
 //    game::play_slow(expectimax_strategy::player, f);
-//    test_player("full-wall-expmx", expectimax_strategy::player, 3);
+    test_player(expectimax_strategy::player, 3);
 }
 
 /*

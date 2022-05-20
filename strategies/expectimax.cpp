@@ -87,9 +87,10 @@ namespace expectimax_strategy {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
         #ifdef USE_CACHE
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
-        const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
+        const bool add_to_cache = true;  //depth_to_use > CACHE_DEPTH + 1;
         const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
         if (!add_to_cache) cache.clear_no_resize();
+        std::cout << cache.size() << '\n';
         #else
         const int move = helper(board, depth_to_use, false, 0) & 3;
         #endif
@@ -107,6 +108,7 @@ namespace expectimax_strategy {
             cache.set_deleted_key(game::INVALID_BOARD2);
             cache.min_load_factor(0.0);
         }
+        cache.clear_no_resize();
         #endif
     }
 }
