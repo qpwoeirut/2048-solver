@@ -71,12 +71,6 @@ int count_distinct_tiles(const board_t board) {
     return count_set(tile_exists);
 }
 
-int pick_depth(const board_t board) {
-    const int tile_ct = count_set(to_tile_mask(board));
-    const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
-    return score <= 7 ? 2 : (score <= 10 ? 3 : (score <= 13 ? 4 : 5 + (score >= 15)));
-}
-
 int board_sum(const board_t board) {
     int sum = 0;
     for (int i = 0; i < 64; i += 4) if (((board >> i) & 0xF) != 0) sum += 1 << ((board >> i) & 0xF);

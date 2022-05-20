@@ -5,7 +5,7 @@ namespace expectimax_strategy {
                    a nonpositive depth argument d will be subtracted from the depth picker's result (increasing the depth)
     */
 
-    int depth = 3;
+    int depth = 0;
     heuristic_t evaluator = heuristics::dummy_heuristic;
 
     #ifdef USE_CACHE
@@ -76,6 +76,13 @@ namespace expectimax_strategy {
 
         return (best_score << 2) | best_move;  // pack both score and move
     }
+
+    const int pick_depth(const board_t board) {
+        const int tile_ct = count_set(to_tile_mask(board));
+        const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
+        return score <= 7 ? 2 : (score <= 10 ? 3 : (score <= 13 ? 4 : 5 + (score >= 15)));
+    }
+
     const int player(const board_t board) {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
         #ifdef USE_CACHE

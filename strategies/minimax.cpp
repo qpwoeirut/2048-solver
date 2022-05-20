@@ -50,6 +50,13 @@ namespace minimax_strategy {
 
         return (best_score << 2) | best_move;  // pack both score and move
     }
+
+    const int pick_depth(const board_t board) {
+        const int tile_ct = count_set(to_tile_mask(board));
+        const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
+        return score <= 7 ? 5 : (score <= 10 ? 6 : (score <= 13 ? 7 : 8 + (score >= 15)));
+    }
+
     const int player(const board_t board) {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
         const int move = helper(board, depth_to_use, heuristics::MIN_EVAL, heuristics::MAX_EVAL, 0) & 3;
