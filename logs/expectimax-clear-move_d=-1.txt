@@ -7395,4 +7395,3 @@ Playing 1 games took 1561.38 seconds (1561.38 seconds per game)
 17 0 (0)
 Average score: 175840
 Total moves: 7378
-qpwoeirut@Stanleys-MacBook-Pro-3 2048-solver % 
