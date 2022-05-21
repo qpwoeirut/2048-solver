@@ -20,9 +20,9 @@ namespace expectimax_strategy {
     
     cache_t cache(USUAL_CACHE);
 
-    board_t deletion_queue[MAX_CACHE];
-    int q[4] = {0, 0, 0, 0};
-    int q_end = 0;
+    //board_t deletion_queue[MAX_CACHE];
+    //int q[4] = {0, 0, 0, 0};
+    //int q_end = 0;
     // queue looks like [q_0, c_0, q_1, c_1, q_2, c_2, q_3, c_3, q_end] where c_n holds the cache that will be deleted after n moves (with wrap around)
     // after each turn, the range from q_0 to q_1 gets deleted and everything shifts upward
 
@@ -80,18 +80,18 @@ namespace expectimax_strategy {
             cache[board] = (((best_score << 2) | best_move) << 4) | cur_depth;
 
             // relies on MAX_CACHE being a power of 2
-            deletion_queue[q_end & (MAX_CACHE - 1)] = board;
-            ++q_end;
-            if (q[0] + MAX_CACHE == q_end) {
-                cache.erase(deletion_queue[q[0]++]);
-                if (q[0] >= MAX_CACHE) {
-                    q[0] -= MAX_CACHE;
-                    q[1] -= MAX_CACHE;
-                    q[2] -= MAX_CACHE;
-                    q[3] -= MAX_CACHE;
-                    q_end -= MAX_CACHE;
-                }
-            }
+            //deletion_queue[q_end & (MAX_CACHE - 1)] = board;
+            //++q_end;
+            //if (q[0] + MAX_CACHE == q_end) {
+            //    cache.erase(deletion_queue[q[0]++]);
+            //    if (q[0] >= MAX_CACHE) {
+            //        q[0] -= MAX_CACHE;
+            //        q[1] -= MAX_CACHE;
+            //        q[2] -= MAX_CACHE;
+            //        q[3] -= MAX_CACHE;
+            //        q_end -= MAX_CACHE;
+            //    }
+            //}
         }
 
         return (best_score << 2) | best_move;  // pack both score and move
@@ -109,21 +109,22 @@ namespace expectimax_strategy {
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
         const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
         const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
+        std::cout << cache.size() << std::endl;
 
-        while (q[0] < q[1]) {  // delete everything in range q_0 ... q_1
-            cache.erase(deletion_queue[q[0]++]);
-            if (q[0] >= MAX_CACHE) {
-                q[0] -= MAX_CACHE;
-                q[1] -= MAX_CACHE;
-                q[2] -= MAX_CACHE;
-                q[3] -= MAX_CACHE;
-                q_end -= MAX_CACHE;
-            }
-        }
-        q[1] = std::max(q[0], q[2]);
-        q[2] = std::max(q[0], q[3]);  // possible that stuff was deleted while searching because cache got too big
-        q[3] = q_end;
-        std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
+        //while (q[0] < q[1]) {  // delete everything in range q_0 ... q_1
+        //    cache.erase(deletion_queue[q[0]++]);
+        //    if (q[0] >= MAX_CACHE) {
+        //        q[0] -= MAX_CACHE;
+        //        q[1] -= MAX_CACHE;
+        //        q[2] -= MAX_CACHE;
+        //        q[3] -= MAX_CACHE;
+        //        q_end -= MAX_CACHE;
+        //    }
+        //}
+        //q[1] = std::max(q[0], q[2]);
+        //q[2] = std::max(q[0], q[3]);  // possible that stuff was deleted while searching because cache got too big
+        //q[3] = q_end;
+        //std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
         return move;
     }
 
