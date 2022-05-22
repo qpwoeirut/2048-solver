@@ -53,6 +53,6 @@ The [results file](/results-stage2.csv) has the latest statistics for all tested
 
 I've made significant improvements to the expectimax implementation which allow it to search more states, and I've recently got to the 16384 tile while testing.
 
-![Image of 16384 tile game](/images/Screen%20Shot%202022-05-18%20at%209.41.32%20AM.png)
+![Image of 16384 tile game](/images/Screen%20Shot%202022-05-18%20at%209.41.32%20AM-expectimax.png)
 
 The strategy that achieved that score will be tested soon in Stage 3.
