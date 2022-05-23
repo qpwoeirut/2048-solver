@@ -1,21 +1,33 @@
-namespace monte_carlo_strategy {
+#ifndef MONTE_CARLO_PLAYER_HPP
+#define MONTE_CARLO_PLAYER_HPP
+
+#include "Strategy.hpp"
+#include "RandomPlayer.hpp"
+
+class MonteCarloPlayer: Strategy {
     /*
         Parameters:
             trials: random trials for each move
     */
 
-    int trials = 100;
-    const player_t secondary_player = random_strategy::player;
+    static RandomPlayer random_player;
 
+    public:
+    int trials;
+    MonteCarloPlayer(const int _trials) {
+        trials = _trials;
+    }
+
+    private:
     const int run_trial(board_t board) {
         while (!game::game_over(board)) {
-            board = game::add_random_tile(game::make_move(board, secondary_player(board)),
+            board = game::add_random_tile(game::make_move(board, random_player.pick_move(board)),
                                           game::generate_random_tile_val());
         }
         return heuristics::score_heuristic(board);
     }
 
-    const int player(const board_t board) {
+    const int pick_move(const board_t board) override {
         int best_score = 0;
         int best_move = -1;
         for (int i=0; i<4; ++i) {
@@ -33,11 +45,7 @@ namespace monte_carlo_strategy {
         }
         return best_move;
     }
+};
 
-    // this is ugly as heck but C++ doesn't let you pass capturing lambdas as function pointers so here we are
-    // i tried classes too but those didn't work either
-    void init(const int _trials) {  
-        trials = _trials;
-    }
-}
+#endif
 

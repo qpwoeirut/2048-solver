@@ -1,18 +1,35 @@
-namespace rand_trials_strategy {
+#ifndef RANDOM_TRIALS_STRATEGY_HPP
+#define RANDOM_TRIALS_STRATEGY_HPP
+
+#include "Strategy.hpp"
+
+class RandomTrialsStrategy: Strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
             trials: trials for each move checked
     */
 
-    int depth = 3;
-    int trials = 5;
-    heuristic_t evaluator = heuristics::dummy_heuristic;
-
     // speed things up with integer arithmetic
     // 4 moves, 20 max depth, multiplied by 4 to pack score and move
-    constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 4 * 20 * 4);
+    static constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 4 * 20 * 4);
+    static_assert(MULT > 1);
 
+    heuristic_t evaluator = heuristics::dummy_heuristic;
+
+    public:
+    int depth, trials;
+    void init(const int _depth, const int _trials, heuristic_t _evaluator) {
+        depth = _depth;
+        trials = _trials;
+        evaluator = _evaluator;
+    }
+
+    const int player(const board_t board) {
+        return helper(board, depth) & 3;
+    }
+
+    private:
     const eval_t helper(const board_t board, const int cur_depth) {
         if (game::game_over(board)) {
             const eval_t score = (evaluator(board) * MULT) << 2;
@@ -40,16 +57,7 @@ namespace rand_trials_strategy {
         }
         return ((best_score / trials) << 2) | best_move;  // pack both score and move
     }
-    const int player(const board_t board) {
-        return helper(board, depth) & 3;
-    }
+};
 
-    // this is ugly as heck but C++ doesn't let you pass capturing lambdas as function pointers so here we are
-    // i tried classes too but those didn't work either
-    void init(const int _depth, const int _trials, heuristic_t _evaluator) {
-        depth = _depth;
-        trials = _trials;
-        evaluator = _evaluator;
-    }
-}
+#endif
 

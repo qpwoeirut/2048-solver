@@ -2,9 +2,15 @@
 
 #include "game.cpp"
 #include "heuristics.cpp"
-#include "strategies/blind/spam_corner.cpp"
-#include "strategies/expectimax.cpp"
-#include "strategies/minimax.cpp"
+#include "strategies/ExpectimaxStrategy.hpp"
+#include "strategies/MinimaxStrategy.hpp"
+#include "strategies/MonteCarloPlayer.hpp"
+#include "strategies/OrderedPlayer.hpp"
+#include "strategies/RandomPlayer.hpp"
+#include "strategies/RandomTrialsStrategy.hpp"
+#include "strategies/RotatingPlayer.hpp"
+#include "strategies/SpamCornerPlayer.hpp"
+#include "strategies/UserPlayer.hpp"
 
 constexpr int MIN_TILE = 3;
 constexpr int MAX_TILE = 18;
@@ -57,6 +63,8 @@ int main() {
     //test_player("spam_corner", spam_corner_strategy::player, int(1e5));  // spam_corner is the most efficient blind strategy
 
     int f = 0;
+
+    game::play_game(ask_user_player::player, f);
 
 //    minimax_strategy::init(0, heuristics::score_heuristic);
 //    game::play_slow(minimax_strategy::player, f);

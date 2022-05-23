@@ -1,13 +1,30 @@
-namespace minimax_strategy {
+#ifndef MINIMAX_STRATEGY_HPP
+#define MINIMAX_STRATEGY_HPP
+
+#include "Strategy.hpp"
+
+class MinimaxStrategy: Strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
                    a nonpositive depth argument d will be subtracted from the depth picker's result (increasing the depth)
     */
 
-    int depth = 0;
     heuristic_t evaluator = heuristics::dummy_heuristic;
 
+    public:
+    int depth = 0;
+    MinimaxStrategy(const int _depth, const heuristic_t _evaluator) {
+        depth = _depth;
+        evaluator = _evaluator;
+    }
+    const int pick_move(const board_t board) override {
+        const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
+        const int move = helper(board, depth_to_use, heuristics::MIN_EVAL, heuristics::MAX_EVAL, 0) & 3;
+        return move;
+    }
+
+    private:
     const eval_t helper(const board_t board, const int cur_depth, eval_t alpha, const eval_t beta0, const int fours) {
         if (game::game_over(board)) {
             const eval_t score = evaluator(board);
@@ -56,16 +73,6 @@ namespace minimax_strategy {
         const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
         return score <= 7 ? 3 : (score <= 9 ? 4 : (score <= 13 ? 5 : (score <= 15 ? 6 : 7)));
     }
-
-    const int player(const board_t board) {
-        const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
-        const int move = helper(board, depth_to_use, heuristics::MIN_EVAL, heuristics::MAX_EVAL, 0) & 3;
-        return move;
-    }
-
-    void init(const int _depth, heuristic_t _evaluator) {
-        depth = _depth;
-        evaluator = _evaluator;
-    }
-}
+};
+#endif
 
