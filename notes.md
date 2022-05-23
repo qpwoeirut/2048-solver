@@ -27,14 +27,10 @@ This stores some loose ideas that I might try in the future.
 
 ## Website
 * persist AI settings with localstorage
-* change website's warning from 8s to 10s, make the warning at start actually take 10s
 * add descriptions of each option
-  * add note that the pause time is only a minimum
 * display the current search depth? and % completion of search?
 * make depth customizable
 * allow user to create their own multiplication weight heuristic
-* hide heuristics section if selected strategy doesn't use heuristic
 * remove you win screen?
-* make mobile view look less awful
 * add a board editor?
 * add replay of games?
