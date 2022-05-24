@@ -2,8 +2,11 @@
 #define EXPECTIMAX_STRATEGY_HPP
 
 #include "Strategy.hpp"
+#include <sparsehash/dense_hash_map>
+//using cache_t = std::unordered_map<board_t, eval_t>;
+using cache_t = google::dense_hash_map<board_t, eval_t>;  // https://github.com/sparsehash/sparsehash
 
-class ExpectimaxStrategy: Strategy {
+class ExpectimaxStrategy: public Strategy {
     /*
         Parameters:
             depth: depth to search; note that search space increases exponentially with depth
@@ -47,14 +50,14 @@ class ExpectimaxStrategy: Strategy {
         cache.max_load_factor(0.9);  // but expand slowly
     }
 
-    const int player(const board_t board) {
+    const int pick_move(const board_t board) {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
 
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
         const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
         const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
 
-//        std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
+        //std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
         while (q[0] < q[1]) {  // delete everything in range q_0 ... q_1
             cache.erase(deletion_queue[q[0]++]);
             if (q[0] >= MAX_CACHE) {

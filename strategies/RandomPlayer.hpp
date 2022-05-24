@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class RandomPlayer: Strategy {
+class RandomPlayer: public Strategy {
     public:
     const int pick_move(const board_t board) override {
         int move;

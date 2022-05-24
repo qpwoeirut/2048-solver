@@ -2,7 +2,8 @@
 #include <iostream>
 #include <random>
 
-#include "util.cpp"
+#include "util.hpp"
+#include "strategies/Strategy.hpp"
 
 namespace game {
     constexpr int ROWS = 0x10000;
@@ -129,7 +130,7 @@ namespace game {
         return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3));// || board == WINNING_BOARD;
     }
 
-    board_t play(const player_t player, int& fours) {
+    board_t play(Strategy& player, int& fours) {
         const board_t tile_val0 = generate_random_tile_val();
         const board_t tile_val1 = generate_random_tile_val();
         fours += (tile_val0 == 2) + (tile_val1 == 2);
@@ -140,7 +141,7 @@ namespace game {
 
             int attempts = 0x10000;
             while (old_board == board) {
-                int dir = player(board);
+                const int dir = player.pick_move(board);
                 assert(0 <= dir && dir < 4);
                 board = make_move(board, dir);
 
@@ -158,7 +159,7 @@ namespace game {
         return board;
     }
     
-    board_t play_slow(const player_t player, int& fours) {
+    board_t play_slow(Strategy& player, int& fours) {
         const board_t tile_val0 = generate_random_tile_val();
         const board_t tile_val1 = generate_random_tile_val();
         fours += (tile_val0 == 2) + (tile_val1 == 2);
@@ -175,7 +176,7 @@ namespace game {
 
             int attempts = 0x10000;
             while (old_board == board) {
-                int dir = player(board);
+                const int dir = player.pick_move(board);
                 assert(0 <= dir && dir < 4);
                 board = make_move(board, dir);
 

@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class RotatingPlayer: Strategy {
+class RotatingPlayer: public Strategy {
     int current_move = 0;
 
     public:

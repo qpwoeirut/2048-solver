@@ -1,12 +1,12 @@
+#ifndef UTIL_HPP
+#define UTIL_HPP
+
 #include <chrono>
-#include <sparsehash/dense_hash_map>
 
 using row_t = uint16_t;
 using board_t = uint64_t;
 
 using eval_t = int64_t;
-//using cache_t = std::unordered_map<board_t, eval_t>;
-using cache_t = google::dense_hash_map<board_t, eval_t>;  // https://github.com/sparsehash/sparsehash
 
 using player_t = const int (*)(const board_t);
 using heuristic_t = eval_t (*)(const board_t);
@@ -76,3 +76,6 @@ int board_sum(const board_t board) {
     for (int i = 0; i < 64; i += 4) if (((board >> i) & 0xF) != 0) sum += 1 << ((board >> i) & 0xF);
     return sum;
 }
+
+#endif
+

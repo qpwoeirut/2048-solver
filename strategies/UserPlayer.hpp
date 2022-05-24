@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class UserPlayer: Strategy {
+class UserPlayer: public Strategy {
     public:
     const int pick_move(const board_t board) override {
         print_board(board);

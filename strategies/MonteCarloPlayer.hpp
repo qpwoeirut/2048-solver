@@ -4,7 +4,7 @@
 #include "Strategy.hpp"
 #include "RandomPlayer.hpp"
 
-class MonteCarloPlayer: Strategy {
+class MonteCarloPlayer: public Strategy {
     /*
         Parameters:
             trials: random trials for each move

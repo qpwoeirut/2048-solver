@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class RandomTrialsStrategy: Strategy {
+class RandomTrialsStrategy: public Strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth

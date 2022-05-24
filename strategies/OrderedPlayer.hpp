@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class OrderedPlayer: Strategy {
+class OrderedPlayer: public Strategy {
     public:
     const int pick_move(const board_t board) override {
         if (board != game::make_move(board, 0)) return 0;

@@ -19,7 +19,7 @@ int results[MAX_TILE];
 long long score_total = 0;
 int move_total = 0;
 
-const int play_game(const player_t player) {
+const int play_game(Strategy& player) {
     int fours = 0;
     const board_t board = game::play(player, fours);
 
@@ -33,7 +33,7 @@ const int play_game(const player_t player) {
     return get_max_tile(board);
 }
 
-void test_player(const player_t player, const int games) {
+void test_player(Strategy& player, const int games) {
     std::fill(results, results+MAX_TILE, 0);
 
     const long long start_time = get_current_time_ms();
@@ -56,6 +56,9 @@ void test_player(const player_t player, const int games) {
     std::cout << "Total moves: " << move_total << std::endl;
 }
 
+MinimaxStrategy minimax_strategy(3, heuristics::score_heuristic);
+ExpectimaxStrategy expectimax_strategy(3, heuristics::corner_heuristic);
+
 int main() {
     game::init(8);  // make the game repeatable
     move_gen.seed(8);
@@ -64,15 +67,14 @@ int main() {
 
     int f = 0;
 
-    game::play_game(ask_user_player::player, f);
+    //UserPlayer user_player();
+    //game::play(user_player, f);
 
-//    minimax_strategy::init(0, heuristics::score_heuristic);
-//    game::play_slow(minimax_strategy::player, f);
-//    test_player(minimax_strategy::player, 20);
+    //game::play_slow(minimax_strategy, f);
+    //test_player(minimax_strategy, 20);
 
-    expectimax_strategy::init(-1, heuristics::corner_heuristic);
-//    game::play_slow(expectimax_strategy::player, f);
-    test_player(expectimax_strategy::player, 1);
+    //game::play_slow(expectimax_strategy, f);
+    test_player(expectimax_strategy, 10);
 }
 
 /*
