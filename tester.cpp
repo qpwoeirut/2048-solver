@@ -170,8 +170,6 @@ int main() {
     //
     //return 0;
 
-    assert(0);
-
     test_single_player("random", random_player, GAMES[4]);
     test_single_player("spam_corner", spam_corner_player, GAMES[4]);
     test_single_player("ordered", ordered_player, GAMES[4]);
