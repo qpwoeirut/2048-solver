@@ -1,5 +1,11 @@
-namespace random_strategy {
-    const int player(const board_t board) {
+#ifndef RANDOM_PLAYER_HPP
+#define RANDOM_PLAYER_HPP
+
+#include "Strategy.hpp"
+
+class RandomPlayer: public Strategy {
+    public:
+    const int pick_move(const board_t board) override {
         int move;
         do {  // this *shouldn't* infinite loop but i guess we will see...
             move = random_move();
@@ -7,5 +13,7 @@ namespace random_strategy {
         while (board == game::make_move(board, move));
         return move;
     }
-}
+};
+
+#endif
 

@@ -2,9 +2,15 @@
 
 #include "game.cpp"
 #include "heuristics.cpp"
-#include "strategies/blind/spam_corner.cpp"
-#include "strategies/expectimax.cpp"
-#include "strategies/minimax.cpp"
+#include "strategies/ExpectimaxStrategy.hpp"
+#include "strategies/MinimaxStrategy.hpp"
+#include "strategies/MonteCarloPlayer.hpp"
+#include "strategies/OrderedPlayer.hpp"
+#include "strategies/RandomPlayer.hpp"
+#include "strategies/RandomTrialsStrategy.hpp"
+#include "strategies/RotatingPlayer.hpp"
+#include "strategies/SpamCornerPlayer.hpp"
+#include "strategies/UserPlayer.hpp"
 
 constexpr int MIN_TILE = 3;
 constexpr int MAX_TILE = 18;
@@ -13,7 +19,7 @@ int results[MAX_TILE];
 long long score_total = 0;
 int move_total = 0;
 
-const int play_game(const player_t player) {
+const int play_game(Strategy& player) {
     int fours = 0;
     const board_t board = game::play(player, fours);
 
@@ -27,7 +33,7 @@ const int play_game(const player_t player) {
     return get_max_tile(board);
 }
 
-void test_player(const player_t player, const int games) {
+void test_player(Strategy& player, const int games) {
     std::fill(results, results+MAX_TILE, 0);
 
     const long long start_time = get_current_time_ms();
@@ -50,6 +56,9 @@ void test_player(const player_t player, const int games) {
     std::cout << "Total moves: " << move_total << std::endl;
 }
 
+//MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
+ExpectimaxStrategy expectimax_strategy(-1, heuristics::corner_heuristic);
+
 int main() {
     game::init(8);  // make the game repeatable
     move_gen.seed(8);
@@ -58,51 +67,13 @@ int main() {
 
     int f = 0;
 
-//    minimax_strategy::init(0, heuristics::score_heuristic);
-//    game::play_slow(minimax_strategy::player, f);
-//    test_player(minimax_strategy::player, 20);
+    //UserPlayer user_player();
+    //game::play(user_player, f);
 
-    expectimax_strategy::init(-1, heuristics::corner_heuristic);
-//    game::play_slow(expectimax_strategy::player, f);
-    test_player(expectimax_strategy::player, 1);
+    //game::play_slow(minimax_strategy, f);
+    //test_player(minimax_strategy, 20);
+
+    //game::play_slow(expectimax_strategy, f);
+    test_player(expectimax_strategy, 1);
 }
-
-/*
-minimax depth=0, score heuristic
-With cache, no pruning
-
-Score: 7340
-Score: 16312
-Score: 14480
-Score: 7320
-Score: 7544
-Score: 12412
-Score: 27468
-Score: 16212
-Score: 14636
-Score: 16220
-Score: 7376
-Score: 23292
-Score: 27312
-Score: 16016
-Score: 15508
-Score: 14840
-Score: 13952
-Score: 16120
-Score: 14300
-Score: 7224
-Playing 20 games took 30.982 seconds (1.5491 seconds per game)
-...
-9 20 (100)
-10 15 (75)
-11 3 (15)
-12 0 (0)
-...
-Average score: 14794.2
-Total moves: 17247
-
-
-With alpha-beta pruning, no cache
-Playing 20 games took 8.402 seconds (0.4201 seconds per game)
-*/
 
