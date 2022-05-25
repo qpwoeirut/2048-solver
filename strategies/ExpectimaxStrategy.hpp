@@ -57,7 +57,6 @@ class ExpectimaxStrategy: public Strategy {
         const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
         const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
 
-        //std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
         while (q[0] < q[1]) {  // delete everything in range q_0 ... q_1
             cache.erase(deletion_queue[q[0]++]);
             if (q[0] >= MAX_CACHE) {
@@ -71,6 +70,7 @@ class ExpectimaxStrategy: public Strategy {
         q[1] = std::max(q[0], q[2]);
         q[2] = std::max(q[0], q[3]);  // possible that stuff was deleted while searching because cache got too big
         q[3] = q_end;
+        std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
         return move;
     }
 
