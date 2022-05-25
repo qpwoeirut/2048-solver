@@ -2,6 +2,7 @@
 #define UTIL_HPP
 
 #include <chrono>
+#include <random>
 
 using row_t = uint16_t;
 using board_t = uint64_t;

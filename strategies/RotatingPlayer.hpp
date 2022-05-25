@@ -7,7 +7,7 @@ class RotatingPlayer: public Strategy {
     int current_move = 0;
 
     public:
-    const int player(const board_t board) {
+    const int pick_move(const board_t board) override {
         do {
             current_move = (current_move + 1) % 4;
         } while (board == game::make_move(board, current_move));

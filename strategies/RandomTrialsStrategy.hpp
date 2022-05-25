@@ -19,13 +19,13 @@ class RandomTrialsStrategy: public Strategy {
 
     public:
     int depth, trials;
-    void init(const int _depth, const int _trials, heuristic_t _evaluator) {
+    RandomTrialsStrategy(const int _depth, const int _trials, heuristic_t _evaluator) {
         depth = _depth;
         trials = _trials;
         evaluator = _evaluator;
     }
 
-    const int player(const board_t board) {
+    const int pick_move(const board_t board) override {
         return helper(board, depth) & 3;
     }
 

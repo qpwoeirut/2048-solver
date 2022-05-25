@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "game.cpp"
-#include "heuristics.cpp"
+#include "heuristics.hpp"
 #include "strategies/ExpectimaxStrategy.hpp"
 #include "strategies/MinimaxStrategy.hpp"
 #include "strategies/MonteCarloPlayer.hpp"
@@ -56,6 +56,7 @@ void test_player(Strategy& player, const int games) {
     std::cout << "Total moves: " << move_total << std::endl;
 }
 
+SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
 ExpectimaxStrategy expectimax_strategy(-1, heuristics::corner_heuristic);
 
@@ -63,12 +64,12 @@ int main() {
     game::init(8);  // make the game repeatable
     move_gen.seed(8);
 
-    //test_player("spam_corner", spam_corner_strategy::player, int(1e5));  // spam_corner is the most efficient blind strategy
+    test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
     int f = 0;
 
-    //UserPlayer user_player();
-    //game::play(user_player, f);
+    UserPlayer user_player{};
+    game::play(user_player, f);
 
     //game::play_slow(minimax_strategy, f);
     //test_player(minimax_strategy, 20);

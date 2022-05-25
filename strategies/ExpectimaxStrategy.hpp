@@ -49,8 +49,11 @@ class ExpectimaxStrategy: public Strategy {
         cache.min_load_factor(0.3);  // shrink quickly
         cache.max_load_factor(0.9);  // but expand slowly
     }
+    void reset() override {
+        cache.clear();
+    }
 
-    const int pick_move(const board_t board) {
+    const int pick_move(const board_t board) override {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
 
         // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
