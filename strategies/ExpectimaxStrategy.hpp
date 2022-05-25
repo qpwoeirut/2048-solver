@@ -56,9 +56,7 @@ class ExpectimaxStrategy: public Strategy {
     const int pick_move(const board_t board) override {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
 
-        // if depth <= CACHE_DEPTH + 1, caching results isn't worth it
-        const bool add_to_cache = depth_to_use > CACHE_DEPTH + 1;
-        const int move = helper(board, depth_to_use, add_to_cache, 0) & 3;
+        const int move = helper(board, depth_to_use, 0) & 3;
 
         while (q[0] < q[1]) {  // delete everything in range q_0 ... q_1
             cache.erase(deletion_queue[q[0]++]);
@@ -73,12 +71,12 @@ class ExpectimaxStrategy: public Strategy {
         q[1] = std::max(q[0], q[2]);
         q[2] = std::max(q[0], q[3]);  // possible that stuff was deleted while searching because cache got too big
         q[3] = q_end;
-        std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
+        //std::cout << q[0] << ' ' << q[1] << ' ' << q[2] << ' ' << q[3] << ' ' << q_end << ' ' << q_end - q[0] << ' ' << cache.size() << std::endl;
         return move;
     }
 
     private:
-    const eval_t helper(const board_t board, const int cur_depth, const bool add_to_cache, const int fours) {
+    const eval_t helper(const board_t board, const int cur_depth, const int fours) {
         if (game::game_over(board)) {
             const eval_t score = MULT * evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
@@ -107,8 +105,8 @@ class ExpectimaxStrategy: public Strategy {
                 const uint16_t empty_mask = to_tile_mask(new_board);
                 for (int j=0; j<16; ++j) {
                     if (((empty_mask >> j) & 1) == 0) {
-                        expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1, add_to_cache, fours) >> 2);
-                        expected_score += 1 * (helper(new_board | (2LL << (j << 2)), cur_depth - 1, add_to_cache, fours + 1) >> 2);
+                        expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1, fours) >> 2);
+                        expected_score += 1 * (helper(new_board | (2LL << (j << 2)), cur_depth - 1, fours + 1) >> 2);
                     }
                 }
                 expected_score /= count_empty(empty_mask) * 10;  // convert to actual expected score * MULT
@@ -120,7 +118,7 @@ class ExpectimaxStrategy: public Strategy {
             }
         }
 
-        if (add_to_cache && cur_depth >= CACHE_DEPTH) {
+        if (cur_depth >= CACHE_DEPTH) {
             cache[board] = (((best_score << 2) | best_move) << 4) | cur_depth;
 
             // relies on MAX_CACHE being a power of 2
