@@ -13,6 +13,9 @@ class SpamCornerPlayer: public Strategy {
         if (board != game::make_move(board, move + 2)) return move + 2;
         return (move ^ 1) + 2;
     }
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<SpamCornerPlayer>();
+    }
 };
 
 #endif

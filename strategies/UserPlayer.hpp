@@ -24,6 +24,10 @@ class UserPlayer: public Strategy {
         return dir;
     }
 
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<UserPlayer>();
+    }
+
     private:
     const inline int move_to_int(const char c) {
         if (c == 'L') return 0;

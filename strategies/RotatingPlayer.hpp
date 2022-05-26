@@ -13,6 +13,10 @@ class RotatingPlayer: public Strategy {
         } while (board == game::make_move(board, current_move));
         return current_move;
     }
+
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<RotatingPlayer>();
+    }
 };
 
 #endif

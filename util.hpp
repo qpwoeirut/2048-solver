@@ -8,8 +8,6 @@ using row_t = uint16_t;
 using board_t = uint64_t;
 
 using eval_t = int64_t;
-
-using player_t = const int (*)(const board_t);
 using heuristic_t = eval_t (*)(const board_t);
 
 // bitmask of whether a tile is empty or not

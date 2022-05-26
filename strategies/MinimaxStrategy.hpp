@@ -18,6 +18,11 @@ class MinimaxStrategy: public Strategy {
         depth = _depth;
         evaluator = _evaluator;
     }
+    
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<MinimaxStrategy>(depth, evaluator);
+    }
+
     const int pick_move(const board_t board) override {
         const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
         const int move = helper(board, depth_to_use, heuristics::MIN_EVAL, heuristics::MAX_EVAL, 0) & 3;

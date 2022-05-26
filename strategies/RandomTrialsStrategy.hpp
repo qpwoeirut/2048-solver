@@ -25,6 +25,10 @@ class RandomTrialsStrategy: public Strategy {
         evaluator = _evaluator;
     }
 
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<RandomTrialsStrategy>(depth, trials, evaluator);
+    }
+
     const int pick_move(const board_t board) override {
         return helper(board, depth) & 3;
     }

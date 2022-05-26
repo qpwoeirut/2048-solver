@@ -10,12 +10,17 @@ class MonteCarloPlayer: public Strategy {
             trials: random trials for each move
     */
 
-    static RandomPlayer random_player;
+    RandomPlayer random_player;
 
     public:
     int trials;
     MonteCarloPlayer(const int _trials) {
         trials = _trials;
+        random_player = RandomPlayer();
+    }
+
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<MonteCarloPlayer>(trials);
     }
 
     private:

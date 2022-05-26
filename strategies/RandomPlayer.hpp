@@ -13,6 +13,10 @@ class RandomPlayer: public Strategy {
         while (board == game::make_move(board, move));
         return move;
     }
+
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<RandomPlayer>();
+    }
 };
 
 #endif

@@ -11,6 +11,9 @@ class OrderedPlayer: public Strategy {
         if (board != game::make_move(board, 2)) return 2;
         return 3;
     }
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<OrderedPlayer>();
+    }
 };
 
 #endif

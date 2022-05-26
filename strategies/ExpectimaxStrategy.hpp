@@ -49,6 +49,11 @@ class ExpectimaxStrategy: public Strategy {
         cache.min_load_factor(0.3);  // shrink quickly
         cache.max_load_factor(0.9);  // but expand slowly
     }
+
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<ExpectimaxStrategy>(depth, evaluator);
+    }
+
     void reset() override {
         cache.clear();
     }
