@@ -1,0 +1,77 @@
+Last login: Thu May 26 13:36:49 on ttys001
+qpwoeirut@Stanleys-MacBook-Pro-3 2048-solver % ./run.sh 
+Compiled tester.cpp!
+
+
+Testing random player...
+Playing 500000 games took 5.427 seconds (1.0854e-05 seconds per game, computation time 5.427)
+3 500000 (100)
+4 499991 (99.9982)
+5 498618 (99.7236)
+6 464455 (92.891)
+7 277062 (55.4124)
+8 39322 (7.8644)
+9 86 (0.0172)
+10 0 (0)
+11 0 (0)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing spam_corner player...
+Playing 500000 games took 8.896 seconds (1.7792e-05 seconds per game, computation time 8.896)
+3 500000 (100)
+4 499999 (99.9998)
+5 499848 (99.9696)
+6 494072 (98.8144)
+7 426432 (85.2864)
+8 214084 (42.8168)
+9 24158 (4.8316)
+10 44 (0.0088)
+11 0 (0)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing ordered player...
+Playing 500000 games took 7.522 seconds (1.5044e-05 seconds per game, computation time 7.522)
+3 500000 (100)
+4 499997 (99.9994)
+5 499529 (99.9058)
+6 489884 (97.9768)
+7 430912 (86.1824)
+8 238242 (47.6484)
+9 12745 (2.549)
+10 1 (0.0002)
+11 0 (0)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing rotating player...
+Playing 500000 games took 7.059 seconds (1.4118e-05 seconds per game, computation time 7.059)
+3 500000 (100)
+4 500000 (100)
+5 499999 (99.9998)
+6 499105 (99.821)
+7 469349 (93.8698)
+8 282467 (56.4934)
+9 30301 (6.0602)
+10 7 (0.0014)
+11 0 (0)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+Done!
+qpwoeirut@Stanleys-MacBook-Pro-3 2048-solver % 
