@@ -4,6 +4,14 @@
 #include "Strategy.hpp"
 
 class SpamCornerPlayer: public Strategy {
+
+    std::mt19937 move_gen{std::mt19937()};
+    std::uniform_int_distribution<> move_distrib{0, 3};
+
+    int random_move() {
+        return move_distrib(move_gen);
+    }
+
     public:
     const int pick_move(const board_t board) override {
         const int move = random_move() & 1;

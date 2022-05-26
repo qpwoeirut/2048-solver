@@ -25,9 +25,9 @@ constexpr int MAX_TILE = 16;  // 2^17 is largest possible tile, but it's practic
 
 constexpr int GAMES[5] = {10, 25, 100, 200, 500};
 constexpr int MAX_DEPTH = 4;
-constexpr int TRIALS[MAX_DEPTH + 1] = {0, 4, 4, 3, 2};
+constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3};
 
-constexpr int THREADS = 1;
+constexpr int THREADS = 2;
 
 std::atomic<int> results[MAX_TILE + 1];
 
@@ -60,7 +60,7 @@ std::atomic<int> games_remaining;
 
 long long test_player_thread(const std::unique_ptr<Strategy> player) {  // this function should own the player pointer
     const long long start_time = get_current_time_ms();
-    while (games_remaining-- > 0) {
+    while (--games_remaining >= 0) {
         const int max_tile = play_game(*player);
         ++results[max_tile];  // suffix sum type thing
         player->reset();
@@ -76,11 +76,12 @@ void test_player(std::ofstream& fout, const std::string& player_name, std::uniqu
     games_remaining.store(games);
 
     const long long start_time = get_current_time_ms();
-    for (int i=0; i<THREADS; i++) {
+    for (int i=1; i<THREADS; i++) {
         // give the Strategy pointer ownership to test_player_thread
         // move the player pointer last so that it can be cloned first
-        futures[i] = std::async(test_player_thread, i+1 == THREADS ? std::move(player) : player->clone());
+        futures[i] = std::async(test_player_thread, player->clone());
     }
+    futures[0] = std::async(test_player_thread, std::move(player));
 
     long long computation_time_ms = 0;
     for (int i=0; i<THREADS; i++) {

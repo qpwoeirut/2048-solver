@@ -1,17 +1,17 @@
-Last login: Wed May 25 21:38:11 on ttys000
+Last login: Wed May 25 21:38:22 on ttys002
 qpwoeirut@Stanleys-MacBook-Pro-3 2048-solver % ./run.sh 
 Compiled tester.cpp!
 
 
 Testing random player...
-Playing 500 games took 0.008 seconds (1.6e-05 seconds per game, computation time 0.008)
+Playing 500 games took 0.008 seconds (1.6e-05 seconds per game, computation time 0.032)
 3 500 (100)
 4 500 (100)
 5 499 (99.8)
-6 459 (91.8)
-7 260 (52)
-8 32 (6.4)
-9 0 (0)
+6 463 (92.6)
+7 268 (53.6)
+8 34 (6.8)
+9 1 (0.2)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -22,14 +22,14 @@ Playing 500 games took 0.008 seconds (1.6e-05 seconds per game, computation time
 
 
 Testing spam_corner player...
-Playing 500 games took 0.011 seconds (2.2e-05 seconds per game, computation time 0.011)
+Playing 500 games took 0.013 seconds (2.6e-05 seconds per game, computation time 0.052)
 3 500 (100)
 4 500 (100)
-5 500 (100)
-6 492 (98.4)
-7 423 (84.6)
-8 216 (43.2)
-9 25 (5)
+5 499 (99.8)
+6 496 (99.2)
+7 425 (85)
+8 209 (41.8)
+9 22 (4.4)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -40,14 +40,14 @@ Playing 500 games took 0.011 seconds (2.2e-05 seconds per game, computation time
 
 
 Testing ordered player...
-Playing 500 games took 0.009 seconds (1.8e-05 seconds per game, computation time 0.009)
+Playing 500 games took 0.011 seconds (2.2e-05 seconds per game, computation time 0.044)
 3 500 (100)
 4 500 (100)
 5 500 (100)
-6 488 (97.6)
-7 432 (86.4)
+6 491 (98.2)
+7 425 (85)
 8 237 (47.4)
-9 10 (2)
+9 12 (2.4)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -58,14 +58,14 @@ Playing 500 games took 0.009 seconds (1.8e-05 seconds per game, computation time
 
 
 Testing rotating player...
-Playing 500 games took 0.009 seconds (1.8e-05 seconds per game, computation time 0.009)
+Playing 500 games took 0.009 seconds (1.8e-05 seconds per game, computation time 0.036)
 3 500 (100)
 4 500 (100)
 5 500 (100)
-6 500 (100)
-7 468 (93.6)
-8 294 (58.8)
-9 30 (6)
+6 497 (99.4)
+7 469 (93.8)
+8 281 (56.2)
+9 21 (4.2)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -76,15 +76,15 @@ Playing 500 games took 0.009 seconds (1.8e-05 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=1 t=1) player...
-Playing 200 games took 0.019 seconds (9.5e-05 seconds per game, computation time 0.019)
+Playing 200 games took 0.022 seconds (0.00011 seconds per game, computation time 0.088)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 188 (94)
-8 109 (54.5)
-9 17 (8.5)
-10 0 (0)
+7 184 (92)
+8 115 (57.5)
+9 24 (12)
+10 1 (0.5)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -94,14 +94,14 @@ Playing 200 games took 0.019 seconds (9.5e-05 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=1 t=2) player...
-Playing 200 games took 0.031 seconds (0.000155 seconds per game, computation time 0.031)
+Playing 200 games took 0.037 seconds (0.000185 seconds per game, computation time 0.148)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
 7 189 (94.5)
-8 123 (61.5)
-9 27 (13.5)
+8 129 (64.5)
+9 24 (12)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -112,14 +112,14 @@ Playing 200 games took 0.031 seconds (0.000155 seconds per game, computation tim
 
 
 Testing merge-rnd_t(d=1 t=3) player...
-Playing 200 games took 0.042 seconds (0.00021 seconds per game, computation time 0.042)
+Playing 200 games took 0.056 seconds (0.00028 seconds per game, computation time 0.223)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 187 (93.5)
-8 116 (58)
-9 22 (11)
+7 189 (94.5)
+8 121 (60.5)
+9 29 (14.5)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -130,14 +130,14 @@ Playing 200 games took 0.042 seconds (0.00021 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=1 t=4) player...
-Playing 200 games took 0.053 seconds (0.000265 seconds per game, computation time 0.053)
+Playing 200 games took 0.068 seconds (0.00034 seconds per game, computation time 0.272)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
 7 191 (95.5)
-8 103 (51.5)
-9 20 (10)
+8 119 (59.5)
+9 27 (13.5)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -148,14 +148,14 @@ Playing 200 games took 0.053 seconds (0.000265 seconds per game, computation tim
 
 
 Testing merge-rnd_t(d=1 t=5) player...
-Playing 200 games took 0.068 seconds (0.00034 seconds per game, computation time 0.068)
+Playing 200 games took 0.081 seconds (0.000405 seconds per game, computation time 0.321)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 194 (97)
-8 114 (57)
-9 20 (10)
+7 187 (93.5)
+8 122 (61)
+9 13 (6.5)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -166,15 +166,15 @@ Playing 200 games took 0.068 seconds (0.00034 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=2 t=1) player...
-Playing 100 games took 0.055 seconds (0.00055 seconds per game, computation time 0.055)
+Playing 100 games took 0.06 seconds (0.0006 seconds per game, computation time 0.239)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 96 (96)
-9 71 (71)
-10 10 (10)
+8 99 (99)
+9 62 (62)
+10 7 (7)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -184,15 +184,15 @@ Playing 100 games took 0.055 seconds (0.00055 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=2 t=2) player...
-Playing 100 games took 0.193 seconds (0.00193 seconds per game, computation time 0.193)
+Playing 100 games took 0.245 seconds (0.00245 seconds per game, computation time 0.966)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
 8 100 (100)
-9 72 (72)
-10 21 (21)
+9 82 (82)
+10 20 (20)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -202,15 +202,15 @@ Playing 100 games took 0.193 seconds (0.00193 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=2 t=3) player...
-Playing 100 games took 0.447 seconds (0.00447 seconds per game, computation time 0.446)
+Playing 100 games took 0.521 seconds (0.00521 seconds per game, computation time 2.072)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 97 (97)
-9 85 (85)
-10 29 (29)
+8 99 (99)
+9 83 (83)
+10 21 (21)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -220,15 +220,15 @@ Playing 100 games took 0.447 seconds (0.00447 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=2 t=4) player...
-Playing 100 games took 0.745 seconds (0.00745 seconds per game, computation time 0.745)
+Playing 100 games took 0.934 seconds (0.00934 seconds per game, computation time 3.701)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 100 (100)
-9 81 (81)
-10 24 (24)
+8 99 (99)
+9 83 (83)
+10 25 (25)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -238,15 +238,15 @@ Playing 100 games took 0.745 seconds (0.00745 seconds per game, computation time
 
 
 Testing merge-rnd_t(d=2 t=5) player...
-Playing 25 games took 0.338 seconds (0.01352 seconds per game, computation time 0.338)
+Playing 25 games took 0.328 seconds (0.01312 seconds per game, computation time 1.251)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
-8 25 (100)
-9 23 (92)
-10 11 (44)
+8 24 (96)
+9 18 (72)
+10 5 (20)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -256,87 +256,15 @@ Playing 25 games took 0.338 seconds (0.01352 seconds per game, computation time 
 
 
 Testing merge-rnd_t(d=3 t=1) player...
-Playing 100 games took 0.242 seconds (0.00242 seconds per game, computation time 0.242)
-3 100 (100)
-4 100 (100)
-5 100 (100)
-6 100 (100)
-7 100 (100)
-8 99 (99)
-9 91 (91)
-10 29 (29)
-11 0 (0)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing merge-rnd_t(d=3 t=2) player...
-Playing 25 games took 0.512 seconds (0.02048 seconds per game, computation time 0.512)
-3 25 (100)
-4 25 (100)
-5 25 (100)
-6 25 (100)
-7 25 (100)
-8 25 (100)
-9 24 (96)
-10 15 (60)
-11 0 (0)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing merge-rnd_t(d=3 t=3) player...
-Playing 25 games took 1.681 seconds (0.06724 seconds per game, computation time 1.681)
-3 25 (100)
-4 25 (100)
-5 25 (100)
-6 25 (100)
-7 25 (100)
-8 25 (100)
-9 25 (100)
-10 17 (68)
-11 0 (0)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing merge-rnd_t(d=3 t=4) player...
-Playing 10 games took 1.682 seconds (0.1682 seconds per game, computation time 1.682)
-3 10 (100)
-4 10 (100)
-5 10 (100)
-6 10 (100)
-7 10 (100)
-8 10 (100)
-9 10 (100)
-10 7 (70)
-11 1 (10)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing merge-rnd_t(d=4 t=1) player...
-Playing 100 games took 1.1 seconds (0.011 seconds per game, computation time 1.1)
+Playing 100 games took 0.287 seconds (0.00287 seconds per game, computation time 1.134)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
 8 100 (100)
-9 96 (96)
-10 62 (62)
+9 87 (87)
+10 32 (32)
 11 1 (1)
 12 0 (0)
 13 0 (0)
@@ -345,8 +273,98 @@ Playing 100 games took 1.1 seconds (0.011 seconds per game, computation time 1.1
 16 0 (0)
 
 
+Testing merge-rnd_t(d=3 t=2) player...
+Playing 25 games took 0.675 seconds (0.027 seconds per game, computation time 2.585)
+3 25 (100)
+4 25 (100)
+5 25 (100)
+6 25 (100)
+7 25 (100)
+8 25 (100)
+9 23 (92)
+10 17 (68)
+11 2 (8)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing merge-rnd_t(d=3 t=3) player...
+Playing 25 games took 2.023 seconds (0.08092 seconds per game, computation time 7.827)
+3 25 (100)
+4 25 (100)
+5 25 (100)
+6 25 (100)
+7 25 (100)
+8 25 (100)
+9 23 (92)
+10 14 (56)
+11 2 (8)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing merge-rnd_t(d=3 t=4) player...
+Playing 10 games took 1.983 seconds (0.1983 seconds per game, computation time 7.542)
+3 10 (100)
+4 10 (100)
+5 10 (100)
+6 10 (100)
+7 10 (100)
+8 10 (100)
+9 10 (100)
+10 8 (80)
+11 0 (0)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing merge-rnd_t(d=4 t=1) player...
+Playing 100 games took 1.309 seconds (0.01309 seconds per game, computation time 5.205)
+3 100 (100)
+4 100 (100)
+5 100 (100)
+6 100 (100)
+7 100 (100)
+8 100 (100)
+9 93 (93)
+10 66 (66)
+11 3 (3)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
 Testing merge-rnd_t(d=4 t=2) player...
-Playing 10 games took 2.127 seconds (0.2127 seconds per game, computation time 2.127)
+Playing 10 games took 2.171 seconds (0.2171 seconds per game, computation time 8.262)
+3 10 (100)
+4 10 (100)
+5 10 (100)
+6 10 (100)
+7 10 (100)
+8 10 (100)
+9 9 (90)
+10 8 (80)
+11 2 (20)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing merge-rnd_t(d=4 t=3) player...
+Playing 10 games took 12.909 seconds (1.2909 seconds per game, computation time 47.518)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -363,33 +381,15 @@ Playing 10 games took 2.127 seconds (0.2127 seconds per game, computation time 2
 16 0 (0)
 
 
-Testing merge-rnd_t(d=4 t=3) player...
-Playing 10 games took 8.585 seconds (0.8585 seconds per game, computation time 8.585)
-3 10 (100)
-4 10 (100)
-5 10 (100)
-6 10 (100)
-7 10 (100)
-8 10 (100)
-9 10 (100)
-10 8 (80)
-11 1 (10)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
 Testing merge-mnmx(d=1) player...
-Playing 100 games took 0.022 seconds (0.00022 seconds per game, computation time 0.022)
+Playing 100 games took 0.006 seconds (6e-05 seconds per game, computation time 0.024)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
-7 94 (94)
-8 56 (56)
-9 5 (5)
+7 99 (99)
+8 65 (65)
+9 13 (13)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -400,13 +400,13 @@ Playing 100 games took 0.022 seconds (0.00022 seconds per game, computation time
 
 
 Testing merge-mnmx(d=2) player...
-Playing 25 games took 0.276 seconds (0.01104 seconds per game, computation time 0.276)
+Playing 25 games took 0.08 seconds (0.0032 seconds per game, computation time 0.288)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
-8 24 (96)
+8 23 (92)
 9 16 (64)
 10 5 (20)
 11 0 (0)
@@ -418,15 +418,15 @@ Playing 25 games took 0.276 seconds (0.01104 seconds per game, computation time 
 
 
 Testing merge-mnmx(d=3) player...
-Playing 10 games took 4.145 seconds (0.4145 seconds per game, computation time 4.145)
+Playing 10 games took 1.11 seconds (0.111 seconds per game, computation time 4.016)
 3 10 (100)
 4 10 (100)
 5 10 (100)
 6 10 (100)
 7 10 (100)
 8 10 (100)
-9 8 (80)
-10 2 (20)
+9 7 (70)
+10 1 (10)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -436,13 +436,13 @@ Playing 10 games took 4.145 seconds (0.4145 seconds per game, computation time 4
 
 
 Testing merge-expmx(d=1) player...
-Playing 100 games took 0.023 seconds (0.00023 seconds per game, computation time 0.023)
+Playing 100 games took 0.008 seconds (8e-05 seconds per game, computation time 0.032)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
-7 94 (94)
-8 50 (50)
+7 87 (87)
+8 59 (59)
 9 11 (11)
 10 0 (0)
 11 0 (0)
@@ -454,7 +454,7 @@ Playing 100 games took 0.023 seconds (0.00023 seconds per game, computation time
 
 
 Testing merge-expmx(d=2) player...
-Playing 25 games took 0.53 seconds (0.0212 seconds per game, computation time 0.53)
+Playing 25 games took 0.15 seconds (0.006 seconds per game, computation time 0.584)
 3 25 (100)
 4 25 (100)
 5 25 (100)
@@ -462,7 +462,7 @@ Playing 25 games took 0.53 seconds (0.0212 seconds per game, computation time 0.
 7 25 (100)
 8 25 (100)
 9 20 (80)
-10 7 (28)
+10 5 (20)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -472,7 +472,7 @@ Playing 25 games took 0.53 seconds (0.0212 seconds per game, computation time 0.
 
 
 Testing merge-expmx(d=3) player...
-Playing 10 games took 18.392 seconds (1.8392 seconds per game, computation time 18.391)
+Playing 10 games took 5.554 seconds (0.5554 seconds per game, computation time 18.306)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -480,8 +480,8 @@ Playing 10 games took 18.392 seconds (1.8392 seconds per game, computation time 
 7 10 (100)
 8 10 (100)
 9 10 (100)
-10 9 (90)
-11 1 (10)
+10 7 (70)
+11 0 (0)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -490,14 +490,14 @@ Playing 10 games took 18.392 seconds (1.8392 seconds per game, computation time 
 
 
 Testing score-rnd_t(d=1 t=1) player...
-Playing 200 games took 0.013 seconds (6.5e-05 seconds per game, computation time 0.013)
+Playing 200 games took 0.015 seconds (7.5e-05 seconds per game, computation time 0.06)
 3 200 (100)
 4 200 (100)
 5 200 (100)
-6 199 (99.5)
-7 186 (93)
-8 117 (58.5)
-9 12 (6)
+6 200 (100)
+7 187 (93.5)
+8 109 (54.5)
+9 8 (4)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -508,14 +508,14 @@ Playing 200 games took 0.013 seconds (6.5e-05 seconds per game, computation time
 
 
 Testing score-rnd_t(d=1 t=2) player...
-Playing 200 games took 0.024 seconds (0.00012 seconds per game, computation time 0.024)
+Playing 200 games took 0.03 seconds (0.00015 seconds per game, computation time 0.12)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 187 (93.5)
-8 124 (62)
-9 20 (10)
+7 193 (96.5)
+8 126 (63)
+9 13 (6.5)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -526,14 +526,14 @@ Playing 200 games took 0.024 seconds (0.00012 seconds per game, computation time
 
 
 Testing score-rnd_t(d=1 t=3) player...
-Playing 200 games took 0.035 seconds (0.000175 seconds per game, computation time 0.035)
+Playing 200 games took 0.046 seconds (0.00023 seconds per game, computation time 0.184)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 188 (94)
+7 193 (96.5)
 8 123 (61.5)
-9 20 (10)
+9 24 (12)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -544,14 +544,14 @@ Playing 200 games took 0.035 seconds (0.000175 seconds per game, computation tim
 
 
 Testing score-rnd_t(d=1 t=4) player...
-Playing 200 games took 0.046 seconds (0.00023 seconds per game, computation time 0.046)
+Playing 200 games took 0.062 seconds (0.00031 seconds per game, computation time 0.248)
 3 200 (100)
 4 200 (100)
 5 200 (100)
-6 200 (100)
-7 195 (97.5)
-8 135 (67.5)
-9 14 (7)
+6 199 (99.5)
+7 193 (96.5)
+8 137 (68.5)
+9 22 (11)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -562,14 +562,14 @@ Playing 200 games took 0.046 seconds (0.00023 seconds per game, computation time
 
 
 Testing score-rnd_t(d=1 t=5) player...
-Playing 200 games took 0.055 seconds (0.000275 seconds per game, computation time 0.055)
+Playing 200 games took 0.079 seconds (0.000395 seconds per game, computation time 0.314)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 193 (96.5)
-8 139 (69.5)
-9 23 (11.5)
+7 196 (98)
+8 131 (65.5)
+9 30 (15)
 10 0 (0)
 11 0 (0)
 12 0 (0)
@@ -580,15 +580,15 @@ Playing 200 games took 0.055 seconds (0.000275 seconds per game, computation tim
 
 
 Testing score-rnd_t(d=2 t=1) player...
-Playing 100 games took 0.055 seconds (0.00055 seconds per game, computation time 0.055)
+Playing 100 games took 0.071 seconds (0.00071 seconds per game, computation time 0.28)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 99 (99)
-9 81 (81)
-10 18 (18)
+8 97 (97)
+9 78 (78)
+10 24 (24)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -598,15 +598,15 @@ Playing 100 games took 0.055 seconds (0.00055 seconds per game, computation time
 
 
 Testing score-rnd_t(d=2 t=2) player...
-Playing 100 games took 0.194 seconds (0.00194 seconds per game, computation time 0.194)
+Playing 100 games took 0.26 seconds (0.0026 seconds per game, computation time 1.031)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 100 (100)
-9 80 (80)
-10 31 (31)
+8 98 (98)
+9 86 (86)
+10 30 (30)
 11 1 (1)
 12 0 (0)
 13 0 (0)
@@ -616,16 +616,16 @@ Playing 100 games took 0.194 seconds (0.00194 seconds per game, computation time
 
 
 Testing score-rnd_t(d=2 t=3) player...
-Playing 100 games took 0.484 seconds (0.00484 seconds per game, computation time 0.482)
+Playing 100 games took 0.615 seconds (0.00615 seconds per game, computation time 2.435)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
 8 100 (100)
-9 95 (95)
-10 47 (47)
-11 0 (0)
+9 89 (89)
+10 44 (44)
+11 1 (1)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -634,16 +634,16 @@ Playing 100 games took 0.484 seconds (0.00484 seconds per game, computation time
 
 
 Testing score-rnd_t(d=2 t=4) player...
-Playing 100 games took 0.804 seconds (0.00804 seconds per game, computation time 0.804)
+Playing 100 games took 1.156 seconds (0.01156 seconds per game, computation time 4.615)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
 8 100 (100)
-9 89 (89)
-10 41 (41)
-11 0 (0)
+9 92 (92)
+10 54 (54)
+11 2 (2)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -652,14 +652,14 @@ Playing 100 games took 0.804 seconds (0.00804 seconds per game, computation time
 
 
 Testing score-rnd_t(d=2 t=5) player...
-Playing 25 games took 0.327 seconds (0.01308 seconds per game, computation time 0.327)
+Playing 25 games took 0.434 seconds (0.01736 seconds per game, computation time 1.694)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
 8 25 (100)
-9 24 (96)
+9 25 (100)
 10 11 (44)
 11 0 (0)
 12 0 (0)
@@ -670,16 +670,16 @@ Playing 25 games took 0.327 seconds (0.01308 seconds per game, computation time 
 
 
 Testing score-rnd_t(d=3 t=1) player...
-Playing 100 games took 0.267 seconds (0.00267 seconds per game, computation time 0.267)
+Playing 100 games took 0.335 seconds (0.00335 seconds per game, computation time 1.328)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
 8 100 (100)
-9 97 (97)
-10 53 (53)
-11 0 (0)
+9 95 (95)
+10 51 (51)
+11 2 (2)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -688,16 +688,16 @@ Playing 100 games took 0.267 seconds (0.00267 seconds per game, computation time
 
 
 Testing score-rnd_t(d=3 t=2) player...
-Playing 25 games took 0.541 seconds (0.02164 seconds per game, computation time 0.541)
+Playing 25 games took 0.747 seconds (0.02988 seconds per game, computation time 2.91)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
 8 25 (100)
-9 24 (96)
-10 18 (72)
-11 3 (12)
+9 23 (92)
+10 20 (80)
+11 4 (16)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -706,7 +706,7 @@ Playing 25 games took 0.541 seconds (0.02164 seconds per game, computation time 
 
 
 Testing score-rnd_t(d=3 t=3) player...
-Playing 25 games took 1.919 seconds (0.07676 seconds per game, computation time 1.919)
+Playing 25 games took 2.436 seconds (0.09744 seconds per game, computation time 9.39)
 3 25 (100)
 4 25 (100)
 5 25 (100)
@@ -714,8 +714,8 @@ Playing 25 games took 1.919 seconds (0.07676 seconds per game, computation time 
 7 25 (100)
 8 25 (100)
 9 25 (100)
-10 23 (92)
-11 3 (12)
+10 19 (76)
+11 4 (16)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -724,7 +724,7 @@ Playing 25 games took 1.919 seconds (0.07676 seconds per game, computation time 
 
 
 Testing score-rnd_t(d=3 t=4) player...
-Playing 10 games took 1.742 seconds (0.1742 seconds per game, computation time 1.742)
+Playing 10 games took 2.095 seconds (0.2095 seconds per game, computation time 7.862)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -732,8 +732,8 @@ Playing 10 games took 1.742 seconds (0.1742 seconds per game, computation time 1
 7 10 (100)
 8 10 (100)
 9 10 (100)
-10 9 (90)
-11 2 (20)
+10 7 (70)
+11 1 (10)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -742,7 +742,7 @@ Playing 10 games took 1.742 seconds (0.1742 seconds per game, computation time 1
 
 
 Testing score-rnd_t(d=4 t=1) player...
-Playing 100 games took 1.168 seconds (0.01168 seconds per game, computation time 1.168)
+Playing 100 games took 1.482 seconds (0.01482 seconds per game, computation time 5.874)
 3 100 (100)
 4 100 (100)
 5 100 (100)
@@ -750,8 +750,8 @@ Playing 100 games took 1.168 seconds (0.01168 seconds per game, computation time
 7 100 (100)
 8 100 (100)
 9 98 (98)
-10 75 (75)
-11 7 (7)
+10 74 (74)
+11 8 (8)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -760,7 +760,7 @@ Playing 100 games took 1.168 seconds (0.01168 seconds per game, computation time
 
 
 Testing score-rnd_t(d=4 t=2) player...
-Playing 10 games took 1.882 seconds (0.1882 seconds per game, computation time 1.882)
+Playing 10 games took 2.825 seconds (0.2825 seconds per game, computation time 10.05)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -769,7 +769,7 @@ Playing 10 games took 1.882 seconds (0.1882 seconds per game, computation time 1
 8 10 (100)
 9 10 (100)
 10 9 (90)
-11 2 (20)
+11 4 (40)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -778,7 +778,7 @@ Playing 10 games took 1.882 seconds (0.1882 seconds per game, computation time 1
 
 
 Testing score-rnd_t(d=4 t=3) player...
-Playing 10 games took 11.799 seconds (1.1799 seconds per game, computation time 11.799)
+Playing 10 games took 14.612 seconds (1.4612 seconds per game, computation time 55.908)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -787,7 +787,7 @@ Playing 10 games took 11.799 seconds (1.1799 seconds per game, computation time 
 8 10 (100)
 9 10 (100)
 10 10 (100)
-11 6 (60)
+11 5 (50)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -796,16 +796,16 @@ Playing 10 games took 11.799 seconds (1.1799 seconds per game, computation time 
 
 
 Testing score-mnmx(d=1) player...
-Playing 100 games took 0.027 seconds (0.00027 seconds per game, computation time 0.027)
+Playing 100 games took 0.009 seconds (9e-05 seconds per game, computation time 0.036)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
-7 99 (99)
-8 92 (92)
-9 61 (61)
+7 100 (100)
+8 89 (89)
+9 56 (56)
 10 20 (20)
-11 0 (0)
+11 2 (2)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -814,16 +814,16 @@ Playing 100 games took 0.027 seconds (0.00027 seconds per game, computation time
 
 
 Testing score-mnmx(d=2) player...
-Playing 25 games took 0.248 seconds (0.00992 seconds per game, computation time 0.248)
+Playing 25 games took 0.085 seconds (0.0034 seconds per game, computation time 0.311)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
 8 25 (100)
-9 21 (84)
-10 9 (36)
-11 0 (0)
+9 23 (92)
+10 13 (52)
+11 2 (8)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -832,7 +832,7 @@ Playing 25 games took 0.248 seconds (0.00992 seconds per game, computation time 
 
 
 Testing score-mnmx(d=3) player...
-Playing 10 games took 3.526 seconds (0.3526 seconds per game, computation time 3.526)
+Playing 10 games took 1.008 seconds (0.1008 seconds per game, computation time 3.656)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -840,7 +840,7 @@ Playing 10 games took 3.526 seconds (0.3526 seconds per game, computation time 3
 7 10 (100)
 8 10 (100)
 9 10 (100)
-10 8 (80)
+10 5 (50)
 11 1 (10)
 12 0 (0)
 13 0 (0)
@@ -850,15 +850,15 @@ Playing 10 games took 3.526 seconds (0.3526 seconds per game, computation time 3
 
 
 Testing score-expmx(d=1) player...
-Playing 100 games took 0.03 seconds (0.0003 seconds per game, computation time 0.03)
+Playing 100 games took 0.01 seconds (0.0001 seconds per game, computation time 0.032)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 91 (91)
-9 66 (66)
-10 10 (10)
+8 96 (96)
+9 56 (56)
+10 11 (11)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -868,7 +868,7 @@ Playing 100 games took 0.03 seconds (0.0003 seconds per game, computation time 0
 
 
 Testing score-expmx(d=2) player...
-Playing 25 games took 0.663 seconds (0.02652 seconds per game, computation time 0.663)
+Playing 25 games took 0.175 seconds (0.007 seconds per game, computation time 0.679)
 3 25 (100)
 4 25 (100)
 5 25 (100)
@@ -876,7 +876,7 @@ Playing 25 games took 0.663 seconds (0.02652 seconds per game, computation time 
 7 25 (100)
 8 25 (100)
 9 24 (96)
-10 12 (48)
+10 13 (52)
 11 1 (4)
 12 0 (0)
 13 0 (0)
@@ -886,7 +886,7 @@ Playing 25 games took 0.663 seconds (0.02652 seconds per game, computation time 
 
 
 Testing score-expmx(d=3) player...
-Playing 10 games took 21.559 seconds (2.1559 seconds per game, computation time 21.559)
+Playing 10 games took 5.849 seconds (0.5849 seconds per game, computation time 20.617)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -894,7 +894,7 @@ Playing 10 games took 21.559 seconds (2.1559 seconds per game, computation time 
 7 10 (100)
 8 10 (100)
 9 10 (100)
-10 10 (100)
+10 8 (80)
 11 2 (20)
 12 0 (0)
 13 0 (0)
@@ -904,15 +904,15 @@ Playing 10 games took 21.559 seconds (2.1559 seconds per game, computation time 
 
 
 Testing corner-rnd_t(d=1 t=1) player...
-Playing 200 games took 0.024 seconds (0.00012 seconds per game, computation time 0.024)
+Playing 200 games took 0.027 seconds (0.000135 seconds per game, computation time 0.106)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
 7 197 (98.5)
-8 169 (84.5)
-9 66 (33)
-10 2 (1)
+8 170 (85)
+9 73 (36.5)
+10 1 (0.5)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -922,32 +922,14 @@ Playing 200 games took 0.024 seconds (0.00012 seconds per game, computation time
 
 
 Testing corner-rnd_t(d=1 t=2) player...
-Playing 200 games took 0.046 seconds (0.00023 seconds per game, computation time 0.046)
-3 200 (100)
-4 200 (100)
-5 200 (100)
-6 200 (100)
-7 197 (98.5)
-8 181 (90.5)
-9 106 (53)
-10 6 (3)
-11 0 (0)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing corner-rnd_t(d=1 t=3) player...
-Playing 200 games took 0.069 seconds (0.000345 seconds per game, computation time 0.069)
+Playing 200 games took 0.055 seconds (0.000275 seconds per game, computation time 0.218)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
 7 199 (99.5)
 8 179 (89.5)
-9 118 (59)
+9 84 (42)
 10 8 (4)
 11 0 (0)
 12 0 (0)
@@ -957,16 +939,34 @@ Playing 200 games took 0.069 seconds (0.000345 seconds per game, computation tim
 16 0 (0)
 
 
-Testing corner-rnd_t(d=1 t=4) player...
-Playing 200 games took 0.094 seconds (0.00047 seconds per game, computation time 0.094)
+Testing corner-rnd_t(d=1 t=3) player...
+Playing 200 games took 0.082 seconds (0.00041 seconds per game, computation time 0.326)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 199 (99.5)
-8 186 (93)
-9 115 (57.5)
-10 15 (7.5)
+7 197 (98.5)
+8 177 (88.5)
+9 101 (50.5)
+10 9 (4.5)
+11 0 (0)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing corner-rnd_t(d=1 t=4) player...
+Playing 200 games took 0.109 seconds (0.000545 seconds per game, computation time 0.433)
+3 200 (100)
+4 200 (100)
+5 200 (100)
+6 200 (100)
+7 200 (100)
+8 189 (94.5)
+9 109 (54.5)
+10 4 (2)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -976,15 +976,15 @@ Playing 200 games took 0.094 seconds (0.00047 seconds per game, computation time
 
 
 Testing corner-rnd_t(d=1 t=5) player...
-Playing 200 games took 0.107 seconds (0.000535 seconds per game, computation time 0.107)
+Playing 200 games took 0.137 seconds (0.000685 seconds per game, computation time 0.547)
 3 200 (100)
 4 200 (100)
 5 200 (100)
 6 200 (100)
-7 200 (100)
-8 181 (90.5)
-9 111 (55.5)
-10 11 (5.5)
+7 199 (99.5)
+8 186 (93)
+9 108 (54)
+10 8 (4)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -994,16 +994,16 @@ Playing 200 games took 0.107 seconds (0.000535 seconds per game, computation tim
 
 
 Testing corner-rnd_t(d=2 t=1) player...
-Playing 100 games took 0.055 seconds (0.00055 seconds per game, computation time 0.055)
+Playing 100 games took 0.069 seconds (0.00069 seconds per game, computation time 0.276)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
-7 100 (100)
-8 93 (93)
-9 60 (60)
-10 19 (19)
-11 1 (1)
+7 99 (99)
+8 95 (95)
+9 73 (73)
+10 15 (15)
+11 0 (0)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -1012,33 +1012,15 @@ Playing 100 games took 0.055 seconds (0.00055 seconds per game, computation time
 
 
 Testing corner-rnd_t(d=2 t=2) player...
-Playing 100 games took 0.226 seconds (0.00226 seconds per game, computation time 0.226)
+Playing 100 games took 0.293 seconds (0.00293 seconds per game, computation time 1.166)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 99 (99)
-9 76 (76)
+8 95 (95)
+9 77 (77)
 10 33 (33)
-11 4 (4)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing corner-rnd_t(d=2 t=3) player...
-Playing 100 games took 0.558 seconds (0.00558 seconds per game, computation time 0.558)
-3 100 (100)
-4 100 (100)
-5 100 (100)
-6 100 (100)
-7 100 (100)
-8 98 (98)
-9 81 (81)
-10 45 (45)
 11 5 (5)
 12 0 (0)
 13 0 (0)
@@ -1047,17 +1029,17 @@ Playing 100 games took 0.558 seconds (0.00558 seconds per game, computation time
 16 0 (0)
 
 
-Testing corner-rnd_t(d=2 t=4) player...
-Playing 100 games took 1.038 seconds (0.01038 seconds per game, computation time 1.038)
+Testing corner-rnd_t(d=2 t=3) player...
+Playing 100 games took 0.669 seconds (0.00669 seconds per game, computation time 2.645)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 94 (94)
-9 86 (86)
-10 52 (52)
-11 10 (10)
+8 96 (96)
+9 82 (82)
+10 48 (48)
+11 3 (3)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -1065,16 +1047,34 @@ Playing 100 games took 1.038 seconds (0.01038 seconds per game, computation time
 16 0 (0)
 
 
+Testing corner-rnd_t(d=2 t=4) player...
+Playing 100 games took 1.458 seconds (0.01458 seconds per game, computation time 5.793)
+3 100 (100)
+4 100 (100)
+5 100 (100)
+6 100 (100)
+7 100 (100)
+8 98 (98)
+9 89 (89)
+10 58 (58)
+11 19 (19)
+12 1 (1)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
 Testing corner-rnd_t(d=2 t=5) player...
-Playing 25 games took 0.409 seconds (0.01636 seconds per game, computation time 0.409)
+Playing 25 games took 0.54 seconds (0.0216 seconds per game, computation time 2.078)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
-8 25 (100)
-9 23 (92)
-10 12 (48)
+8 24 (96)
+9 21 (84)
+10 15 (60)
 11 4 (16)
 12 0 (0)
 13 0 (0)
@@ -1084,15 +1084,15 @@ Playing 25 games took 0.409 seconds (0.01636 seconds per game, computation time 
 
 
 Testing corner-rnd_t(d=3 t=1) player...
-Playing 100 games took 0.199 seconds (0.00199 seconds per game, computation time 0.199)
+Playing 100 games took 0.231 seconds (0.00231 seconds per game, computation time 0.919)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 96 (96)
-9 74 (74)
-10 19 (19)
+8 95 (95)
+9 57 (57)
+10 13 (13)
 11 0 (0)
 12 0 (0)
 13 0 (0)
@@ -1102,14 +1102,14 @@ Playing 100 games took 0.199 seconds (0.00199 seconds per game, computation time
 
 
 Testing corner-rnd_t(d=3 t=2) player...
-Playing 25 games took 0.42 seconds (0.0168 seconds per game, computation time 0.42)
+Playing 25 games took 0.513 seconds (0.02052 seconds per game, computation time 1.991)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
 8 25 (100)
-9 22 (88)
+9 20 (80)
 10 9 (36)
 11 1 (4)
 12 0 (0)
@@ -1120,16 +1120,16 @@ Playing 25 games took 0.42 seconds (0.0168 seconds per game, computation time 0.
 
 
 Testing corner-rnd_t(d=3 t=3) player...
-Playing 25 games took 1.563 seconds (0.06252 seconds per game, computation time 1.563)
+Playing 25 games took 2.013 seconds (0.08052 seconds per game, computation time 7.735)
 3 25 (100)
 4 25 (100)
 5 25 (100)
 6 25 (100)
 7 25 (100)
-8 25 (100)
-9 22 (88)
-10 13 (52)
-11 2 (8)
+8 24 (96)
+9 19 (76)
+10 12 (48)
+11 4 (16)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -1138,7 +1138,7 @@ Playing 25 games took 1.563 seconds (0.06252 seconds per game, computation time 
 
 
 Testing corner-rnd_t(d=3 t=4) player...
-Playing 10 games took 1.652 seconds (0.1652 seconds per game, computation time 1.652)
+Playing 10 games took 2.13 seconds (0.213 seconds per game, computation time 7.707)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -1147,7 +1147,7 @@ Playing 10 games took 1.652 seconds (0.1652 seconds per game, computation time 1
 8 10 (100)
 9 10 (100)
 10 7 (70)
-11 1 (10)
+11 2 (20)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -1156,16 +1156,16 @@ Playing 10 games took 1.652 seconds (0.1652 seconds per game, computation time 1
 
 
 Testing corner-rnd_t(d=4 t=1) player...
-Playing 100 games took 0.832 seconds (0.00832 seconds per game, computation time 0.831)
+Playing 100 games took 1.044 seconds (0.01044 seconds per game, computation time 4.157)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
 8 98 (98)
-9 89 (89)
-10 32 (32)
-11 1 (1)
+9 88 (88)
+10 35 (35)
+11 0 (0)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -1174,17 +1174,17 @@ Playing 100 games took 0.832 seconds (0.00832 seconds per game, computation time
 
 
 Testing corner-rnd_t(d=4 t=2) player...
-Playing 10 games took 1.834 seconds (0.1834 seconds per game, computation time 1.834)
+Playing 10 games took 2.311 seconds (0.2311 seconds per game, computation time 8.921)
 3 10 (100)
 4 10 (100)
 5 10 (100)
 6 10 (100)
 7 10 (100)
 8 10 (100)
-9 10 (100)
-10 7 (70)
+9 9 (90)
+10 9 (90)
 11 3 (30)
-12 1 (10)
+12 0 (0)
 13 0 (0)
 14 0 (0)
 15 0 (0)
@@ -1192,61 +1192,7 @@ Playing 10 games took 1.834 seconds (0.1834 seconds per game, computation time 1
 
 
 Testing corner-rnd_t(d=4 t=3) player...
-Playing 10 games took 10.727 seconds (1.0727 seconds per game, computation time 10.727)
-3 10 (100)
-4 10 (100)
-5 10 (100)
-6 10 (100)
-7 10 (100)
-8 10 (100)
-9 10 (100)
-10 8 (80)
-11 5 (50)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing corner-mnmx(d=1) player...
-Playing 100 games took 0.032 seconds (0.00032 seconds per game, computation time 0.032)
-3 100 (100)
-4 100 (100)
-5 100 (100)
-6 100 (100)
-7 100 (100)
-8 99 (99)
-9 76 (76)
-10 19 (19)
-11 0 (0)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing corner-mnmx(d=2) player...
-Playing 25 games took 0.283 seconds (0.01132 seconds per game, computation time 0.283)
-3 25 (100)
-4 25 (100)
-5 25 (100)
-6 25 (100)
-7 25 (100)
-8 25 (100)
-9 25 (100)
-10 25 (100)
-11 7 (28)
-12 0 (0)
-13 0 (0)
-14 0 (0)
-15 0 (0)
-16 0 (0)
-
-
-Testing corner-mnmx(d=3) player...
-Playing 10 games took 2.507 seconds (0.2507 seconds per game, computation time 2.507)
+Playing 10 games took 10.938 seconds (1.0938 seconds per game, computation time 39.943)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -1255,7 +1201,61 @@ Playing 10 games took 2.507 seconds (0.2507 seconds per game, computation time 2
 8 10 (100)
 9 10 (100)
 10 9 (90)
-11 5 (50)
+11 2 (20)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing corner-mnmx(d=1) player...
+Playing 100 games took 0.011 seconds (0.00011 seconds per game, computation time 0.043)
+3 100 (100)
+4 100 (100)
+5 100 (100)
+6 100 (100)
+7 100 (100)
+8 98 (98)
+9 82 (82)
+10 28 (28)
+11 1 (1)
+12 0 (0)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing corner-mnmx(d=2) player...
+Playing 25 games took 0.085 seconds (0.0034 seconds per game, computation time 0.305)
+3 25 (100)
+4 25 (100)
+5 25 (100)
+6 25 (100)
+7 25 (100)
+8 25 (100)
+9 23 (92)
+10 20 (80)
+11 7 (28)
+12 1 (4)
+13 0 (0)
+14 0 (0)
+15 0 (0)
+16 0 (0)
+
+
+Testing corner-mnmx(d=3) player...
+Playing 10 games took 0.844 seconds (0.0844 seconds per game, computation time 3.108)
+3 10 (100)
+4 10 (100)
+5 10 (100)
+6 10 (100)
+7 10 (100)
+8 10 (100)
+9 10 (100)
+10 10 (100)
+11 8 (80)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -1264,16 +1264,16 @@ Playing 10 games took 2.507 seconds (0.2507 seconds per game, computation time 2
 
 
 Testing corner-expmx(d=1) player...
-Playing 100 games took 0.042 seconds (0.00042 seconds per game, computation time 0.042)
+Playing 100 games took 0.012 seconds (0.00012 seconds per game, computation time 0.048)
 3 100 (100)
 4 100 (100)
 5 100 (100)
 6 100 (100)
 7 100 (100)
-8 99 (99)
-9 70 (70)
-10 24 (24)
-11 0 (0)
+8 98 (98)
+9 82 (82)
+10 21 (21)
+11 1 (1)
 12 0 (0)
 13 0 (0)
 14 0 (0)
@@ -1282,7 +1282,7 @@ Playing 100 games took 0.042 seconds (0.00042 seconds per game, computation time
 
 
 Testing corner-expmx(d=2) player...
-Playing 25 games took 1.013 seconds (0.04052 seconds per game, computation time 1.012)
+Playing 25 games took 0.278 seconds (0.01112 seconds per game, computation time 1.039)
 3 25 (100)
 4 25 (100)
 5 25 (100)
@@ -1290,9 +1290,9 @@ Playing 25 games took 1.013 seconds (0.04052 seconds per game, computation time 
 7 25 (100)
 8 25 (100)
 9 25 (100)
-10 25 (100)
-11 17 (68)
-12 4 (16)
+10 23 (92)
+11 16 (64)
+12 3 (12)
 13 0 (0)
 14 0 (0)
 15 0 (0)
@@ -1300,7 +1300,7 @@ Playing 25 games took 1.013 seconds (0.04052 seconds per game, computation time 
 
 
 Testing corner-expmx(d=3) player...
-Playing 10 games took 34.445 seconds (3.4445 seconds per game, computation time 34.445)
+Playing 10 games took 11.111 seconds (1.1111 seconds per game, computation time 36.416)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -1318,7 +1318,7 @@ Playing 10 games took 34.445 seconds (3.4445 seconds per game, computation time 
 
 
 Testing monte_carlo (t=100) player...
-Playing 10 games took 18.089 seconds (1.8089 seconds per game, computation time 18.089)
+Playing 10 games took 19.694 seconds (1.9694 seconds per game, computation time 74.074)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -1327,7 +1327,7 @@ Playing 10 games took 18.089 seconds (1.8089 seconds per game, computation time 
 8 10 (100)
 9 10 (100)
 10 10 (100)
-11 10 (100)
+11 9 (90)
 12 3 (30)
 13 0 (0)
 14 0 (0)
@@ -1336,7 +1336,7 @@ Playing 10 games took 18.089 seconds (1.8089 seconds per game, computation time 
 
 
 Testing monte_carlo (t=200) player...
-Playing 10 games took 38.241 seconds (3.8241 seconds per game, computation time 38.241)
+Playing 10 games took 41.774 seconds (4.1774 seconds per game, computation time 157.873)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -1345,8 +1345,8 @@ Playing 10 games took 38.241 seconds (3.8241 seconds per game, computation time 
 8 10 (100)
 9 10 (100)
 10 10 (100)
-11 10 (100)
-12 3 (30)
+11 9 (90)
+12 4 (40)
 13 0 (0)
 14 0 (0)
 15 0 (0)
@@ -1354,7 +1354,7 @@ Playing 10 games took 38.241 seconds (3.8241 seconds per game, computation time 
 
 
 Testing monte_carlo (t=300) player...
-Playing 10 games took 65.2 seconds (6.52 seconds per game, computation time 65.2)
+Playing 10 games took 64.917 seconds (6.4917 seconds per game, computation time 247.932)
 3 10 (100)
 4 10 (100)
 5 10 (100)
@@ -1363,8 +1363,8 @@ Playing 10 games took 65.2 seconds (6.52 seconds per game, computation time 65.2
 8 10 (100)
 9 10 (100)
 10 10 (100)
-11 10 (100)
-12 5 (50)
+11 8 (80)
+12 4 (40)
 13 0 (0)
 14 0 (0)
 15 0 (0)
@@ -1373,4 +1373,5 @@ Playing 10 games took 65.2 seconds (6.52 seconds per game, computation time 65.2
 
 Testing monte_carlo (t=400) player...
 ^C
+qpwoeirut@Stanleys-MacBook-Pro-3 2048-solver % 
 qpwoeirut@Stanleys-MacBook-Pro-3 2048-solver % 
