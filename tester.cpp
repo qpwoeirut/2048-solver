@@ -17,19 +17,19 @@
 
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
-constexpr int MAX_TILE = 18;  // 2^17 is largest possible tile
+constexpr int MAX_TILE = 16;  // 2^17 is largest possible tile, but it's practically impossible
 
 //constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
 //constexpr int MAX_DEPTH = 5;
 //constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 9, 7, 4};
 
-constexpr int GAMES[5] = {5, 20, 100, 200, 500};
+constexpr int GAMES[5] = {10, 25, 100, 200, 500};
 constexpr int MAX_DEPTH = 4;
 constexpr int TRIALS[MAX_DEPTH + 1] = {0, 4, 4, 3, 2};
 
-constexpr int THREADS = 8;
+constexpr int THREADS = 1;
 
-std::atomic<int> results[MAX_TILE];
+std::atomic<int> results[MAX_TILE + 1];
 
 const int play_game(Strategy& player) {
     int fours = 0;
@@ -40,7 +40,7 @@ const int play_game(Strategy& player) {
 void write_headings(std::ofstream& fout) {
     assert(fout.is_open());  // might need to create the /results directory if this doesn't work
     fout << "Strategy,Games,Time Taken,Computation Time,Parallel";
-    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
+    for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
         fout << ',' << (1 << i);
     }
     fout << std::endl;
@@ -49,7 +49,7 @@ void write_headings(std::ofstream& fout) {
 void save_results(std::ofstream& fout, const std::string& player_name, const int games, const float time_taken, const float computation_time, const bool parallelize = false) {
     assert(fout.is_open());
     fout << player_name << ',' << games << ',' << time_taken << ',' << computation_time << ',' << (parallelize ? "true" : "false");
-    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
+    for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
         fout << ',' << results[i];
     }
     fout << std::endl;
@@ -71,7 +71,7 @@ long long test_player_thread(const std::unique_ptr<Strategy> player) {  // this 
 
 void test_player(std::ofstream& fout, const std::string& player_name, std::unique_ptr<Strategy> player, const int games, const bool print_progress) {
     std::cout << "\n\nTesting " << player_name << " player..." << std::endl;
-    std::fill(results, results+MAX_TILE, 0);
+    std::fill(results, results+MAX_TILE + 1, 0);
 
     games_remaining.store(games);
 
@@ -92,10 +92,10 @@ void test_player(std::ofstream& fout, const std::string& player_name, std::uniqu
     const float time_taken = (end_time - start_time) / 1000.0;
     std::cout << "Playing " << games << " games took " << time_taken << " seconds (" << time_taken / games << " seconds per game, computation time " << computation_time << ")\n";
 
-    for (int i=MAX_TILE-2; i>=0; --i) {
+    for (int i=MAX_TILE-1; i>=0; --i) {
         results[i] += results[i+1];
     }
-    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
+    for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
     save_results(fout, player_name, games, time_taken, computation_time);
