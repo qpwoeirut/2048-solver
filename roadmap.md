@@ -106,31 +106,59 @@ This stage's implementation of expectimax also doesn't implement any pruning or 
 
 
 ## Stage 3
-I added a simple [benchmark](/benchmark.cpp) program to provide some direction in speeding up the game implementation.
-I also added `-funroll-loops` to the compilation flags, which sped things up.
+I'd originally decided to drop the less successful strategies from Stage 3 onwards, but I realized that those can be useful to ensure the game implementation still works the same.
+It's also interested to see how well each strategy works, even if it's not the most optimal.
 
-I've decided that from Stage 3 onwards, I'll focus more on the strategies that are successful.
-The "blind" strategies won't be run in the final tests and the less effective heuristics (`score` and `merge`) will be dropped as well.
-Hopefully this will make testing run a little faster (and lower my AWS bill).
+I essentially overhauled the entire project structure for this stage.
 
-### Website
-While waiting for the testing of Stage 2 to finish, I put together a [website demo](https://qpwoeirut.github.io/2048/).
+### Evaluation Caching
+The expectimax strategy uses [Google SparseHash](https://github.com/sparsehash/sparsehash) to cache evaluations of board states.
+To keep the memory usage from spiking to several gigabytes (the highest I got during testing was 8GB), old evaluations are put in a queue and deleted after a few moves.
+
+### Alpha-Beta Pruning
+The minimax strategy now implements [fail-soft alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning).
+No caching is used, since caching would require storing the alpha and beta values of an evaluation along with the evaluation itself.
+It's possible that this would still be faster, but for now I haven't tried it.
 
 ### Heuristics
 I added two heuristics designed to make the AI build tiles against the wall.
+This is supposed to replicate the human strategy (which I think is called Snake Chain Formation?) of keeping an "immovable subset" of large tiles against a wall.
+
+### Transition from functional to object-oriented
+Previously, each strategy was in its own namespace.
+I had decided to avoid classes in the hope that it would be simpler and slightly faster.
+Since each `player` function didn't rely on any external state, this was fine.
+
+But once the evaluation cache was added, a global data structure needed to be attached to a specific player.
+This would also avoid a single cache from being used by multiple separate games during testing, which happens in parallel.
+So the game implementation and each AI implementation was converted to be object-oriented.
+
+While making these changes, I discovered that previous results where testing was done in parallel may have overreported the runtime.
+The game implementation initially used a single RNG instance across all threads, which slowed down the players while they waited for the RNG instance to become available.
+This was fixed when the game implementation became object-oriented and each instance of `GameSimulator` got its own RNG instance.
 
 ### Depth Picker
 Both the minimax and expectimax strategies take a long time to evaluate boards with lots of empty tiles, but those positions are usually not very important.
-I added a depth picker, which decreases the depth to search for boards with few tiles and increases the depth on boards that are nearly full.
+I added a depth picker, which decreases the depth to search for boards with few tiles and increases the depth on boards that are nearly full or have a high number of distinct tiles.
 
-### Alpha-Beta Pruning
-Work in progress
+### Optimizations
+I added a simple [benchmark](/benchmark.cpp) program to provide some direction in speeding up the game implementation.
+I also added `-funroll-loops` to the compilation flags, which sped things up.
+Lookup tables for the game implementation are now calculated at compile time.
 
-### Evaluation Caching
-Work in progress
+### Website
+While waiting for the testing of Stage 2 to finish, I put together a [website demo](https://qpwoeirut.github.io/2048/).
+Besides being a good way to show my work, it also provided a good visual tool for testing new strategies and heuristics.
+
+### Other
+* All testing is now run in parallel, and the number of threads used has been lowered significantly.
+* [tester.cpp](/tester.cpp) now records the sum of times that each thread is alive, in order to approximate the amount of time that would have been spent if testing had been single-threaded.
+* Several other statistics are recorded as well: total score, median score, total # of moves, and median # of moves.
+* All the files that don't have an entrypoint have been converted into header files with include guards.
+* The [results](/results) directory now stores all previous testing results. 
 
 
-### Other Ideas
+## Other Ideas
 I was discussing possible 2048 strategies with a friend, who pointed out the possibility that many positions are "useless," in the sense that the move picked from that position won't heavily affect the outcome of the game.
 If it's possible to identify the "usefulness" of a position, the useless positions can be solved by simply making a random move.
 This strategy should speed up games, especially in the early stages, allowing for more testing and/or training.
