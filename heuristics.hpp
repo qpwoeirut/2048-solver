@@ -10,12 +10,7 @@ namespace heuristics {
     // creating each of those added 2^(n-1) to the score, and following the recursive pattern gets n * 2^n
     // technically we want (n-1) * 2^n since the 2's spawning don't add to the score
     eval_t score_heuristic(const board_t board) {
-        eval_t score = 0;
-        for (int i=0; i<64; i+=4) {
-            const uint8_t tile = (board >> i) & 0xF;
-            score += tile <= 1 ? 0 : (tile - 1) * (1 << tile);
-        }
-        return score;
+        return approximate_score(board);
     }
 
     eval_t merge_heuristic(const board_t board) {  // count empty tiles on board

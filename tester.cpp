@@ -33,10 +33,13 @@ std::atomic<int> results[MAX_TILE + 1];
 int moves[GAMES[4]];  // each index is only modified by one thread so atomic isn't necessary
 int scores[GAMES[4]];
 
-const int play_game(Strategy& player) {
-    int fours = 0;
-    const board_t board = player.simulator.play(player, fours);
-    return get_max_tile(board);
+long long calculate_total(const int arr[], const int n) {
+    return std::accumulate(arr, arr+n, 0LL);
+}
+float calculate_median(const int arr[], const int n) {  // if n is even, returns mean of two middle elements
+    std::vector<int> tmp(arr, arr+n);
+    sort(tmp.begin(), tmp.end());
+    return (n & 1) ? tmp[n / 2] : (tmp[(n-1) / 2] + tmp[n / 2]) / 2.0;
 }
 
 void write_headings(std::ofstream& fout) {
@@ -45,6 +48,7 @@ void write_headings(std::ofstream& fout) {
     for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
         fout << ',' << (1 << i);
     }
+    fout << ",Total Score,Median Score,Total Moves,Median Moves";
     fout << std::endl;
 }
 
@@ -54,6 +58,7 @@ void save_results(std::ofstream& fout, const std::string& player_name, const int
     for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
         fout << ',' << results[i];
     }
+    fout << ',' << calculate_total(scores, games) << ',' << calculate_median(scores, games) << ',' << calculate_total(moves, games) << ',' << calculate_median(moves, games);
     fout << std::endl;
 }
 
@@ -64,8 +69,10 @@ long long test_player_thread(const std::unique_ptr<Strategy> player) {  // this 
     const long long start_time = get_current_time_ms();
     int game_idx = --games_remaining;
     while (game_idx >= 0) {
-        const int max_tile = play_game(*player);
+        int fours = 0;
+        const board_t board = player->simulator.play(*player, fours);
         player->reset();
+        const int max_tile = get_max_tile(board);
 
         ++results[max_tile];  // suffix sum type thing
         moves[game_idx] = count_moves_made(board, fours);

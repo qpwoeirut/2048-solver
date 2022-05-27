@@ -82,8 +82,17 @@ int board_sum(const board_t board) {
 int count_moves_made(const board_t board, const int fours) {
     return (board_sum(board) >> 1) - fours - 2;
 }
+
+int approximate_score(const board_t board) {
+    int score = 0;
+    for (int i=0; i<64; i+=4) {
+        const uint8_t tile = (board >> i) & 0xF;
+        score += tile <= 1 ? 0 : (tile - 1) * (1 << tile);
+    }
+    return score;
+}
 int actual_score(const board_t board, const int fours) {
-    return heuristics::score_heuristic(board) - 4 * fours;
+    return approximate_score(board) - 4 * fours;
 }
 
 #endif
