@@ -21,7 +21,7 @@ constexpr int MAX_TILE = 16;  // 2^17 is largest possible tile, but it's practic
 
 constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
 constexpr int MAX_DEPTH = 5;
-constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 9, 7, 4};
+constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 10, 9, 6};
 
 //constexpr int GAMES[5] = {10, 25, 100, 200, 500};
 //constexpr int MAX_DEPTH = 4;
@@ -127,7 +127,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-mnmx.csv");
     write_headings(fout);
-    for (int depth = 1; depth < MAX_DEPTH; depth++) {
+    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
         const std::string player_name = name + "-mnmx(d=" + std::to_string(depth) + ")";
 
         const int speed = std::max(0, 3 - depth);
@@ -138,7 +138,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-expmx.csv");
     write_headings(fout);
-    for (int depth = 1; depth < MAX_DEPTH; depth++) {
+    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
         const std::string player_name = name + "-expmx(d=" + std::to_string(depth) + ")";
 
         const int speed = std::max(0, 3 - depth);
@@ -151,7 +151,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 void test_monte_carlo_strategy() {
     std::ofstream fout("results/monte_carlo.csv");
     write_headings(fout);
-    for (int trials=100; trials<=2000; trials+=100) {
+    for (int trials=100; trials<=3000; trials+=100) {
         test_player(fout, "monte_carlo (t=" + std::to_string(trials) + ")", std::make_unique<MonteCarloPlayer>(trials), GAMES[0], true);
     }
     fout.close();
