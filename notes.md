@@ -22,6 +22,8 @@ This stores some loose ideas that I might try in the future.
   * is storing transposed/rotated states or searching for them in cache worth it? will need to benchmark. also might vary based on strategy
 * investigate using better variant of alpha-beta pruning with search order heuristic
 * at some point the website and selenium demos should be fixed
+* use compile-time lookup tables for heuristics?
+* `player.simulator.play(player, fours)` is rather ugly; clean up somehow?
 
 ## Website
 * persist AI settings with localstorage
