@@ -18,16 +18,13 @@ There are some implementation ideas that I'm taking as well (such as the bitwise
 
 
 ## Structure
-The code for simulating a game is in [game.cpp](/game.cpp) under the `game` namespace.
-[util.cpp](/util.cpp) stores helpful utilities for the heuristic and player functions.
+The code for simulating a game is in [game.hpp](/game.hpp) under the `game` namespace.
+[util.hpp](/util.hpp) stores helpful utilities for the heuristic and player functions.
 
 Each strategy is in the [strategy](/strategies) directory.
 All strategies implement a function which provides a move when given a board. 
 Some strategies have parameters and heuristic functions or secondary strategies that are passed in.
-All heuristics are in [heuristics.cpp](/heuristics.cpp).
-
-I'm not using classes because I couldn't figure out an easy way to pass around class member functions and I figured that there would probably be some avoidable overhead from instantiating classes.
-So instead each strategy just gets its own namespace.
+All heuristics are in [heuristics.hpp](/heuristics.hpp).
 
 [tester.cpp](/tester.cpp) simulates games for each solver and write the results into the [results](/results) directory as a CSV file.
 Giving each solver its own file means that I don't have to rerun every solver simulation if I only need to test one solver.
@@ -46,7 +43,7 @@ The slower solvers run games in parallel using C++'s `std::async`.
 Games are run on an AWS EC2 Linux c6g.large instance.
 
 ## Results
-The best strategy right now is the [expectimax](/strategies/expectimax.cpp) with the [corner building heuristic](/heuristics.cpp).
+The best strategy right now is the [expectimax](/strategies/ExpectimaxStrategy.hpp) with the [corner building heuristic](/heuristics.hpp).
 When it searches with a depth of 4, it wins 97.6% of the time, reaches 4096 81.6% of the time, and gets the 8192 tile with a 18.6% success rate.
 
 The [results file](/results-stage2.csv) has the latest statistics for all tested strategies.
