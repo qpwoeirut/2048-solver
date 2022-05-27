@@ -30,6 +30,8 @@ constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 10, 9, 6};
 constexpr int THREADS = 4;
 
 std::atomic<int> results[MAX_TILE + 1];
+int moves[GAMES[4]];  // each index is only modified by one thread so atomic isn't necessary
+int scores[GAMES[4]];
 
 const int play_game(Strategy& player) {
     int fours = 0;
@@ -60,10 +62,16 @@ std::atomic<int> games_remaining;
 
 long long test_player_thread(const std::unique_ptr<Strategy> player) {  // this function should own the player pointer
     const long long start_time = get_current_time_ms();
-    while (--games_remaining >= 0) {
+    int game_idx = --games_remaining;
+    while (game_idx >= 0) {
         const int max_tile = play_game(*player);
-        ++results[max_tile];  // suffix sum type thing
         player->reset();
+
+        ++results[max_tile];  // suffix sum type thing
+        moves[game_idx] = count_moves_made(board, fours);
+        scores[game_idx] = actual_score(board, fours);
+
+        game_idx = --games_remaining;  // games_remaining will end up negative, but that's fine
     }
     const long long end_time = get_current_time_ms();
     return end_time - start_time;

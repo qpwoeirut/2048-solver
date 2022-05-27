@@ -79,5 +79,11 @@ int board_sum(const board_t board) {
     return sum;
 }
 
-#endif
+int count_moves_made(const board_t board, const int fours) {
+    return (board_sum(board) >> 1) - fours - 2;
+}
+int actual_score(const board_t board, const int fours) {
+    return heuristics::score_heuristic(board) - 4 * fours;
+}
 
+#endif
