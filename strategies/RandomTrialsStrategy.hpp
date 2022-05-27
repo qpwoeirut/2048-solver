@@ -35,7 +35,7 @@ class RandomTrialsStrategy: public Strategy {
 
     private:
     const eval_t helper(const board_t board, const int cur_depth) {
-        if (game::game_over(board)) {
+        if (simulator.game_over(board)) {
             const eval_t score = (evaluator(board) * MULT) << 2;
             return score - (score >> 4);
         }
@@ -46,12 +46,12 @@ class RandomTrialsStrategy: public Strategy {
         eval_t best_score = 0;
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
         for (int i=0; i<4; ++i) {
-            const board_t new_board = game::make_move(board, i);
+            const board_t new_board = simulator.make_move(board, i);
             if (board == new_board) continue;
 
             eval_t current_score = 0;
             for (int j=0; j<trials; ++j) {
-                current_score += helper(game::add_random_tile(new_board, game::generate_random_tile_val()),
+                current_score += helper(simulator.add_random_tile(new_board, simulator.generate_random_tile_val()),
                                         cur_depth - 1) >> 2;  // extract score
             }
             if (best_score <= current_score) {

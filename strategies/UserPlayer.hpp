@@ -17,7 +17,7 @@ class UserPlayer: public Strategy {
             std::cout << "Invalid move!\n";
             return pick_move(board);
         }
-        if (board == game::make_move(board, dir)) {
+        if (board == simulator.make_move(board, dir)) {
             std::cout << "No change!\n";
             return pick_move(board);
         }

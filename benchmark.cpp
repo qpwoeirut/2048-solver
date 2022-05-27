@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "game.cpp"
+#include "game.hpp"
 #include "heuristics.hpp"
 #include "strategies/ExpectimaxStrategy.hpp"
 #include "strategies/MinimaxStrategy.hpp"
@@ -21,7 +21,7 @@ int move_total = 0;
 
 const int play_game(Strategy& player) {
     int fours = 0;
-    const board_t board = game::play(player, fours);
+    const board_t board = player.simulator.play(player, fours);
 
     move_total += (board_sum(board) >> 1) - fours - 2;
     // every move, a 2 or 4 tile spawns, so we can calculate move count by board sum
@@ -29,7 +29,7 @@ const int play_game(Strategy& player) {
 
     const int score = heuristics::score_heuristic(board) - 4 * fours;
     score_total += score;
-    std::cout << "Score: " << score << std::endl;
+    //std::cout << "Score: " << score << std::endl;
     return get_max_tile(board);
 }
 
@@ -61,20 +61,20 @@ SpamCornerPlayer spam_corner_player{};
 ExpectimaxStrategy expectimax_strategy(-1, heuristics::corner_heuristic);
 
 int main() {
-    game::init(8);  // make the game repeatable
-    move_gen.seed(8);
+    const auto player = std::make_unique<RandomPlayer>();
+    test_player(*player, int(1e6));
 
-    test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
+    //test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
-    int f = 0;
+    //int f = 0;
 
-    UserPlayer user_player{};
-    game::play(user_player, f);
+    //UserPlayer user_player{};
+    //user_player.simulator.play(user_player, f);
 
-    //game::play_slow(minimax_strategy, f);
+    //minimax_strategy.play_slow(minimax_strategy, f);
     //test_player(minimax_strategy, 20);
 
-    //game::play_slow(expectimax_strategy, f);
-    test_player(expectimax_strategy, 1);
+    //expectimax_strategy.simulator.play_slow(expectimax_strategy, f);
+    //test_player(expectimax_strategy, 1);
 }
 

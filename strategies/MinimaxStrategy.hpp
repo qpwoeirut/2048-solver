@@ -31,7 +31,7 @@ class MinimaxStrategy: public Strategy {
 
     private:
     const eval_t helper(const board_t board, const int cur_depth, eval_t alpha, const eval_t beta0, const int fours) {
-        if (game::game_over(board)) {
+        if (simulator.game_over(board)) {
             const eval_t score = evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
@@ -43,7 +43,7 @@ class MinimaxStrategy: public Strategy {
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
         for (int i=0; i<4; ++i) {
             eval_t current_score = heuristics::MAX_EVAL;  // next step will minimize this across all tile placements
-            const board_t new_board = game::make_move(board, i);
+            const board_t new_board = simulator.make_move(board, i);
             if (board == new_board) {
                 continue;
             } else {

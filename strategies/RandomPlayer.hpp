@@ -4,8 +4,6 @@
 #include "Strategy.hpp"
 #include <random>
 
-static std::mt19937 seed_generator(get_current_time_ms());  // make sure multiple instances of the random player don't end up making the same moves
-
 class RandomPlayer: public Strategy {
 
     std::mt19937 move_gen{seed_generator()};
@@ -21,7 +19,7 @@ class RandomPlayer: public Strategy {
         do {  // this *shouldn't* infinite loop but i guess we will see...
             move = random_move();
         }
-        while (board == game::make_move(board, move));
+        while (board == simulator.make_move(board, move));
         return move;
     }
 

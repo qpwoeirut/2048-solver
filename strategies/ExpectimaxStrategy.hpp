@@ -17,6 +17,9 @@ class ExpectimaxStrategy: public Strategy {
     static constexpr int CACHE_DEPTH = 2;
     static constexpr int USUAL_CACHE = 1 << 16;
 
+    static constexpr board_t INVALID_BOARD  = 0x1111111111111111ULL;  // used as the empty_key for the dense_hash_map cache
+    static constexpr board_t INVALID_BOARD2 = 0x2222222222222222ULL;  // used as the delete_key for the dense_hash_map cache
+
     // according to a single benchmark than I ran:
     // cache can reach up to 700k-ish
     // but 99% of the time it's less than 130k
@@ -44,8 +47,8 @@ class ExpectimaxStrategy: public Strategy {
         evaluator = _evaluator;
 
         cache = cache_t(USUAL_CACHE);
-        cache.set_empty_key(game::INVALID_BOARD);
-        cache.set_deleted_key(game::INVALID_BOARD2);
+        cache.set_empty_key(INVALID_BOARD);
+        cache.set_deleted_key(INVALID_BOARD2);
         cache.min_load_factor(0.3);  // shrink quickly
         cache.max_load_factor(0.9);  // but expand slowly
     }
@@ -82,7 +85,7 @@ class ExpectimaxStrategy: public Strategy {
 
     private:
     const eval_t helper(const board_t board, const int cur_depth, const int fours) {
-        if (game::game_over(board)) {
+        if (simulator.game_over(board)) {
             const eval_t score = MULT * evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
@@ -103,7 +106,7 @@ class ExpectimaxStrategy: public Strategy {
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
         for (int i=0; i<4; ++i) {
             eval_t expected_score = 0;
-            const board_t new_board = game::make_move(board, i);
+            const board_t new_board = simulator.make_move(board, i);
             if (board == new_board) {
                 continue;
             } else {

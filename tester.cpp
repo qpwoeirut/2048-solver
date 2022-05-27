@@ -2,7 +2,7 @@
 #include <iostream>
 #include <future>
 
-#include "game.cpp"
+#include "game.hpp"
 #include "heuristics.hpp"
 #include "strategies/Strategy.hpp"
 #include "strategies/ExpectimaxStrategy.hpp"
@@ -19,21 +19,21 @@
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 16;  // 2^17 is largest possible tile, but it's practically impossible
 
-//constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
+constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
 //constexpr int MAX_DEPTH = 5;
 //constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 9, 7, 4};
 
-constexpr int GAMES[5] = {10, 25, 100, 200, 500};
+//constexpr int GAMES[5] = {10, 25, 100, 200, 500};
 constexpr int MAX_DEPTH = 4;
 constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3};
 
-constexpr int THREADS = 2;
+constexpr int THREADS = 8;
 
 std::atomic<int> results[MAX_TILE + 1];
 
 const int play_game(Strategy& player) {
     int fours = 0;
-    const board_t board = game::play(player, fours);
+    const board_t board = player.simulator.play(player, fours);
     return get_max_tile(board);
 }
 
@@ -158,8 +158,6 @@ void test_monte_carlo_strategy() {
 }
 
 int main() {
-    game::init();
-
     //while (1) {
     //    board_t b;
     //    std::cin >> b;
@@ -173,10 +171,10 @@ int main() {
     test_single_player("ordered", std::make_unique<OrderedPlayer>(), GAMES[4]);
     test_single_player("rotating", std::make_unique<RotatingPlayer>(), GAMES[4]);
 
-    test_heuristic("merge", heuristics::merge_heuristic);
-    test_heuristic("score", heuristics::score_heuristic);
-    test_heuristic("corner", heuristics::corner_heuristic);
-    test_monte_carlo_strategy();
+    //test_heuristic("merge", heuristics::merge_heuristic);
+    //test_heuristic("score", heuristics::score_heuristic);
+    //test_heuristic("corner", heuristics::corner_heuristic);
+    //test_monte_carlo_strategy();
 
 
     std::cout << "Done!" << std::endl;

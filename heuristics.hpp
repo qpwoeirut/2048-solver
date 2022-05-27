@@ -77,7 +77,7 @@ namespace heuristics {
         return std::max(std::max(top, bottom), std::max(left, right)) + score_heuristic(board);
     }
     eval_t wall_gap_heuristic(const board_t board) {
-        return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(game::transpose(board))) + score_heuristic(board);  // tiebreak by score
+        return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
     eval_t _full_wall_heuristic(const board_t board) {
@@ -100,7 +100,7 @@ namespace heuristics {
         return std::max(std::max(top, bottom), std::max(left, right));
     }
     eval_t full_wall_heuristic(const board_t board) {
-        return std::max(_full_wall_heuristic(board), _full_wall_heuristic(game::transpose(board))) + score_heuristic(board);  // tiebreak by score
+        return std::max(_full_wall_heuristic(board), _full_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
     #undef tile_exp

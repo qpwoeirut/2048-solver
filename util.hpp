@@ -23,9 +23,19 @@ uint16_t to_tile_mask(const board_t board) {
     return tile_mask;
 }
 
-long long get_current_time_ms() {
+// from https://github.com/nneonneo/2048-ai/blob/master/2048.cpp#L38-L48
+// transposes 0123 to 048c
+//            4567    159d
+//            89ab    26ae
+//            cdef    37bf
+board_t transpose(const board_t board) {
+    const board_t a = ((board & 0x0000F0F00000F0F0ULL) << 12) | ((board & 0xF0F00F0FF0F00F0FULL) | (board & 0x0F0F00000F0F0000ULL) >> 12);
+    return ((a & 0x00000000FF00FF00ULL) << 24) | (a & 0xFF00FF0000FF00FFULL) | ((a & 0x00FF00FF00000000ULL) >> 24);
+}
+
+unsigned long long get_current_time_ms() {
     const std::chrono::time_point now = std::chrono::system_clock::now();
-    const long long seconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    const unsigned long long seconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     return seconds;
 }
 
