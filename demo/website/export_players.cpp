@@ -1,39 +1,49 @@
-#include "../../game.cpp"
-#include "../../heuristics.cpp"
-#include "../../strategies/blind/random.cpp"
-#include "../../strategies/blind/spam_corner.cpp"
-#include "../../strategies/blind/ordered.cpp"
-#include "../../strategies/blind/rotating.cpp"
-#include "../../strategies/rand_trials.cpp"
-#include "../../strategies/minimax.cpp"
-#include "../../strategies/expectimax.cpp"
-#include "../../strategies/monte_carlo.cpp"
+#include <emscripten/bind.h>
+#include "../../game.hpp"
+#include "../../heuristics.hpp"
+#include "../../strategies/ExpectimaxStrategy.hpp"
+#include "../../strategies/MinimaxStrategy.hpp"
+#include "../../strategies/MonteCarloPlayer.hpp"
+#include "../../strategies/OrderedPlayer.hpp"
+#include "../../strategies/RandomPlayer.hpp"
+#include "../../strategies/RandomTrialsStrategy.hpp"
+#include "../../strategies/RotatingPlayer.hpp"
+#include "../../strategies/SpamCornerPlayer.hpp"
+#include "../../strategies/UserPlayer.hpp"
 
-extern "C" {
+using emscripten::class_;
 
-void init_game() { game::init(); }
-int random_player(const board_t board) { return random_strategy::player(board); }
-int spam_corner_player(const board_t board) { return spam_corner_strategy::player(board); }
-int ordered_player(const board_t board) { return ordered_strategy::player(board); }
-int rotating_player(const board_t board) { return rotating_strategy::player(board); }
+EMSCRIPTEN_BINDINGS(players) {
+    class_<ExpectimaxStrategy>("ExpectimaxStrategy")
+        .constructor<const int, const int>()
+        .function("pick_move", &ExpectimaxStrategy::pick_move);
 
-int rand_trials_player(const board_t board) { return rand_trials_strategy::player(board); }
-void init_rand_trials_strategy(const int d, const int t, const int heuristic_id) {
-    rand_trials_strategy::init(d, t, heuristics::exports[heuristic_id]);
-}
+    class_<MinimaxStrategy>("MinimaxStrategy")
+        .constructor<const int, const int>()
+        .function("pick_move", &MinimaxStrategy::pick_move);
 
-int minimax_player(const board_t board) { return minimax_strategy::player(board); }
-void init_minimax_strategy(const int d, const int heuristic_id) {
-    minimax_strategy::init(d, heuristics::exports[heuristic_id]);
-}
+    class_<RandomTrialsStrategy>("RandomTrialsStrategy")
+        .constructor<const int, const int, const int>()
+        .function("pick_move", &RandomTrialsStrategy::pick_move);
 
-int expectimax_player(const board_t board) { return expectimax_strategy::player(board); }
-void init_expectimax_strategy(const int d, const int heuristic_id) {
-    expectimax_strategy::init(d, heuristics::exports[heuristic_id]);
-}
+    class_<MonteCarloPlayer>("MonteCarloPlayer")
+        .constructor<const int>()
+        .function("pick_move", &MonteCarloPlayer::pick_move);
 
-int monte_carlo_player(const board_t board) { return monte_carlo_strategy::player(board); }
-void init_monte_carlo_strategy(const int d) { monte_carlo_strategy::init(d); }
+    class_<OrderedPlayer>("OrderedPlayer")
+        .constructor<>()
+        .function("pick_move", &OrderedPlayer::pick_move);
 
+    class_<RandomPlayer>("RandomPlayer")
+        .constructor<>()
+        .function("pick_move", &RandomPlayer::pick_move);
+
+    class_<RotatingPlayer>("RotatingPlayer")
+        .constructor<>()
+        .function("pick_move", &RotatingPlayer::pick_move);
+
+    class_<SpamCornerPlayer>("SpamCornerPlayer")
+        .constructor<>()
+        .function("pick_move", &SpamCornerPlayer::pick_move);
 }
 
