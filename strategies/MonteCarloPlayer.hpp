@@ -23,15 +23,6 @@ class MonteCarloPlayer: public Strategy {
         return std::make_unique<MonteCarloPlayer>(trials);
     }
 
-    private:
-    const int run_trial(board_t board) {
-        while (!simulator.game_over(board)) {
-            board = simulator.add_random_tile(simulator.make_move(board, random_player.pick_move(board)),
-                                              simulator.generate_random_tile_val());
-        }
-        return heuristics::score_heuristic(board);
-    }
-
     const int pick_move(const board_t board) override {
         int best_score = 0;
         int best_move = -1;
@@ -49,6 +40,15 @@ class MonteCarloPlayer: public Strategy {
             }
         }
         return best_move;
+    }
+
+    private:
+    const int run_trial(board_t board) {
+        while (!simulator.game_over(board)) {
+            board = simulator.add_random_tile(simulator.make_move(board, random_player.pick_move(board)),
+                                              simulator.generate_random_tile_val());
+        }
+        return heuristics::score_heuristic(board);
     }
 };
 

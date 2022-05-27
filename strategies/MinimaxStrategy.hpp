@@ -18,6 +18,8 @@ class MinimaxStrategy: public Strategy {
         depth = _depth;
         evaluator = _evaluator;
     }
+    MinimaxStrategy(const int _depth, const int heuristic_idx) :
+        MinimaxStrategy(_depth, heuristics::exports[heuristic_idx]) {}
     
     std::unique_ptr<Strategy> clone() override {
         return std::make_unique<MinimaxStrategy>(depth, evaluator);

@@ -19,11 +19,13 @@ class RandomTrialsStrategy: public Strategy {
 
     public:
     int depth, trials;
-    RandomTrialsStrategy(const int _depth, const int _trials, heuristic_t _evaluator) {
+    RandomTrialsStrategy(const int _depth, const int _trials, const heuristic_t _evaluator) {
         depth = _depth;
         trials = _trials;
         evaluator = _evaluator;
     }
+    RandomTrialsStrategy(const int _depth, const int _trials, const int heuristic_idx) :
+        RandomTrialsStrategy(_depth, _trials, heuristics::exports[heuristic_idx]) {}
 
     std::unique_ptr<Strategy> clone() override {
         return std::make_unique<RandomTrialsStrategy>(depth, trials, evaluator);

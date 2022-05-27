@@ -52,6 +52,8 @@ class ExpectimaxStrategy: public Strategy {
         cache.min_load_factor(0.3);  // shrink quickly
         cache.max_load_factor(0.9);  // but expand slowly
     }
+    ExpectimaxStrategy(const int _depth, const int heuristic_idx) :
+        ExpectimaxStrategy(_depth, heuristics::exports[heuristic_idx]) {}
 
     std::unique_ptr<Strategy> clone() override {
         return std::make_unique<ExpectimaxStrategy>(depth, evaluator);

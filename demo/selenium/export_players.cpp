@@ -1,48 +1,48 @@
 #include <pybind11/pybind11.h>
-#include "../../game.cpp"
-#include "../../heuristics.cpp"
-#include "../../strategies/blind/random.cpp"
-#include "../../strategies/blind/spam_corner.cpp"
-#include "../../strategies/blind/ordered.cpp"
-#include "../../strategies/blind/rotating.cpp"
-#include "../../strategies/rand_trials.cpp"
-#include "../../strategies/minimax.cpp"
-#include "../../strategies/expectimax.cpp"
-#include "../../strategies/monte_carlo.cpp"
+#include "../../game.hpp"
+#include "../../heuristics.hpp"
+#include "../../strategies/ExpectimaxStrategy.hpp"
+#include "../../strategies/MinimaxStrategy.hpp"
+#include "../../strategies/MonteCarloPlayer.hpp"
+#include "../../strategies/OrderedPlayer.hpp"
+#include "../../strategies/RandomPlayer.hpp"
+#include "../../strategies/RandomTrialsStrategy.hpp"
+#include "../../strategies/RotatingPlayer.hpp"
+#include "../../strategies/SpamCornerPlayer.hpp"
+#include "../../strategies/UserPlayer.hpp"
 
-
-// pybind11 only works with the std::function wrapper, which is slow
-// so instead a workaround with an array of the heuristics is used
-void init_rand_trials_strategy(const int d, const int t, const int heuristic_id) {
-    rand_trials_strategy::init(d, t, heuristics::exports[heuristic_id]);
-}
-void init_minimax_strategy(const int d, const int heuristic_id) {
-    minimax_strategy::init(d, heuristics::exports[heuristic_id]);
-}
-void init_expectimax_strategy(const int d, const int heuristic_id) {
-    expectimax_strategy::init(d, heuristics::exports[heuristic_id]);
-}
-
+using pybind11::class_;
+using pybind11::init;
 
 PYBIND11_MODULE(players, m) {
     m.doc() = "Solving strategies for 2048 written in C++ and exported to Python";
 
-    m.def("init_game",                  &game::init,                    "initialize game");
+    class_<ExpectimaxStrategy>(m, "ExpectimaxStrategy")
+        .def(init<const int, const int>())
+        .def("pick_move", &ExpectimaxStrategy::pick_move);
 
-    m.def("random_strategy",            &random_strategy::player,       "random strategy");
-    m.def("spam_corner_strategy",       &spam_corner_strategy::player,  "corner spam strategy");
-    m.def("ordered_strategy",           &ordered_strategy::player,      "ordered strategy");
-    m.def("rotating_strategy",          &rotating_strategy::player,     "rotating strategy");
+    class_<MinimaxStrategy>(m, "MinimaxStrategy")
+        .def(init<const int, const int>())
+        .def("pick_move", &MinimaxStrategy::pick_move);
 
-    m.def("rand_trials_strategy",       &rand_trials_strategy::player,  "random trials strategy");
-    m.def("minimax_strategy",           &minimax_strategy::player,      "minimax strategy");
-    m.def("expectimax_strategy",        &expectimax_strategy::player,   "expectimax strategy");
+    class_<RandomTrialsStrategy>(m, "RandomTrialsStrategy")
+        .def(init<const int, const int, const int>())
+        .def("pick_move", &RandomTrialsStrategy::pick_move);
 
-    m.def("init_rand_trials_strategy",  &init_rand_trials_strategy,     "initialize random trials strategy");
-    m.def("init_minimax_strategy",      &init_minimax_strategy,         "initialize minimax strategy");
-    m.def("init_expectimax_strategy",   &init_expectimax_strategy,      "initialize expectimax strategy");
+    class_<MonteCarloPlayer>(m, "MonteCarloPlayer")
+        .def(init<const int>())
+        .def("pick_move", &MonteCarloPlayer::pick_move);
 
-    m.def("monte_carlo_strategy",       &monte_carlo_strategy::player,  "monte carlo tree search strategy");
-    m.def("init_monte_carlo_strategy",  &monte_carlo_strategy::init,    "initialize monte carlo tree search strategy");
+    class_<OrderedPlayer>(m, "OrderedPlayer")
+        .def("pick_move", &OrderedPlayer::pick_move);
+
+    class_<RandomPlayer>(m, "RandomPlayer")
+        .def("pick_move", &RandomPlayer::pick_move);
+
+    class_<RotatingPlayer>(m, "RotatingPlayer")
+        .def("pick_move", &RotatingPlayer::pick_move);
+
+    class_<SpamCornerPlayer>(m, "SpamCornerPlayer")
+        .def("pick_move", &SpamCornerPlayer::pick_move);
 }
 

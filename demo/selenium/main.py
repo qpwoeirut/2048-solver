@@ -42,7 +42,7 @@ def read_board(tiles: List[WebElement]) -> int:
     return board
 
 
-def play_game(player):
+def play_game(player: object):
     browser = webdriver.Firefox()
     browser.get("https://play2048.co/")
 
@@ -52,14 +52,14 @@ def play_game(player):
     tile_container: WebElement = game_container.find_element(By.CLASS_NAME, "tile-container")
 
     while len(game_container.find_elements(By.CLASS_NAME, "game-over")) == 0:  # check if game is over
-        board = read_board(tile_container.find_elements(By.CLASS_NAME, "tile"))
-        move = player(board)
-
-        old_board = board
-
-        body.send_keys(MOVES[move])
         for _ in range(10):
             try:
+                board = read_board(tile_container.find_elements(By.CLASS_NAME, "tile"))
+                move = player.pick_move(board)
+
+                old_board = board
+
+                body.send_keys(MOVES[move])
                 board = read_board(tile_container.find_elements(By.CLASS_NAME, "tile"))
                 if board != old_board:
                     break
@@ -79,15 +79,10 @@ def play_game(player):
 
 
 def main():
-    players.init_game()
-
-    # players.init_monte_carlo_strategy(5000)
-    # play_game(players.monte_carlo_strategy)
+    # play_game(players.MonteCarloPlayer(5000))
 
     CORNER_HEURISTIC = 2
-
-    players.init_expectimax_strategy(0, CORNER_HEURISTIC)
-    play_game(players.expectimax_strategy)
+    play_game(players.ExpectimaxStrategy(0, CORNER_HEURISTIC))
             
 
 if __name__ == '__main__':
