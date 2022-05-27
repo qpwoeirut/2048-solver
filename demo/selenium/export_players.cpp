@@ -34,15 +34,19 @@ PYBIND11_MODULE(players, m) {
         .def("pick_move", &MonteCarloPlayer::pick_move);
 
     class_<OrderedPlayer>(m, "OrderedPlayer")
+        .def(init<>())
         .def("pick_move", &OrderedPlayer::pick_move);
 
     class_<RandomPlayer>(m, "RandomPlayer")
+        .def(init<>())
         .def("pick_move", &RandomPlayer::pick_move);
 
     class_<RotatingPlayer>(m, "RotatingPlayer")
+        .def(init<>())
         .def("pick_move", &RotatingPlayer::pick_move);
 
     class_<SpamCornerPlayer>(m, "SpamCornerPlayer")
+        .def(init<>())
         .def("pick_move", &SpamCornerPlayer::pick_move);
 }
 
