@@ -4,7 +4,7 @@ from setuptools import setup
 ext = Pybind11Extension("players", ["demo/selenium/export_players.cpp"])
 ext.cxx_std = 20
 # surely there must be a better way to do this?
-ext._add_cflags(["-funroll-loops", "-fconstexpr-steps=0x500000", "-I/usr/local/Cellar/google-sparsehash/2.0.4/include/"])
+ext._add_cflags(["-funroll-loops", "-fconstexpr-steps=0x500000", "-I/usr/local/include"])
 
 ext_modules = [
     ext
