@@ -13,7 +13,7 @@ std::mt19937 seed_generator{static_cast<unsigned int>(get_current_time_ms())};  
 
 class Strategy {
     public:
-    GameSimulator simulator{seed_generator()};
+    GameSimulator simulator{static_cast<long long>(seed_generator())};
 
     virtual ~Strategy() = default;
     virtual std::unique_ptr<Strategy> clone() = 0;
