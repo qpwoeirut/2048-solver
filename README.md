@@ -40,7 +40,8 @@ As a result, some of the faster solvers (such as the random strategy) run hundre
 
 The slower solvers run games in parallel using C++'s `std::async`.
 
-Games are run on an AWS EC2 Linux c6g.large instance.
+For Stages 1 and 2, games were run on an AWS EC2 Amazon Linux c6g.large instance.
+From Stage 3 onwards, games were run on an AWS EC2 Ubuntu c6g.xlarge instance.
 
 ## Results
 The best strategy right now is the [expectimax](/strategies/ExpectimaxStrategy.hpp) with the [corner building heuristic](/heuristics.hpp).
@@ -53,3 +54,7 @@ I've made significant improvements to the expectimax implementation which allow 
 ![Image of 16384 tile game](/images/Screen%20Shot%202022-05-18%20at%209.41.32%20AM-expectimax-corner.png)
 
 The strategy that achieved that score will be tested soon in Stage 3.
+
+
+## Caveats
+The [Google sparsehash](https://github.com/sparsehash/sparsehash) repository needs to be installed.

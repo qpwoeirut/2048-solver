@@ -2,7 +2,7 @@
 #define EXPECTIMAX_STRATEGY_HPP
 
 #include "Strategy.hpp"
-#include <sparsehash/dense_hash_map>
+#include "sparsehash/dense_hash_map"
 //using cache_t = std::unordered_map<board_t, eval_t>;
 using cache_t = google::dense_hash_map<board_t, eval_t>;  // https://github.com/sparsehash/sparsehash
 

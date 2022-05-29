@@ -110,6 +110,7 @@ I'd originally decided to drop the less successful strategies from Stage 3 onwar
 It's also interested to see how well each strategy works, even if it's not the most optimal.
 
 I essentially overhauled the entire project structure for this stage.
+I also changed the VM I used for testing from an AWS EC2 Amazon Linux c6g.large to an Ubuntu c6g.xlarge, so everything is running faster.
 
 ### Evaluation Caching
 The expectimax strategy uses [Google SparseHash](https://github.com/sparsehash/sparsehash) to cache evaluations of board states.
@@ -155,7 +156,7 @@ Besides being a good way to show my work, it also provided a good visual tool fo
 * [tester.cpp](/tester.cpp) now records the sum of times that each thread is alive, in order to approximate the amount of time that would have been spent if testing had been single-threaded.
 * Several other statistics are recorded as well: total score, median score, total # of moves, and median # of moves.
 * All the files that don't have an entrypoint have been converted into header files with include guards.
-* The [results](/results) directory now stores all previous testing results. 
+* The [results](/results) directory now stores all previous testing results.
 
 
 ## Other Ideas
