@@ -1,0 +1,2 @@
+Strategy,Games,Time Taken,Computation Time,Parallel,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,Total Score,Median Score,Total Moves,Median Moves
+rotating,500000,1.85,7.4,false,500000,500000,499999,499138,469350,282466,30421,10,0,0,0,0,0,0,1153854236,2332,99040247,196

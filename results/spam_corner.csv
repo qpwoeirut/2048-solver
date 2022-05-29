@@ -1,0 +1,2 @@
+Strategy,Games,Time Taken,Computation Time,Parallel,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,Total Score,Median Score,Total Moves,Median Moves
+spam_corner,500000,2.271,9.084,false,500000,499996,499833,494133,426609,214382,24219,38,0,0,0,0,0,0,1113361128,1968,99667019,188
