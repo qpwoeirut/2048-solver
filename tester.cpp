@@ -189,6 +189,8 @@ int main() {
     test_heuristic("merge", heuristics::merge_heuristic);
     test_heuristic("score", heuristics::score_heuristic);
     test_heuristic("corner", heuristics::corner_heuristic);
+    test_heuristic("full_wall", heuristics::full_wall_heuristic);
+    test_heuristic("wall_gap", heuristics::wall_gap_heuristic);
     test_monte_carlo_strategy();
 
 
