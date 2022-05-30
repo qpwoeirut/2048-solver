@@ -20,19 +20,31 @@ this_directory = os.path.dirname(__file__)
 headings = None  # will be overwritten once a CSV file is read
 collated_data = []
 
+GAMES = 1
+TILE_COUNTS = range(4, 17 + 1)
+TOTAL_SCORE = 18
+TOTAL_MOVES = 20
+
 for csv_filename in RESULT_FILES:
-    filename = os.fsdecode(STAGE + '/' + csv_filename)
+    filename = os.fsdecode(csv_filename)
 
     with open(filename) as csv_file:
         reader = csv.reader(csv_file)
 
-        rows = [r.copy() for r in reader]
+        rows: list[list] = [r.copy() for r in reader]
         headings, data = rows[0], rows[1:]
         for row in data:
             games = int(row[1])
-            for i in range(4, len(row)):
+            for i in TILE_COUNTS:
                 row[i] = round(int(row[i]) * 100 / games, 2)  # convert to percentage
+
+            # convert from total to average
+            row[TOTAL_SCORE] = float(row[TOTAL_SCORE]) / games
+            row[TOTAL_MOVES] = float(row[TOTAL_MOVES]) / games
             collated_data.append(row)
+
+headings[TOTAL_SCORE] = "Average Score"
+headings[TOTAL_MOVES] = "Average Move Count"
 
 with open(f"../results-{STAGE}.csv", 'w') as out_csv_file:
     writer = csv.writer(out_csv_file)
