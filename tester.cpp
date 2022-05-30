@@ -142,7 +142,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-mnmx.csv");
     write_headings(fout);
-    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+    for (int depth = -1; depth <= MAX_DEPTH; depth++) {
         const std::string player_name = name + "-mnmx(d=" + std::to_string(depth) + ")";
 
         const int speed = std::max(0, 3 - depth);
@@ -153,7 +153,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-expmx.csv");
     write_headings(fout);
-    for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+    for (int depth = -1; depth <= MAX_DEPTH; depth++) {
         const std::string player_name = name + "-expmx(d=" + std::to_string(depth) + ")";
 
         const int speed = std::max(0, 3 - depth);
