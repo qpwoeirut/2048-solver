@@ -44,7 +44,7 @@ float calculate_median(const int arr[], const int n) {  // if n is even, returns
 
 void write_headings(std::ofstream& fout) {
     assert(fout.is_open());  // might need to create the /results directory if this doesn't work
-    fout << "Strategy,Games,Time Taken,Computation Time,Parallel";
+    fout << "Strategy,Games,Time Taken,Computation Time";
     for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
         fout << ',' << (1 << i);
     }
@@ -52,9 +52,9 @@ void write_headings(std::ofstream& fout) {
     fout << std::endl;
 }
 
-void save_results(std::ofstream& fout, const std::string& player_name, const int games, const float time_taken, const float computation_time, const bool parallelize = false) {
+void save_results(std::ofstream& fout, const std::string& player_name, const int games, const float time_taken, const float computation_time) {
     assert(fout.is_open());
-    fout << player_name << ',' << games << ',' << time_taken << ',' << computation_time << ',' << (parallelize ? "true" : "false");
+    fout << player_name << ',' << games << ',' << time_taken << ',' << computation_time;
     for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
         fout << ',' << results[i];
     }
@@ -84,7 +84,7 @@ long long test_player_thread(const std::unique_ptr<Strategy> player) {  // this 
     return end_time - start_time;
 }
 
-void test_player(std::ofstream& fout, const std::string& player_name, std::unique_ptr<Strategy> player, const int games, const bool print_progress) {
+void test_player(std::ofstream& fout, const std::string& player_name, std::unique_ptr<Strategy> player, const int games) {
     std::cout << "\n\nTesting " << player_name << " player..." << std::endl;
     std::fill(results, results+MAX_TILE + 1, 0);
 
@@ -117,11 +117,10 @@ void test_player(std::ofstream& fout, const std::string& player_name, std::uniqu
     save_results(fout, player_name, games, time_taken, computation_time);
 }
 
-void test_single_player(const std::string& player_name, std::unique_ptr<Strategy> player, const int games,
-                        const bool parallelize = false, const bool print_progress = false) {
+void test_single_player(const std::string& player_name, std::unique_ptr<Strategy> player, const int games) {
     std::ofstream fout("results/" + player_name + ".csv");  // put results into a CSV for later collation
     write_headings(fout);
-    test_player(fout, player_name, std::move(player), games, print_progress);  // give ownership of Strategy pointer
+    test_player(fout, player_name, std::move(player), games);  // give ownership of Strategy pointer
     fout.close();
 }
 
@@ -135,7 +134,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
             const int order = depth * 10 + trials;
             const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
 
-            test_player(fout, player_name, std::make_unique<RandomTrialsStrategy>(depth, trials, heuristic), GAMES[speed], speed == 0);
+            test_player(fout, player_name, std::make_unique<RandomTrialsStrategy>(depth, trials, heuristic), GAMES[speed]);
         }
     }
     fout.close();
@@ -147,7 +146,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
         const int speed = std::max(0, 3 - depth);
 
-        test_player(fout, player_name, std::make_unique<MinimaxStrategy>(depth, heuristic), GAMES[speed], speed == 0);
+        test_player(fout, player_name, std::make_unique<MinimaxStrategy>(depth, heuristic), GAMES[speed]);
     }
     fout.close();
 
@@ -158,7 +157,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
         const int speed = std::max(0, 3 - depth);
 
-        test_player(fout, player_name, std::make_unique<ExpectimaxStrategy>(depth, heuristic), GAMES[speed], speed == 0);
+        test_player(fout, player_name, std::make_unique<ExpectimaxStrategy>(depth, heuristic), GAMES[speed]);
     }
     fout.close();
 }
@@ -167,7 +166,7 @@ void test_monte_carlo_strategy() {
     std::ofstream fout("results/monte_carlo.csv");
     write_headings(fout);
     for (int trials=100; trials<=3000; trials+=100) {
-        test_player(fout, "monte_carlo (t=" + std::to_string(trials) + ")", std::make_unique<MonteCarloPlayer>(trials), GAMES[0], true);
+        test_player(fout, "monte_carlo (t=" + std::to_string(trials) + ")", std::make_unique<MonteCarloPlayer>(trials), GAMES[0]);
     }
     fout.close();
 }
