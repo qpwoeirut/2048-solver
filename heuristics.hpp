@@ -1,9 +1,6 @@
 namespace heuristics {
-    // used initialization value only; should be replaced when init strategy function is invoked
-    eval_t dummy_heuristic(const board_t board) {
-        std::cout << "strategy not initialized properly!" << std::endl;
-        assert(false);
-    }
+    constexpr eval_t MAX_EVAL = 16ULL << 40;  // from wall heuristics
+    constexpr eval_t MIN_EVAL = 0;  // all evaluations are positive
 
     eval_t score_heuristic(const board_t board) {
         return approximate_score(board);
