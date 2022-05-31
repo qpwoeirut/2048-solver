@@ -83,6 +83,10 @@ int count_moves_made(const board_t board, const int fours) {
     return (board_sum(board) >> 1) - fours - 2;
 }
 
+// assumes that only 2's have spawned, which is a good enough approximation
+// creating a tile of 2^n adds 2^n to the score, and requires two 2^(n-1) tiles
+// creating each of those added 2^(n-1) to the score, and following the recursive pattern gets n * 2^n
+// technically we want (n-1) * 2^n since the 2's spawning don't add to the score
 int approximate_score(const board_t board) {
     int score = 0;
     for (int i=0; i<64; i+=4) {

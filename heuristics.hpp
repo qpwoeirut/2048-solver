@@ -5,10 +5,6 @@ namespace heuristics {
         assert(false);
     }
 
-    // assumes that only 2's have spawned, which is a good enough approximation
-    // creating a tile of 2^n adds 2^n to the score, and requires two 2^(n-1) tiles
-    // creating each of those added 2^(n-1) to the score, and following the recursive pattern gets n * 2^n
-    // technically we want (n-1) * 2^n since the 2's spawning don't add to the score
     eval_t score_heuristic(const board_t board) {
         return approximate_score(board);
     }
