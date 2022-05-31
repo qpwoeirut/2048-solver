@@ -10,7 +10,7 @@ class MinimaxStrategy: public Strategy {
                    a nonpositive depth argument d will be subtracted from the depth picker's result (increasing the depth)
     */
 
-    heuristic_t evaluator = heuristics::dummy_heuristic;
+    heuristic_t evaluator;
 
     public:
     int depth = 0;

@@ -26,7 +26,7 @@ class ExpectimaxStrategy: public Strategy {
     // and 97% of the time it's less than 60k
     static constexpr int MAX_CACHE = 1 << 20;  // code below assumes this is power of 2
 
-    heuristic_t evaluator = heuristics::dummy_heuristic;
+    heuristic_t evaluator;
     cache_t cache;
 
     board_t deletion_queue[MAX_CACHE];

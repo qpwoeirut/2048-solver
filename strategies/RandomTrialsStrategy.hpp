@@ -15,7 +15,7 @@ class RandomTrialsStrategy: public Strategy {
     static constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 4 * 20 * 4);
     static_assert(MULT > 1);
 
-    heuristic_t evaluator = heuristics::dummy_heuristic;
+    heuristic_t evaluator;
 
     public:
     int depth, trials;
