@@ -56,8 +56,7 @@ void test_player(Strategy& player, const int games) {
 
 SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
-//ExpectimaxStrategy expectimax_strategy(-1, heuristics::corner_heuristic);
-ExpectimaxStrategy expectimax_strategy(0, heuristics::distinct_heuristic);
+ExpectimaxStrategy expectimax_strategy(3, heuristics::corner_duplicate_heuristic);
 
 int main() {
     //const auto player = std::make_unique<RandomPlayer>();
@@ -65,7 +64,7 @@ int main() {
 
     //test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
-    //int f = 0;
+    int f = 0;
 
     //UserPlayer user_player{};
     //user_player.simulator.play(user_player, f);
