@@ -28,7 +28,6 @@ namespace heuristics {
                                    2  * tile_val(1, 3) + 1 * tile_val(1, 2) +
                                    1  * tile_val(0, 3);
 
-
         const eval_t lower_right = 10 * tile_val(0, 0) + 5 * tile_val(0, 1) + 2 * tile_val(0, 2) + 1 * tile_val(0, 3) +
                                    5  * tile_val(1, 0) + 3 * tile_val(1, 1) + 1 * tile_val(1, 2) +
                                    2  * tile_val(2, 0) + 1 * tile_val(2, 1) +
@@ -40,6 +39,17 @@ namespace heuristics {
                                    1  * tile_val(0, 0);
 
         return std::max(std::max(lower_left, upper_left), std::max(lower_right, upper_right));
+    }
+
+    eval_t distinct_heuristic(const board_t board) {
+        eval_t score = MAX_EVAL - 1;
+        for (int i = 0; i < 64; i += 4) {
+            const int val = tile_val(i >> 2, i & 3);
+            for (int j = i + 8; j < 64; j += 4) {
+                score -= j != i + 16 && val == tile_val(j >> 2, j & 3) ? 0 : val;
+            }
+        }
+        return score;
     }
 
     #undef tile_val
@@ -93,10 +103,7 @@ namespace heuristics {
 
     #undef tile_exp
 
-    constexpr eval_t MAX_EVAL = 16ULL << 40;  // from wall heuristics
-    constexpr eval_t MIN_EVAL = 0;  // all evaluations are positive
-
-    constexpr heuristic_t exports[5] = {
-        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic
+    constexpr heuristic_t exports[6] = {
+        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic, distinct_heuristic
     };
 }

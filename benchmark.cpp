@@ -13,7 +13,7 @@
 #include "strategies/UserPlayer.hpp"
 
 constexpr int MIN_TILE = 3;
-constexpr int MAX_TILE = 18;
+constexpr int MAX_TILE = 17;
 
 int results[MAX_TILE];
 long long score_total = 0;
@@ -58,11 +58,12 @@ void test_player(Strategy& player, const int games) {
 
 SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
-ExpectimaxStrategy expectimax_strategy(-1, heuristics::corner_heuristic);
+//ExpectimaxStrategy expectimax_strategy(-1, heuristics::corner_heuristic);
+ExpectimaxStrategy expectimax_strategy(0, heuristics::distinct_heuristic);
 
 int main() {
-    const auto player = std::make_unique<RandomPlayer>();
-    test_player(*player, int(1e6));
+    //const auto player = std::make_unique<RandomPlayer>();
+    //test_player(*player, int(1e6));
 
     //test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
@@ -75,6 +76,6 @@ int main() {
     //test_player(minimax_strategy, 20);
 
     //expectimax_strategy.simulator.play_slow(expectimax_strategy, f);
-    //test_player(expectimax_strategy, 1);
+    test_player(expectimax_strategy, 5);
 }
 
