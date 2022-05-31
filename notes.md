@@ -9,7 +9,7 @@ This stores some loose ideas that I might try in the future.
     * even with above conditions, this will still be at least 10^12 states, probably too big
 * "snake" heuristic
 * some sort of "distance" heuristic between tiles of adjacent values
-* penalty heuristic for distance between tiles of same values
+* penalty heuristic for distance between tiles of same values (didn't really work)
 * try converting corner/wall building heuristics to be difference between adjacent tiles multiplied by a weight
 * use concept of "afterstates" to cut down the depth searched by one
 * for wall heuristics, increase depth if the ordering has an "inversion"

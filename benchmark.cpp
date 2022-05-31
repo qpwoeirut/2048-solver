@@ -56,7 +56,7 @@ void test_player(Strategy& player, const int games) {
 
 SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
-ExpectimaxStrategy expectimax_strategy(3, heuristics::corner_duplicate_heuristic);
+ExpectimaxStrategy expectimax_strategy(3, heuristics::corner_heuristic);
 
 int main() {
     //const auto player = std::make_unique<RandomPlayer>();

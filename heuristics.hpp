@@ -63,12 +63,6 @@ namespace heuristics {
         return std::max(std::max(lower_left, upper_left), std::max(lower_right, upper_right));
     }
 
-    // penalty for having duplicate tiles
-    // multiplying by 2 was an arbitrary decision and probably very suboptimal
-    eval_t corner_duplicate_heuristic(const board_t board) {
-        return 2 * corner_heuristic(board) - _duplicate_score(board);
-    }
-
 
     eval_t _wall_gap_heuristic(const board_t board) {
         const eval_t top    = (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) |
@@ -116,8 +110,15 @@ namespace heuristics {
         return std::max(_full_wall_heuristic(board), _full_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
+    eval_t _strict_wall_heuristic(const board_t board) {
 
-    constexpr heuristic_t exports[6] = {
-        score_heuristic, merge_heuristic, corner_heuristic, corner_duplicate_heuristic, wall_gap_heuristic, full_wall_heuristic
+    }
+    eval_t strict_wall_heuristic(const board_t board) {
+        return std::max(_strict_wall_heuristic(board), _strict_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
+    }
+
+
+    constexpr heuristic_t exports[5] = {
+        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic
     };
 }
