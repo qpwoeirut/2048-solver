@@ -24,12 +24,10 @@ const int play_game(Strategy& player) {
     const board_t board = player.simulator.play(player, fours);
 
     move_total += count_moves_made(board, fours);
-    // every move, a 2 or 4 tile spawns, so we can calculate move count by board sum
-    // the -2 is because the board starts with two tiles
 
     const int score = actual_score(board, fours);
     score_total += score;
-    //std::cout << "Score: " << score << std::endl;
+    std::cout << "Score: " << score << std::endl;
     return get_max_tile(board);
 }
 

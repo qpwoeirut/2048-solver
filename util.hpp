@@ -79,6 +79,8 @@ int board_sum(const board_t board) {
     return sum;
 }
 
+// every move, a 2 or 4 tile spawns, so we can calculate move count by board sum
+// the -2 is because the board starts with two tiles
 int count_moves_made(const board_t board, const int fours) {
     return (board_sum(board) >> 1) - fours - 2;
 }
