@@ -38,6 +38,7 @@ namespace heuristics {
 
     // gives a score based on how the tiles are arranged in the corner, returns max over all 4 corners
     // higher value tiles should be closer to the corner
+    // these weights are mostly arbitrary and could do with some tuning
     eval_t corner_heuristic(const board_t board) {
         const eval_t lower_left =  10 * tile_val(board, 0, 3) + 5 * tile_val(board, 0, 2) + 2 * tile_val(board, 0, 1) + 1 * tile_val(board, 0, 0) +
                                    5  * tile_val(board, 1, 3) + 3 * tile_val(board, 1, 2) + 1 * tile_val(board, 1, 1) +
@@ -63,6 +64,7 @@ namespace heuristics {
     }
 
     // penalty for having duplicate tiles
+    // multiplying by 2 was an arbitrary decision and probably very suboptimal
     eval_t corner_duplicate_heuristic(const board_t board) {
         return 2 * corner_heuristic(board) - _duplicate_score(board);
     }
