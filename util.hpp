@@ -10,6 +10,19 @@ using board_t = uint64_t;
 using eval_t = int64_t;
 using heuristic_t = eval_t (*)(const board_t);
 
+static constexpr int ROWS = 0x10000;
+static constexpr row_t ROW_MASK = 0xFFFF;
+
+consteval std::array<row_t, ROWS> generate_reversed() {
+    std::array<row_t, ROWS> reversed;
+    for (int row = 0; row < ROWS; ++row) {
+        reversed[row] = ((row & 0xF) << 12) | (((row >> 4) & 0xF) << 8) | (((row >> 8) & 0xF) << 4) | (row >> 12);
+    }
+    return reversed;
+}
+
+constexpr std::array<row_t, ROWS> reversed = generate_reversed();
+
 // bitmask of whether a tile is empty or not
 // TODO there are probably faster ways, such as:
 // https://stackoverflow.com/questions/34154745/efficient-way-to-or-adjacent-bits-in-64-bit-integer
@@ -31,6 +44,24 @@ uint16_t to_tile_mask(const board_t board) {
 board_t transpose(const board_t board) {
     const board_t a = ((board & 0x0000F0F00000F0F0ULL) << 12) | ((board & 0xF0F00F0FF0F00F0FULL) | (board & 0x0F0F00000F0F0000ULL) >> 12);
     return ((a & 0x00000000FF00FF00ULL) << 24) | (a & 0xFF00FF0000FF00FFULL) | ((a & 0x00FF00FF00000000ULL) >> 24);
+}
+
+// ab to ba
+// cd    dc
+board_t flip_h(const board_t board) {
+    return (static_cast<board_t>(reversed[ board >> 48  & ROW_MASK]) << 48) |
+           (static_cast<board_t>(reversed[(board >> 32) & ROW_MASK]) << 32) |
+           (static_cast<board_t>(reversed[(board >> 16) & ROW_MASK]) << 16) |
+            static_cast<board_t>(reversed[ board        & ROW_MASK]);
+}
+
+// ab to cd
+// cd    ab
+board_t flip_v(const board_t board) {
+    return  ((board        & ROW_MASK) << 48) |
+           (((board >> 16) & ROW_MASK) << 32) |
+           (((board >> 32) & ROW_MASK) << 16) |
+             (board >> 48);
 }
 
 unsigned long long get_current_time_ms() {

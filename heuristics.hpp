@@ -111,14 +111,45 @@ namespace heuristics {
     }
 
     eval_t _strict_wall_heuristic(const board_t board) {
-
+        const board_t vals[9] = {tile_exp(board, 3, 3), tile_exp(board, 3, 2), tile_exp(board, 3, 1), tile_exp(board, 3, 0),
+                             tile_exp(board, 2, 0), tile_exp(board, 2, 1), tile_exp(board, 2, 2), tile_exp(board, 2, 3),
+                             tile_exp(board, 1, 3)};
+        eval_t ret = vals[0];
+        for (int i=0; i<8; ++i) {
+            if (vals[i] < vals[i+1]) return (ret - vals[i+1]) << (4 * (10 - i));
+            ret <<= 4;
+            ret |= vals[i+1];
+        }
+        return ret << 8;
     }
     eval_t strict_wall_heuristic(const board_t board) {
-        return std::max(_strict_wall_heuristic(board), _strict_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
+        const board_t flip_h_board = flip_h(board);
+        const board_t flip_v_board = flip_v(board);
+        const board_t flip_vh_board = flip_v(flip_h_board);
+        return std::max({_strict_wall_heuristic(board),         _strict_wall_heuristic(transpose(board)),
+                         _strict_wall_heuristic(flip_h_board),  _strict_wall_heuristic(transpose(flip_h_board)),
+                         _strict_wall_heuristic(flip_v_board),  _strict_wall_heuristic(transpose(flip_v_board)),
+                         _strict_wall_heuristic(flip_vh_board), _strict_wall_heuristic(transpose(flip_vh_board))})
+             + score_heuristic(board);  // tiebreak by score
     }
+    /*
+        Score: 72712
+        Score: 76716
+        Score: 132212
+        Score: 59420
+        Score: 112384
+        Playing 5 games took 107.851 seconds (21.5702 seconds per game)
+        ...
+        12 5 (100)
+        13 2 (40)
+        14 0 (0)
+        ...
+        Average score: 90688.8
+        Total moves: 19791
+    */
 
 
-    constexpr heuristic_t exports[5] = {
-        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic
+    constexpr heuristic_t exports[6] = {
+        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic, strict_wall_heuristic
     };
 }

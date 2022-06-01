@@ -10,11 +10,6 @@
 
 class Strategy;  // Strategy depends on GameSimulator and will be #include-ed at the bottom
 
-consteval row_t reverse_row(const row_t row) {
-    return ((row & 0xF) << 12) | (((row >> 4) & 0xF) << 8) | (((row >> 8) & 0xF) << 4) | ((row >> 12) & 0xF);
-}
-
-static constexpr int ROWS = 0x10000;
 static constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
     std::array<std::array<row_t, ROWS>, 2> shift;
@@ -46,7 +41,7 @@ consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
         }
 
         shift[0][row] = (r[0] << 12) | (r[1] << 8) | (r[2] << 4) | r[3];
-        shift[1][reverse_row(row)] = reverse_row(shift[0][row]);
+        shift[1][reversed[row]] = reversed[shift[0][row]];
 
         // we can't handle a 65536 tile in this representation, but it's unlikely that this will happen
         if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) shift[0][row] = shift[1][row] = WINNING_ROW;
