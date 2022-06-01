@@ -141,7 +141,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-mnmx.csv");
     write_headings(fout);
-    for (int depth = -1; depth <= MAX_DEPTH; depth++) {
+    for (int depth = -1; depth <= MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which use depth picker
         const std::string player_name = name + "-mnmx(d=" + std::to_string(depth) + ")";
 
         const int speed = std::max(0, 3 - depth);
@@ -152,7 +152,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-expmx.csv");
     write_headings(fout);
-    for (int depth = -1; depth <= MAX_DEPTH; depth++) {
+    for (int depth = -1; depth <= MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which use depth picker
         const std::string player_name = name + "-expmx(d=" + std::to_string(depth) + ")";
 
         const int speed = std::max(0, 3 - depth);
@@ -178,6 +178,11 @@ int main() {
     //    print_board(b);
     //}
     //
+    //return 0;
+
+    //int f = 0;
+    //const auto player = std::make_unique<MinimaxStrategy>(-1, heuristics::merge_heuristic);
+    //player->simulator.play_slow(*player, f);
     //return 0;
 
     test_single_player("random", std::make_unique<RandomPlayer>(), GAMES[4]);
