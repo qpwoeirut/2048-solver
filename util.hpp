@@ -98,7 +98,8 @@ int count_set(const uint16_t mask) {
 
 int count_distinct_tiles(const board_t board) {
     uint16_t tile_exists = 0;
-    for (int i = 0; i < 64; i += 4) if (((board >> i) & 0xF) != 0) tile_exists |= 1 << ((board >> i) & 0xF);
+    for (int i = 0; i < 64; i += 4) tile_exists |= 1 << ((board >> i) & 0xF);
+    tile_exists &= 0xFFFE;  // get rid of the LSB, since a 0 tile is empty, not an actual tile
     return count_set(tile_exists);
 }
 
