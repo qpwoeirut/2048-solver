@@ -112,6 +112,9 @@ It's also interested to see how well each strategy works, even if it's not the m
 I essentially overhauled the entire project structure for this stage.
 I also changed the VM I used for testing from an AWS EC2 Amazon Linux c6g.large to an Ubuntu c6g.xlarge, so everything is running faster.
 
+I had to restart the testing program twice after discovering bugs in it.
+For Stage 4, I plan to add unit tests and a procedure to run preliminary tests before running the full amount of games.
+
 ### Evaluation Caching
 The expectimax strategy uses [Google SparseHash](https://github.com/sparsehash/sparsehash) to cache evaluations of board states.
 To keep the memory usage from spiking to several gigabytes (the highest I got during testing was 8GB), old evaluations are put in a queue and deleted after a few moves.
@@ -145,6 +148,7 @@ I added a depth picker, which decreases the depth to search for boards with few 
 ### Optimizations
 I added a simple [benchmark](/benchmark.cpp) program to provide some direction in speeding up the game implementation.
 I also added `-funroll-loops` to the compilation flags, which sped things up.
+Link-time optimization (`-flto`) and CPU-specific tuning (`mcpu=native`) flags were added as well, but the speedup was not particularly large.
 Lookup tables for the game implementation are now calculated at compile time.
 
 ### Website

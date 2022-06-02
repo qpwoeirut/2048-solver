@@ -18,7 +18,7 @@ There are some implementation ideas that I'm taking as well (such as the bitwise
 
 
 ## Structure
-The code for simulating a game is in [game.hpp](/game.hpp) under the `game` namespace.
+The code for simulating a game is in the `GameSimulator` class under [game.hpp](/game.hpp).
 [util.hpp](/util.hpp) stores helpful utilities for the heuristic and player functions.
 
 Each strategy is in the [strategy](/strategies) directory.
@@ -42,6 +42,7 @@ The slower solvers run games in parallel using C++'s `std::async`.
 
 For Stages 1 and 2, games were run on an AWS EC2 Amazon Linux c6g.large instance.
 From Stage 3 onwards, games were run on an AWS EC2 Ubuntu c6g.xlarge instance.
+
 
 ## Results
 The best strategy right now is the [expectimax](/strategies/ExpectimaxStrategy.hpp) with the [corner building heuristic](/heuristics.hpp).
