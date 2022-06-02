@@ -115,7 +115,7 @@ namespace heuristics {
                              tile_exp(board, 2, 0), tile_exp(board, 2, 1), tile_exp(board, 2, 2), tile_exp(board, 2, 3),
                              tile_exp(board, 1, 3)};
         eval_t ret = vals[0];
-        for (int i=0; i<8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             if (vals[i] < vals[i+1]) return (ret - vals[i+1]) << (4 * (10 - i));
             ret <<= 4;
             ret |= vals[i+1];

@@ -45,7 +45,7 @@ float calculate_median(const int arr[], const int n) {  // if n is even, returns
 void write_headings(std::ofstream& fout) {
     assert(fout.is_open());  // might need to create the /results directory if this doesn't work
     fout << "Strategy,Games,Time Taken,Computation Time";
-    for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
+    for (int i = MIN_TILE; i <= MAX_TILE; ++i) {
         fout << ',' << (1 << i);
     }
     fout << ",Total Score,Median Score,Total Moves,Median Moves";
@@ -55,7 +55,7 @@ void write_headings(std::ofstream& fout) {
 void save_results(std::ofstream& fout, const std::string& player_name, const int games, const float time_taken, const float computation_time) {
     assert(fout.is_open());
     fout << player_name << ',' << games << ',' << time_taken << ',' << computation_time;
-    for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
+    for (int i = MIN_TILE; i <= MAX_TILE; ++i) {
         fout << ',' << results[i];
     }
     fout << ',' << calculate_total(scores, games) << ',' << calculate_median(scores, games) << ',' << calculate_total(moves, games) << ',' << calculate_median(moves, games);
@@ -91,7 +91,7 @@ void test_player(std::ofstream& fout, const std::string& player_name, std::uniqu
     games_remaining.store(games);
 
     const long long start_time = get_current_time_ms();
-    for (int i=1; i<THREADS; i++) {
+    for (int i = 1; i < THREADS; i++) {
         // give the Strategy pointer ownership to test_player_thread
         // move the player pointer last so that it can be cloned first
         futures[i] = std::async(test_player_thread, player->clone());
@@ -99,7 +99,7 @@ void test_player(std::ofstream& fout, const std::string& player_name, std::uniqu
     futures[0] = std::async(test_player_thread, std::move(player));
 
     long long computation_time_ms = 0;
-    for (int i=0; i<THREADS; i++) {
+    for (int i = 0; i < THREADS; i++) {
         computation_time_ms += futures[i].get();
     }
     const long long end_time = get_current_time_ms();
@@ -108,10 +108,10 @@ void test_player(std::ofstream& fout, const std::string& player_name, std::uniqu
     const float time_taken = (end_time - start_time) / 1000.0;
     std::cout << "Playing " << games << " games took " << time_taken << " seconds (" << time_taken / games << " seconds per game, computation time " << computation_time << ")\n";
 
-    for (int i=MAX_TILE-1; i>=0; --i) {
+    for (int i= MAX_TILE - 1; i >= 0; --i) {
         results[i] += results[i+1];
     }
-    for (int i=MIN_TILE; i<=MAX_TILE; ++i) {
+    for (int i= MIN_TILE; i <= MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
     save_results(fout, player_name, games, time_taken, computation_time);

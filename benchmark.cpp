@@ -35,7 +35,7 @@ void test_player(Strategy& player, const int games) {
     std::fill(results, results+MAX_TILE, 0);
 
     const long long start_time = get_current_time_ms();
-    for (int i=1; i<=games; ++i) {
+    for (int i = 1; i <= games; ++i) {
         const int max_tile = play_game(player);
         ++results[max_tile];  // suffix sum type thing
     }
@@ -44,10 +44,10 @@ void test_player(Strategy& player, const int games) {
 
     std::cout << "Playing " << games << " games took " << time_taken << " seconds (" << time_taken / games << " seconds per game)\n";
 
-    for (int i=MAX_TILE-2; i>=0; --i) {
-        results[i] += results[i+1];
+    for (int i= MAX_TILE - 2; i >= 0; --i) {
+        results[i] += results[i + 1];
     }
-    for (int i=MIN_TILE; i<MAX_TILE; ++i) {
+    for (int i= MIN_TILE; i < MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
     std::cout << "Average score: " << score_total * 1.0 / games << std::endl;

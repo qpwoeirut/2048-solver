@@ -69,8 +69,8 @@ unsigned long long get_current_time_ms() {
 }
 
 void print_board(const board_t board) {
-    for (int r=48; r>=0; r-=16) {
-        for (int c=12; c>=0; c-=4) {
+    for (int r = 48; r >= 0; r -= 16) {
+        for (int c = 12; c >= 0; c -= 4) {
             std::cout << ((board >> (r + c)) & 0xF) << ' ';
         }
         std::cout << '\n';
@@ -79,7 +79,7 @@ void print_board(const board_t board) {
 
 int get_max_tile(const board_t board) {
     int max_tile = 0;
-    for (int i=0; i<64; i+=4) max_tile = std::max(max_tile, (int)((board >> i) & 0xF));
+    for (int i = 0; i < 64; i += 4) max_tile = std::max(max_tile, (int)((board >> i) & 0xF));
     return max_tile;
 }
 
@@ -121,7 +121,7 @@ int count_moves_made(const board_t board, const int fours) {
 // technically we want (n-1) * 2^n since the 2's spawning don't add to the score
 int approximate_score(const board_t board) {
     int score = 0;
-    for (int i=0; i<64; i+=4) {
+    for (int i = 0; i < 64; i += 4) {
         const uint8_t tile = (board >> i) & 0xF;
         score += tile <= 1 ? 0 : (tile - 1) * (1 << tile);
     }

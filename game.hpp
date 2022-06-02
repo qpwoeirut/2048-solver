@@ -13,7 +13,7 @@ class Strategy;  // Strategy depends on GameSimulator and will be #include-ed at
 static constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
     std::array<std::array<row_t, ROWS>, 2> shift;
-    for (int row=0; row<ROWS; ++row) {
+    for (int row = 0; row < ROWS; ++row) {
         uint8_t r[4] = {
             static_cast<uint8_t>((row >> 12) & 0xF),
             static_cast<uint8_t>((row >> 8) & 0xF),
@@ -22,7 +22,7 @@ consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
         };
 
         // pull values to the left
-        for (int i=0; i<3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             if (r[0] == 0 && r[1] > 0) std::swap(r[0], r[1]);
             if (r[1] == 0 && r[2] > 0) std::swap(r[1], r[2]);
             if (r[2] == 0 && r[3] > 0) std::swap(r[2], r[3]);
@@ -34,7 +34,7 @@ consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
         if (r[2] > 0 && r[2] == r[3]) r[2]++, r[3] = 0;
 
         // pull values to the left again
-        for (int i=0; i<3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             if (r[0] == 0 && r[1] > 0) std::swap(r[0], r[1]);
             if (r[1] == 0 && r[2] > 0) std::swap(r[1], r[2]);
             if (r[2] == 0 && r[3] > 0) std::swap(r[2], r[3]);
@@ -54,8 +54,8 @@ static constexpr int EMPTY_MASKS = 0x10000;  // number of tile_masks, where an t
 consteval std::array<uint8_t, EMPTY_TILE_POSITIONS> generate_empty_tiles() {
     std::array<uint8_t, EMPTY_TILE_POSITIONS> empty_tiles;
     int idx = 0;
-    for (int em=0; em<EMPTY_MASKS; ++em) {
-        for (int pos=0; pos<16; ++pos) {
+    for (int em = 0; em < EMPTY_MASKS; ++em) {
+        for (int pos = 0; pos < 16; ++pos) {
             if (((em >> pos) & 1) == 0) {
                 empty_tiles[idx++] = 4 * pos;
             }
@@ -67,9 +67,9 @@ consteval std::array<uint8_t, EMPTY_TILE_POSITIONS> generate_empty_tiles() {
 consteval std::array<int, EMPTY_MASKS> generate_empty_index() {
     std::array<int, EMPTY_MASKS> empty_index;
     int idx = 0;
-    for (int em=0; em<EMPTY_MASKS; ++em) {
+    for (int em = 0; em < EMPTY_MASKS; ++em) {
         empty_index[em] = idx;
-        for (int pos=0; pos<16; ++pos) {
+        for (int pos = 0; pos < 16; ++pos) {
             if (((em >> pos) & 1) == 0) {
                 ++idx;
             }
