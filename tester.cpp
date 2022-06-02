@@ -19,11 +19,11 @@
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 16;  // 2^17 is largest possible tile, but it's practically impossible
 
-constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
+//constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
 constexpr int MAX_DEPTH = 5;
 constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 10, 9, 6};
 
-//constexpr int GAMES[5] = {10, 25, 100, 200, 500};
+constexpr int GAMES[5] = {4, 10, 25, 50, 100};
 //constexpr int MAX_DEPTH = 4;
 //constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3};
 
@@ -129,10 +129,11 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {
         for (int trials = 1; trials <= TRIALS[depth]; trials++) {
+            continue;
             const std::string player_name = name + "-rnd_t(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
 
             const int order = depth * 10 + trials;
-            const int speed = order <= 15 ? 3 : (order <= 24 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
+            const int speed = order <= 21 ? 3 : (order <= 25 || order % 10 == 1 ? 2 : (order <= 33 ? 1 : 0));
 
             test_player(fout, player_name, std::make_unique<RandomTrialsStrategy>(depth, trials, heuristic), GAMES[speed]);
         }
@@ -144,7 +145,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
     for (int depth = -1; depth <= MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which use depth picker
         const std::string player_name = name + "-mnmx(d=" + std::to_string(depth) + ")";
 
-        const int speed = std::max(0, 3 - depth);
+        const int speed = depth <= 0 || depth >= 4 ? 0 : 4 - depth;
 
         test_player(fout, player_name, std::make_unique<MinimaxStrategy>(depth, heuristic), GAMES[speed]);
     }
@@ -152,10 +153,10 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-expmx.csv");
     write_headings(fout);
-    for (int depth = -1; depth <= MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which use depth picker
+    for (int depth = -1; depth < MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which uses depth picker; d=MAX_DEPTH will take too long
         const std::string player_name = name + "-expmx(d=" + std::to_string(depth) + ")";
 
-        const int speed = std::max(0, 3 - depth);
+        const int speed = depth <= 0 || depth >= 4 ? 0 : 4 - depth;
 
         test_player(fout, player_name, std::make_unique<ExpectimaxStrategy>(depth, heuristic), GAMES[speed]);
     }
@@ -165,7 +166,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 void test_monte_carlo_strategy() {
     std::ofstream fout("results/monte_carlo.csv");
     write_headings(fout);
-    for (int trials=100; trials<=3000; trials+=100) {
+    for (int trials = 100; trials <= 2500; trials += 100) {
         test_player(fout, "monte_carlo (t=" + std::to_string(trials) + ")", std::make_unique<MonteCarloPlayer>(trials), GAMES[0]);
     }
     fout.close();
@@ -181,7 +182,7 @@ int main() {
     //return 0;
 
     //int f = 0;
-    //const auto player = std::make_unique<MinimaxStrategy>(-1, heuristics::merge_heuristic);
+    //const auto player = std::make_unique<ExpectimaxStrategy>(-1, heuristics::corner_heuristic);
     //player->simulator.play_slow(*player, f);
     //return 0;
 
