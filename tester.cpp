@@ -19,11 +19,11 @@
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 16;  // 2^17 is largest possible tile, but it's practically impossible
 
-//constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
+constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
 constexpr int MAX_DEPTH = 5;
 constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 10, 9, 6};
 
-constexpr int GAMES[5] = {4, 10, 25, 50, 100};
+//constexpr int GAMES[5] = {4, 10, 25, 50, 100};
 //constexpr int MAX_DEPTH = 4;
 //constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3};
 
