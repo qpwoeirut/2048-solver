@@ -129,7 +129,6 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
     write_headings(fout);
     for (int depth = 1; depth <= MAX_DEPTH; depth++) {
         for (int trials = 1; trials <= TRIALS[depth]; trials++) {
-            continue;
             const std::string player_name = name + "-rnd_t(d=" + std::to_string(depth) + " t=" + std::to_string(trials) + ")";
 
             const int order = depth * 10 + trials;
