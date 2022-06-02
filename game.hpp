@@ -101,7 +101,7 @@ class GameSimulator {
 
     board_t make_move(board_t board, const int dir) {  // 0=left, 1=up, 2=right, 3=down
         if (dir & 1) board = transpose(board);
-        board = ((board_t)shift[dir >> 1][ board >> 48          ] << 48) |
+        board = ((board_t)shift[dir >> 1][(board >> 48) & 0xFFFF] << 48) |
                 ((board_t)shift[dir >> 1][(board >> 32) & 0xFFFF] << 32) |
                 ((board_t)shift[dir >> 1][(board >> 16) & 0xFFFF] << 16) |
                  (board_t)shift[dir >> 1][ board        & 0xFFFF];
