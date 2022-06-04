@@ -38,7 +38,7 @@ Each test runs at least 500 games in order to try and minimize random variance.
 In general, the number of games run is increased until it takes a least a half minute to complete.
 As a result, some of the faster solvers (such as the random strategy) run hundreds of thousands of games.
 
-The slower solvers run games in parallel using C++'s `std::async`.
+All game tests are run in parallel using C++'s `std::async`.
 
 For Stages 1 and 2, games were run on an AWS EC2 Amazon Linux c6g.large instance.
 From Stage 3 onwards, games were run on an AWS EC2 Ubuntu c6g.xlarge instance.
