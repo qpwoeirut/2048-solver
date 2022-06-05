@@ -112,13 +112,14 @@ namespace heuristics {
 
     eval_t _strict_wall_heuristic(const board_t board) {
         const board_t vals[9] = {tile_exp(board, 3, 3), tile_exp(board, 3, 2), tile_exp(board, 3, 1), tile_exp(board, 3, 0),
-                             tile_exp(board, 2, 0), tile_exp(board, 2, 1), tile_exp(board, 2, 2), tile_exp(board, 2, 3),
-                             tile_exp(board, 1, 3)};
+                                 tile_exp(board, 2, 0), tile_exp(board, 2, 1), tile_exp(board, 2, 2), tile_exp(board, 2, 3),
+                                 tile_exp(board, 1, 3)};
         eval_t ret = vals[0];
         for (int i = 0; i < 8; ++i) {
-            if (vals[i] < vals[i+1]) return (ret - vals[i+1]) << (4 * (10 - i));
-            ret <<= 4;
-            ret |= vals[i+1];
+            if (vals[i] < vals[i+1] && vals[i] != 0 && vals[i+1] != 0) {
+                return (ret - vals[i+1]) << (4 * (10 - i));
+            }
+            ret = (ret << 4) | vals[i+1];
         }
         return ret << 8;
     }
@@ -132,24 +133,32 @@ namespace heuristics {
                          _strict_wall_heuristic(flip_vh_board), _strict_wall_heuristic(transpose(flip_vh_board))})
              + score_heuristic(board);  // tiebreak by score
     }
-    /*
-        Score: 72712
-        Score: 76716
-        Score: 132212
-        Score: 59420
-        Score: 112384
-        Playing 5 games took 107.851 seconds (21.5702 seconds per game)
-        ...
-        12 5 (100)
-        13 2 (40)
-        14 0 (0)
-        ...
-        Average score: 90688.8
-        Total moves: 19791
-    */
+
+    eval_t _skewed_corner_heuristic(const board_t board) {
+        const eval_t eval1 =  16 * tile_val(board, 0, 3) + 12 * tile_val(board, 0, 2) + 6 * tile_val(board, 0, 1) + 3 * tile_val(board, 0, 0) +
+                              8  * tile_val(board, 1, 3) + 6  * tile_val(board, 1, 2) + 3 * tile_val(board, 1, 1) + 1 * tile_val(board, 1, 0) +
+                              4  * tile_val(board, 2, 3) + 3  * tile_val(board, 2, 2) + 1 * tile_val(board, 2, 1) +
+                              1  * tile_val(board, 3, 3) + 1  * tile_val(board, 3, 2);
+
+        const eval_t eval2 =  16 * tile_val(board, 0, 3) + 8  * tile_val(board, 0, 2) + 6 * tile_val(board, 0, 1) + 3 * tile_val(board, 0, 0) +
+                              12 * tile_val(board, 1, 3) + 6  * tile_val(board, 1, 2) + 3 * tile_val(board, 1, 1) + 1 * tile_val(board, 1, 0) +
+                              4  * tile_val(board, 2, 3) + 3  * tile_val(board, 2, 2) + 1 * tile_val(board, 2, 1) +
+                              1  * tile_val(board, 3, 3) + 1  * tile_val(board, 3, 2);
+
+        return std::max(eval1, eval2);
+    }
+    eval_t skewed_corner_heuristic(const board_t board) {
+        const board_t flip_h_board = flip_h(board);
+        const board_t flip_v_board = flip_v(board);
+        const board_t flip_vh_board = flip_v(flip_h_board);
+        return std::max({_skewed_corner_heuristic(board),         _skewed_corner_heuristic(transpose(board)),
+                         _skewed_corner_heuristic(flip_h_board),  _skewed_corner_heuristic(transpose(flip_h_board)),
+                         _skewed_corner_heuristic(flip_v_board),  _skewed_corner_heuristic(transpose(flip_v_board)),
+                         _skewed_corner_heuristic(flip_vh_board), _skewed_corner_heuristic(transpose(flip_vh_board))});
+    }
 
 
-    constexpr heuristic_t exports[6] = {
-        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic, strict_wall_heuristic
+    constexpr heuristic_t exports[7] = {
+        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic, strict_wall_heuristic, skewed_corner_heuristic
     };
 }
