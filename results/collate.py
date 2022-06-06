@@ -5,7 +5,7 @@
 import csv
 import os
 
-STAGE = "stage2"
+STAGE = "stage3"
 
 RESULT_FILES = [
     "random.csv", "spam_corner.csv", "ordered.csv", "rotating.csv",
@@ -25,6 +25,8 @@ TILE_COUNTS = range(4, 17 + 1)
 TOTAL_SCORE = 18
 TOTAL_MOVES = 20
 
+DECIMALS = 4
+
 for csv_filename in RESULT_FILES:
     filename = os.fsdecode(csv_filename)
 
@@ -36,11 +38,11 @@ for csv_filename in RESULT_FILES:
         for row in data:
             games = int(row[1])
             for i in TILE_COUNTS:
-                row[i] = round(int(row[i]) * 100 / games, 2)  # convert to percentage
+                row[i] = round(int(row[i]) * 100 / games, DECIMALS)  # convert to percentage
 
             # convert from total to average
-            row[TOTAL_SCORE] = float(row[TOTAL_SCORE]) / games
-            row[TOTAL_MOVES] = float(row[TOTAL_MOVES]) / games
+            row[TOTAL_SCORE] = round(float(row[TOTAL_SCORE]) / games, DECIMALS)
+            row[TOTAL_MOVES] = round(float(row[TOTAL_MOVES]) / games, DECIMALS)
             collated_data.append(row)
 
 headings[TOTAL_SCORE] = "Average Score"
