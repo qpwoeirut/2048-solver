@@ -10,7 +10,7 @@ The instructions for that are [here](/demo/selenium/README.md).
 
 
 ## Summary
-This project is intended to "solve" the popular [2048 tile-merging game](https://github.com/gabrielecirulli/2048).
+This project is a set of AI strategies that play the popular [2048 tile-merging game](https://github.com/gabrielecirulli/2048).
 See the [roadmap](/roadmap.md) for details on the project.
 
 Although most of the ideas I'll use are taken directly from others' projects, I want to try writing most of the source code myself.
