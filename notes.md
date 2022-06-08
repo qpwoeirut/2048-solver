@@ -11,6 +11,7 @@ This stores some loose ideas that I might try in the future.
 * some sort of "distance" heuristic between tiles of adjacent values
 * penalty heuristic for distance between tiles of same values (didn't really work)
 * try converting corner/wall building heuristics to be difference between adjacent tiles multiplied by a weight
+  * this is essentially a monotonicity heuristic i think?
 * use concept of "afterstates" to cut down the depth searched by one
 * for wall heuristics, increase depth if the ordering has an "inversion"
 * use geo mean instead of arith mean for expectimax?
@@ -27,6 +28,7 @@ This stores some loose ideas that I might try in the future.
 * use compile-time lookup tables for heuristics?
 * `player.simulator.play(player, fours)` is rather ugly; clean up somehow?
 * at some point unit tests should exist
+* terminate search once the state has a sufficiently low probability, instead of by depth
 * also before running the full statistic-generation tests I should run a mini-test with a small amount of games to make sure everything works properly and won't take forever
 
 ## Website
