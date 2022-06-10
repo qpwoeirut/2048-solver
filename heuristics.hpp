@@ -169,7 +169,7 @@ namespace heuristics {
             monotonicity[row] = (1 << r[0]) + (1 << r[1]) + (1 << r[2]) + (1 << r[3]);
             for (int i = 0; i < 3; ++i) {
                 if (r[i] < r[i + 1] && r[i] > 0) {
-                    monotonicity[row] -= 1LL << (r[i + 1] + r[i + 1] - r[i]);
+                    monotonicity[row] -= 1LL << (3 * r[i + 1] - r[i]);
                 }
             }
         }
