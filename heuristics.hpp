@@ -194,8 +194,8 @@ namespace heuristics {
                         monotonicity[(transposed_board >> 48) & 0xFFFF] +
                         monotonicity[(transposed_board >> 32) & 0xFFFF] +
                         monotonicity[(transposed_board >> 16) & 0xFFFF] +
-                        monotonicity[ transposed_board        & 0xFFFF] +
-                        count_empty(to_tile_mask(board)));  // tiebreak in favor of merging tiles
+                        monotonicity[ transposed_board        & 0xFFFF] -
+                        _duplicate_score(board));  // penalize having duplicate tiles
     }
 
 
