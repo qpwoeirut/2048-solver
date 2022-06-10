@@ -1,6 +1,6 @@
 namespace heuristics {
     constexpr eval_t MAX_EVAL = 16ULL << 40;  // from wall heuristics
-    constexpr eval_t MIN_EVAL = 0;  // all evaluations are positive
+    constexpr eval_t MIN_EVAL = -0x80000'0000ULL;  // monotonicity heuristic can be negative
 
     eval_t score_heuristic(const board_t board) {
         return approximate_score(board);
@@ -160,8 +160,42 @@ namespace heuristics {
         return std::max(_skewed_corner_heuristic(board), _skewed_corner_heuristic(transpose(board)));
     }
 
+    consteval std::array<eval_t, ROWS> gen_monotonicity() {
+        std::array<eval_t, ROWS> monotonicity;
+        for (int row = 0; row < ROWS; ++row) {
+            uint8_t r[4] = {
+                static_cast<uint8_t>((row >> 12) & 0xF),
+                static_cast<uint8_t>((row >> 8) & 0xF),
+                static_cast<uint8_t>((row >> 4) & 0xF),
+                static_cast<uint8_t>(row & 0xF)
+            };
+            monotonicity[row] = r[0];
+            for (int i = 0; i < 3; ++i) {
+                if (r[i] < r[i + 1]) {
+                    monotonicity[row] -= r[i + 1] << (r[i + 1] - r[i]);
+                }
+            }
+        }
+        for (int row = 0; row < ROWS; ++row) {
+            monotonicity[row] = std::max(monotonicity[row], monotonicity[reversed[row]]);
+        }
+        return monotonicity;
+    }
+    constexpr std::array<eval_t, ROWS> monotonicity = gen_monotonicity();
+    eval_t monotonicity_heuristic(const board_t board) {
+        const board_t transposed_board = transpose(board);
+        return monotonicity[(board >> 48) & 0xFFFF] +
+               monotonicity[(board >> 32) & 0xFFFF] +
+               monotonicity[(board >> 16) & 0xFFFF] +
+               monotonicity[ board        & 0xFFFF] +
+               monotonicity[(transposed_board >> 48) & 0xFFFF] +
+               monotonicity[(transposed_board >> 32) & 0xFFFF] +
+               monotonicity[(transposed_board >> 16) & 0xFFFF] +
+               monotonicity[ transposed_board        & 0xFFFF];
+    }
 
-    constexpr heuristic_t exports[7] = {
-        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic, strict_wall_heuristic, skewed_corner_heuristic
+
+    constexpr heuristic_t exports[8] = {
+        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic, strict_wall_heuristic, skewed_corner_heuristic, monotonicity_heuristic
     };
 }
