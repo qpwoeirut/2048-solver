@@ -20,7 +20,7 @@ class ExpectimaxStrategy: public Strategy {
     static constexpr board_t INVALID_BOARD  = 0x1111111111111111ULL;  // used as the empty_key for the dense_hash_map cache
     static constexpr board_t INVALID_BOARD2 = 0x2222222222222222ULL;  // used as the delete_key for the dense_hash_map cache
 
-    // according to a single benchmark than I ran:
+    // according to a single benchmark that I ran:
     // cache can reach up to 700k-ish
     // but 99% of the time it's less than 130k
     // and 97% of the time it's less than 60k
@@ -91,7 +91,7 @@ class ExpectimaxStrategy: public Strategy {
             const eval_t score = MULT * evaluator(board);
             return score - (score >> 4);  // subtract score / 16 as penalty for dying
         }
-        if (cur_depth == 0 || fours >= 5) {  // selecting 5 fours has a 0.001% chance, which is negligible
+        if (cur_depth == 0 || fours >= 4) {  // selecting 4 fours has a 0.01% chance, which is negligible
             return (MULT * evaluator(board)) << 2;  // move doesn't matter
         }
 
