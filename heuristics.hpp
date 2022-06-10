@@ -171,10 +171,10 @@ namespace heuristics {
                 static_cast<uint8_t>((row >> 4) & 0xF),
                 static_cast<uint8_t>(row & 0xF)
             };
-            monotonicity[row] = r[0];
+            monotonicity[row] = (1 << r[0]) + (1 << r[1]) + (1 << r[2]) + (1 << r[3]);
             for (int i = 0; i < 3; ++i) {
                 if (r[i] < r[i + 1] && r[i] > 0) {
-                    monotonicity[row] -= 1 << (r[i + 1] + r[i + 1] - r[i]);
+                    monotonicity[row] -= 1LL << (r[i + 1] + r[i + 1] - r[i]);
                 }
             }
         }
@@ -200,6 +200,13 @@ namespace heuristics {
 
 
     constexpr heuristic_t exports[8] = {
-        score_heuristic, merge_heuristic, corner_heuristic, wall_gap_heuristic, full_wall_heuristic, strict_wall_heuristic, skewed_corner_heuristic, monotonicity_heuristic
+        score_heuristic,
+        merge_heuristic,
+        corner_heuristic,
+        wall_gap_heuristic,
+        full_wall_heuristic,
+        strict_wall_heuristic,
+        skewed_corner_heuristic,
+        monotonicity_heuristic
     };
 }
