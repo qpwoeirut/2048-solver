@@ -134,26 +134,30 @@ namespace heuristics {
     }
 
     eval_t _skewed_corner_heuristic(const board_t board) {
-        const eval_t eval1 =  16 * tile_val(board, 0, 3) + 12 * tile_val(board, 0, 2) + 6 * tile_val(board, 0, 1) + 3 * tile_val(board, 0, 0) +
-                              8  * tile_val(board, 1, 3) + 6  * tile_val(board, 1, 2) + 3 * tile_val(board, 1, 1) + 1 * tile_val(board, 1, 0) +
-                              4  * tile_val(board, 2, 3) + 3  * tile_val(board, 2, 2) + 1 * tile_val(board, 2, 1) +
-                              1  * tile_val(board, 3, 3) + 1  * tile_val(board, 3, 2);
+        const eval_t top    = 16 * tile_val(board, 3, 3) + 10 * tile_val(board, 3, 2) + 6 * tile_val(board, 3, 1) + 3 * tile_val(board, 3, 0) +
+                              10 * tile_val(board, 2, 3) + 6  * tile_val(board, 2, 2) + 3 * tile_val(board, 2, 1) + 1 * tile_val(board, 2, 0) +
+                              4  * tile_val(board, 1, 3) + 3  * tile_val(board, 1, 2) + 1 * tile_val(board, 1, 1) +
+                              1  * tile_val(board, 0, 3) + 1  * tile_val(board, 0, 2);
 
-        const eval_t eval2 =  16 * tile_val(board, 0, 3) + 8  * tile_val(board, 0, 2) + 6 * tile_val(board, 0, 1) + 3 * tile_val(board, 0, 0) +
-                              12 * tile_val(board, 1, 3) + 6  * tile_val(board, 1, 2) + 3 * tile_val(board, 1, 1) + 1 * tile_val(board, 1, 0) +
-                              4  * tile_val(board, 2, 3) + 3  * tile_val(board, 2, 2) + 1 * tile_val(board, 2, 1) +
-                              1  * tile_val(board, 3, 3) + 1  * tile_val(board, 3, 2);
+        const eval_t bottom = 16 * tile_val(board, 0, 0) + 10 * tile_val(board, 0, 1) + 6 * tile_val(board, 0, 2) + 3 * tile_val(board, 0, 3) +
+                              10 * tile_val(board, 1, 0) + 6  * tile_val(board, 1, 1) + 3 * tile_val(board, 1, 2) + 1 * tile_val(board, 1, 3) +
+                              4  * tile_val(board, 2, 0) + 3  * tile_val(board, 2, 1) + 1 * tile_val(board, 2, 2) +
+                              1  * tile_val(board, 3, 0) + 1  * tile_val(board, 3, 1);
 
-        return std::max(eval1, eval2);
+        const eval_t left   = 16 * tile_val(board, 0, 3) + 10 * tile_val(board, 1, 3) + 6 * tile_val(board, 2, 3) + 3 * tile_val(board, 3, 3) +
+                              10 * tile_val(board, 0, 2) + 6  * tile_val(board, 1, 2) + 3 * tile_val(board, 2, 2) + 1 * tile_val(board, 3, 2) +
+                              4  * tile_val(board, 0, 1) + 3  * tile_val(board, 1, 1) + 1 * tile_val(board, 2, 1) +
+                              1  * tile_val(board, 0, 0) + 1  * tile_val(board, 1, 0);
+
+        const eval_t right  = 16 * tile_val(board, 3, 0) + 10 * tile_val(board, 2, 0) + 6 * tile_val(board, 1, 0) + 3 * tile_val(board, 0, 0) +
+                              10 * tile_val(board, 3, 1) + 6  * tile_val(board, 2, 1) + 3 * tile_val(board, 1, 1) + 1 * tile_val(board, 0, 1) +
+                              4  * tile_val(board, 3, 2) + 3  * tile_val(board, 2, 2) + 1 * tile_val(board, 1, 2) +
+                              1  * tile_val(board, 3, 3) + 1  * tile_val(board, 2, 3);
+
+        return std::max({top, bottom, left, right});
     }
     eval_t skewed_corner_heuristic(const board_t board) {
-        const board_t flip_h_board = flip_h(board);
-        const board_t flip_v_board = flip_v(board);
-        const board_t flip_vh_board = flip_v(flip_h_board);
-        return std::max({_skewed_corner_heuristic(board),         _skewed_corner_heuristic(transpose(board)),
-                         _skewed_corner_heuristic(flip_h_board),  _skewed_corner_heuristic(transpose(flip_h_board)),
-                         _skewed_corner_heuristic(flip_v_board),  _skewed_corner_heuristic(transpose(flip_v_board)),
-                         _skewed_corner_heuristic(flip_vh_board), _skewed_corner_heuristic(transpose(flip_vh_board))});
+        return std::max(_skewed_corner_heuristic(board), _skewed_corner_heuristic(transpose(board)));
     }
 
 
