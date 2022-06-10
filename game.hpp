@@ -10,16 +10,11 @@
 
 class Strategy;  // Strategy depends on GameSimulator and will be #include-ed at the bottom
 
-static constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
+//static constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
     std::array<std::array<row_t, ROWS>, 2> shift;
     for (int row = 0; row < ROWS; ++row) {
-        uint8_t r[4] = {
-            static_cast<uint8_t>((row >> 12) & 0xF),
-            static_cast<uint8_t>((row >> 8) & 0xF),
-            static_cast<uint8_t>((row >> 4) & 0xF),
-            static_cast<uint8_t>(row & 0xF)
-        };
+        int r[4] = { (row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF };
 
         // pull values to the left
         for (int i = 0; i < 3; ++i) {
@@ -40,11 +35,15 @@ consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
             if (r[2] == 0 && r[3] > 0) std::swap(r[2], r[3]);
         }
 
-        shift[0][row] = (r[0] << 12) | (r[1] << 8) | (r[2] << 4) | r[3];
-        shift[1][reversed[row]] = reversed[shift[0][row]];
 
         // we can't handle a 65536 tile in this representation, but it's unlikely that this will happen
-        if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) shift[0][row] = shift[1][row] = WINNING_ROW;
+        // for now just cap values at 2^15
+        if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) {
+            shift[0][row] = (std::min(r[0], 15) << 12) | (std::min(r[1], 15) << 8) | (std::min(r[2], 15) << 4) | std::min(r[3], 15);
+        } else {
+            shift[0][row] = (r[0] << 12) | (r[1] << 8) | (r[2] << 4) | r[3];
+        }
+        shift[1][reversed[row]] = reversed[shift[0][row]];
     }
     return shift;
 }
@@ -80,7 +79,7 @@ consteval std::array<int, EMPTY_MASKS> generate_empty_index() {
 }
 
 class GameSimulator {
-    static constexpr board_t WINNING_BOARD  = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
+//    static constexpr board_t WINNING_BOARD  = 0xFFFFFFFFFFFFFFFFULL;  // 2^64 - 1, represents grid full of 32768 tiles (which is impossible)
 
     static constexpr uint16_t FULL_MASK = 0xFFFF;
 
@@ -106,11 +105,11 @@ class GameSimulator {
                 ((board_t)shift[dir >> 1][(board >> 16) & 0xFFFF] << 16) |
                  (board_t)shift[dir >> 1][ board        & 0xFFFF];
         
-        // checks if the 65536 tile is reached; this won't be happening for a while
-        //if (shift[dir >> 1][board >> 48] == WINNING_ROW ||
-        //    shift[dir >> 1][(board >> 32) & 0xFFFF] == WINNING_ROW ||
-        //    shift[dir >> 1][(board >> 16) & 0xFFFF] == WINNING_ROW ||
-        //    shift[dir >> 1][board & 0xFFFF] == WINNING_ROW) return WINNING_BOARD;
+        // checks if the 65536 tile is reached
+//        if (shift[dir >> 1][(board >> 48) & 0xFFFF] == WINNING_ROW ||
+//            shift[dir >> 1][(board >> 32) & 0xFFFF] == WINNING_ROW ||
+//            shift[dir >> 1][(board >> 16) & 0xFFFF] == WINNING_ROW ||
+//            shift[dir >> 1][ board        & 0xFFFF] == WINNING_ROW) return WINNING_BOARD;
         return (dir & 1) ? transpose(board) : board;
     }
 

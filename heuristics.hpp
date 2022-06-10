@@ -165,12 +165,7 @@ namespace heuristics {
     consteval std::array<eval_t, ROWS> gen_monotonicity() {
         std::array<eval_t, ROWS> monotonicity;
         for (int row = 0; row < ROWS; ++row) {
-            uint8_t r[4] = {
-                static_cast<uint8_t>((row >> 12) & 0xF),
-                static_cast<uint8_t>((row >> 8) & 0xF),
-                static_cast<uint8_t>((row >> 4) & 0xF),
-                static_cast<uint8_t>(row & 0xF)
-            };
+            const int r[4] = { (row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF };
             monotonicity[row] = (1 << r[0]) + (1 << r[1]) + (1 << r[2]) + (1 << r[3]);
             for (int i = 0; i < 3; ++i) {
                 if (r[i] < r[i + 1] && r[i] > 0) {
