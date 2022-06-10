@@ -1,6 +1,7 @@
 namespace heuristics {
+    // all heuristic evaluations must be non-negative
+    constexpr eval_t MIN_EVAL = 0;
     constexpr eval_t MAX_EVAL = 16ULL << 40;  // from wall heuristics
-    constexpr eval_t MIN_EVAL = -0x80000'0000ULL;  // monotonicity heuristic can be negative
 
     eval_t score_heuristic(const board_t board) {
         return approximate_score(board);
@@ -23,18 +24,6 @@ namespace heuristics {
         return tile_val(board, ((r << 2) | c) << 2);
     }
 
-
-    eval_t _duplicate_score(const board_t board) {
-        eval_t score = 0;
-        for (int i = 0; i < 64; i += 4) {
-            const int val = tile_val(board, i);
-            for (int j = i + 8; j < 64; j += 4) {
-                // don't count duplicates that are adjacent
-                score += val == tile_val(board, j) && j != i + 16 ? 0 : val;
-            }
-        }
-        return score;
-    }
 
     // gives a score based on how the tiles are arranged in the corner, returns max over all 4 corners
     // higher value tiles should be closer to the corner
@@ -129,7 +118,8 @@ namespace heuristics {
         return std::max({_strict_wall_heuristic(board),         _strict_wall_heuristic(transpose(board)),
                          _strict_wall_heuristic(flip_h_board),  _strict_wall_heuristic(transpose(flip_h_board)),
                          _strict_wall_heuristic(flip_v_board),  _strict_wall_heuristic(transpose(flip_v_board)),
-                         _strict_wall_heuristic(flip_vh_board), _strict_wall_heuristic(transpose(flip_vh_board))})
+                         _strict_wall_heuristic(flip_vh_board), _strict_wall_heuristic(transpose(flip_vh_board)),
+                         0LL})
              + score_heuristic(board);  // tiebreak by score
     }
 
@@ -160,6 +150,18 @@ namespace heuristics {
         return std::max(_skewed_corner_heuristic(board), _skewed_corner_heuristic(transpose(board)));
     }
 
+    eval_t _duplicate_score(const board_t board) {
+        eval_t score = 0;
+        for (int i = 0; i < 64; i += 4) {
+            const int val = tile_val(board, i);
+            for (int j = i + 8; j < 64; j += 4) {
+                // don't count duplicates that are adjacent
+                score += val == tile_val(board, j) && j != i + 16 ? 0 : val;
+            }
+        }
+        return score;
+    }
+
     consteval std::array<eval_t, ROWS> gen_monotonicity() {
         std::array<eval_t, ROWS> monotonicity;
         for (int row = 0; row < ROWS; ++row) {
@@ -171,8 +173,8 @@ namespace heuristics {
             };
             monotonicity[row] = r[0];
             for (int i = 0; i < 3; ++i) {
-                if (r[i] < r[i + 1]) {
-                    monotonicity[row] -= r[i + 1] << (r[i + 1] - r[i]);
+                if (r[i] < r[i + 1] && r[i] > 0) {
+                    monotonicity[row] -= 1 << (r[i + 1] + r[i + 1] - r[i]);
                 }
             }
         }
@@ -184,14 +186,16 @@ namespace heuristics {
     constexpr std::array<eval_t, ROWS> monotonicity = gen_monotonicity();
     eval_t monotonicity_heuristic(const board_t board) {
         const board_t transposed_board = transpose(board);
-        return monotonicity[(board >> 48) & 0xFFFF] +
-               monotonicity[(board >> 32) & 0xFFFF] +
-               monotonicity[(board >> 16) & 0xFFFF] +
-               monotonicity[ board        & 0xFFFF] +
-               monotonicity[(transposed_board >> 48) & 0xFFFF] +
-               monotonicity[(transposed_board >> 32) & 0xFFFF] +
-               monotonicity[(transposed_board >> 16) & 0xFFFF] +
-               monotonicity[ transposed_board        & 0xFFFF];
+        return std::max(0LL,  // all evaluations should be non-negative
+                        monotonicity[(board >> 48) & 0xFFFF] +
+                        monotonicity[(board >> 32) & 0xFFFF] +
+                        monotonicity[(board >> 16) & 0xFFFF] +
+                        monotonicity[ board        & 0xFFFF] +
+                        monotonicity[(transposed_board >> 48) & 0xFFFF] +
+                        monotonicity[(transposed_board >> 32) & 0xFFFF] +
+                        monotonicity[(transposed_board >> 16) & 0xFFFF] +
+                        monotonicity[ transposed_board        & 0xFFFF] +
+                        count_empty(to_tile_mask(board)));  // tiebreak in favor of merging tiles
     }
 
 
