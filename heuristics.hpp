@@ -60,9 +60,8 @@ namespace heuristics {
                                    2  * tile_val(board, 1, 0) + 1 * tile_val(board, 1, 1) +
                                    1  * tile_val(board, 0, 0);
 
-        return std::max(std::max(lower_left, upper_left), std::max(lower_right, upper_right));
+        return std::max({lower_left, upper_left, lower_right, upper_right});  // using initializer list takes about same time as 2 std::max calls
     }
-
 
     eval_t _wall_gap_heuristic(const board_t board) {
         const eval_t top    = (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) |
@@ -81,7 +80,7 @@ namespace heuristics {
                               (tile_exp(board, 3, 1) << 20) | (tile_exp(board, 2, 1) << 24) | (tile_exp(board, 1, 1) << 28) |
                               (tile_exp(board, 3, 2) << 16) | (tile_exp(board, 2, 2) << 12) | (tile_exp(board, 1, 2) << 8);
 
-        return std::max(std::max(top, bottom), std::max(left, right)) + score_heuristic(board);
+        return std::max({top, bottom, left, right}) + score_heuristic(board);
     }
     eval_t wall_gap_heuristic(const board_t board) {
         return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
@@ -104,7 +103,7 @@ namespace heuristics {
                               (tile_exp(board, 3, 1) << 12) | (tile_exp(board, 2, 1) << 16) | (tile_exp(board, 1, 1) << 20) | (tile_exp(board, 0, 1) << 24) |
                               (tile_exp(board, 3, 2) << 8);
 
-        return std::max(std::max(top, bottom), std::max(left, right));
+        return std::max({top, bottom, left, right});
     }
     eval_t full_wall_heuristic(const board_t board) {
         return std::max(_full_wall_heuristic(board), _full_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
