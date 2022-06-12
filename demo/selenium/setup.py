@@ -1,7 +1,7 @@
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 
-ext = Pybind11Extension("players", ["demo/selenium/export_players.cpp"])
+ext = Pybind11Extension("players", ["export_players.cpp"])
 ext.cxx_std = 20
 # surely there must be a better way to do this?
 ext._add_cflags(["-funroll-loops", "-flto", "-mcpu=native", "-fconstexpr-steps=0x500000", "-I/usr/local/include"])

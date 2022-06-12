@@ -2,7 +2,7 @@
 
 It's recommended you go to this [website](https://qpwoeirut.github.io/2048/) for a demo instead.
 
-To set up the Selenium demo, run `pip install .` at the top level of this repository.
+To set up the Selenium demo, set up a virtual environment in the `demo/selenium` directory and run `venv/bin/pip install .`.
 By default, the demo runs in the Firefox browser.
 To run in Firefox, you may need to install the `geckodriver` executable.
 
