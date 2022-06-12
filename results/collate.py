@@ -3,17 +3,16 @@
 
 
 import csv
+import itertools
 import os
 
 STAGE = "stage3"
+HEURISTICS = ["merge", "score", "corner", "full_wall", "wall_gap"]
+STRATEGIES = ["rnd_t", "mnmx", "expmx"]
+RESULT_FILES = ["random.csv", "spam_corner.csv", "ordered.csv", "rotating.csv"] + \
+               [f"{x[0]}-{x[1]}.csv" for x in itertools.product(HEURISTICS, STRATEGIES)] + \
+               ["monte_carlo.csv"]
 
-RESULT_FILES = [
-    "random.csv", "spam_corner.csv", "ordered.csv", "rotating.csv",
-    "merge-rnd_t.csv", "merge-mnmx.csv", "merge-expmx.csv",
-    "score-rnd_t.csv", "score-mnmx.csv", "score-expmx.csv",
-    "corner-rnd_t.csv", "corner-mnmx.csv", "corner-expmx.csv",
-    "monte_carlo.csv"
-]
 
 this_directory = os.path.dirname(__file__)
 
