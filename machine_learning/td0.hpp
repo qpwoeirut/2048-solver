@@ -109,8 +109,7 @@ class TD0: GameSimulator {
     void save(const std::string& filename) {
         std::ofstream fout(filename);
         assert(fout.is_open());
-        fout << std::fixed;
-        fout.precision(12);
+        fout.precision(20);
         for (int i = 0; i < TUPLE_VALUES; ++i) {
             if (lookup[i] != 0) {
                 if (i == 0 || lookup[i-1] == 0) {
