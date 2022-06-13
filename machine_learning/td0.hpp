@@ -106,7 +106,7 @@ class TD0: GameSimulator {
         return tuples;
     }
     float evaluate(const board_t board) {
-        if (get_max_tile(board) == TILE_CT - 1) return WINNING_EVAL - approximate_score(board);  // incentivize winning as soon as possible
+        if (get_max_tile(board) == TILE_CT - 1) return WINNING_EVAL - 2 * approximate_score(board);  // incentivize winning as soon as possible
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
         const board_t flip_vh_board = flip_v(flip_h_board);
