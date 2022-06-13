@@ -4,7 +4,7 @@
 
 constexpr int EPOCHS = 100;
 
-constexpr int MAX_GAMES = 10000;
+constexpr int MAX_GAMES = 20000;
 constexpr int TRAIN_GAMES = MAX_GAMES;
 constexpr int TEST_GAMES = 1000;
 
