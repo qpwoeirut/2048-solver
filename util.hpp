@@ -131,4 +131,14 @@ int actual_score(const board_t board, const int fours) {
     return approximate_score(board) - 4 * fours;
 }
 
+int ipow(int b, int p) {
+    int ret = 1;
+    while (p > 0) {
+        if (p & 1) ret *= b;
+        p >>= 1;
+        b *= b;
+    }
+    return ret;
+}
+
 #endif
