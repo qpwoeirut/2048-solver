@@ -2,25 +2,25 @@
 #include <iostream>
 #include "td0.hpp"
 
-constexpr double LEARNING_RATE = 0.00015;
+constexpr double LEARNING_RATE = 0.00025;
 constexpr int EPOCHS = 300;
 constexpr int SAVE_INTERVAL = 30;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
-const std::string MODEL_NAME = "model_8-6_" + std::to_string(LEARNING_RATE);
+const std::string MODEL_NAME = "model_6-6_" + std::to_string(LEARNING_RATE);
 
 constexpr int TRAIN_GAMES = 10000;
 constexpr int TEST_GAMES = 100000;
 constexpr int MAX_GAMES = std::max(TRAIN_GAMES, TEST_GAMES);
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
-constexpr int MAX_TILE = 11;  // for now, the model will stop playing once 2048 is reached
+constexpr int MAX_TILE = 15;
 
 int results[MAX_TILE + 1];
 int moves[MAX_GAMES];
 int scores[MAX_GAMES];
 
-TD0 model(LEARNING_RATE);
+TD0 model(MAX_TILE + 1, LEARNING_RATE);
 
 float calculate_average(const int arr[], const int n) {
     long long sum = 0;
