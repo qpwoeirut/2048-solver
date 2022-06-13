@@ -39,6 +39,4 @@ This stores some loose ideas that I might try in the future.
 * display the current search depth? and % completion of search?
 * make depth customizable
 * allow user to create their own multiplication weight heuristic
-* remove you win screen?
-* add a board editor?
 * add replay of games?
