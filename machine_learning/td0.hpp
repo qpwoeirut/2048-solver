@@ -128,6 +128,9 @@ class TD0: GameSimulator {
         }
         fout.close();
     }
+    std::string get_name() {
+        return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(learning_rate);
+    }
 
     private:
     std::array<int, N_TUPLE> get_tuples(const board_t board) {
