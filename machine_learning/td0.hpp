@@ -129,7 +129,7 @@ class TD0: GameSimulator {
         fout.close();
     }
     std::string get_name() {
-        return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(learning_rate);
+        return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(tile_ct) + "_" + std::to_string(learning_rate);
     }
 
     private:
