@@ -1,6 +1,5 @@
 #include <iostream>
 #include "td0.hpp"
-#include "../heuristics.hpp"
 
 
 constexpr int EPOCHS = 100;
