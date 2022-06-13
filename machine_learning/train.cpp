@@ -2,7 +2,7 @@
 #include <iostream>
 #include "td0.hpp"
 
-constexpr double LEARNING_RATE = 0.0002;
+constexpr double LEARNING_RATE = 0.00015;
 constexpr int EPOCHS = 300;
 constexpr int SAVE_INTERVAL = 30;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
