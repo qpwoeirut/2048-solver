@@ -4,7 +4,7 @@
 
 constexpr double LEARNING_RATE = 0.00025;
 constexpr int EPOCHS = 300;
-constexpr int SAVE_INTERVAL = 30;
+constexpr int SAVE_INTERVAL = 50;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
 constexpr int TRAIN_GAMES = 10000;
