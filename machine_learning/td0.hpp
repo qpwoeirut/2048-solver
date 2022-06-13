@@ -7,7 +7,7 @@
 // implements only the TD0 algorithm (Fig. 3 and Fig. 6)
 class TD0: GameSimulator {
     // tuple selection is from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
-    static constexpr int N_TUPLE = 4;
+    static constexpr int N_TUPLE = 8;
     static constexpr int TUPLE_SIZE = 6;
     /*
     bit indexes of the board, for reference (top left is most significant):
@@ -21,13 +21,17 @@ class TD0: GameSimulator {
         {4, 8, 20, 24, 36, 52},
         {0, 4, 16, 20, 32, 36},
         {4, 8, 20, 24, 36, 40},
+        {0, 4, 8, 12, 16, 32},
+        {16, 20, 24, 28, 32, 48},
+        {0, 4, 8, 12, 16, 28},
+        {16, 20, 24, 28, 32, 44}
     };
 
     // stop once 2048 is reached. as higher tiles are reached, the model seems to lose accuracy in the earlier stages
     static constexpr int TILE_CT = 12;
-    static constexpr int TUPLE_VALUES = N_TUPLE * 2985984; // 4 * 12^6
+    static constexpr int TUPLE_VALUES = N_TUPLE * 2985984; // 2985984 = 12^6
 
-    static constexpr float WINNING_EVAL = 1e5;
+    static constexpr float WINNING_EVAL = 1e6;
     
     float lookup[TUPLE_VALUES];  // lookup table for each tuple's score
 
@@ -119,7 +123,7 @@ class TD0: GameSimulator {
         return evaluation;
     }
     int calculate_reward(const board_t board, const board_t after_board) {
-    // difference of approximations works here since each board will have the same amount of fours spawn
+        // difference of approximations works here since each board will have the same amount of fours spawn
         return approximate_score(after_board) - approximate_score(board);
     }
     int find_best_move(const board_t board) {
