@@ -93,6 +93,7 @@ class TD0: GameSimulator {
     std::array<int, N_TUPLE> get_tuples(const board_t board) {
         std::array<int, N_TUPLE> tuples;
         for (int i = 0; i < N_TUPLE; ++i) {
+            tuples[i] = 0;
             for (int j = 0; j < TUPLE_SIZE; ++j) {
                 tuples[i] *= TILE_CT;
                 tuples[i] += (board >> TUPLES[i][j]) & 0xF;
