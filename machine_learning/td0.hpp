@@ -22,7 +22,12 @@ class TD0: GameSimulator {
         {0, 4, 16, 20, 32, 36},
         {4, 8, 20, 24, 36, 40},
     };
-    static constexpr int TUPLE_VALUES = N_TUPLE * (1 << 24);  // 4 * 16^6
+
+    // stop once 2048 is reached. as higher tiles are reached, the model seems to lose accuracy in the earlier stages
+    static constexpr int TILE_CT = 12;
+    static constexpr int TUPLE_VALUES = N_TUPLE * 2985984; // 4 * 12^6
+
+    static constexpr float WINNING_EVAL = 1e5;
     
     float lookup[TUPLE_VALUES];  // lookup table for each tuple's score
 
@@ -31,17 +36,45 @@ class TD0: GameSimulator {
     TD0(const float _learning_rate): learning_rate(_learning_rate) {
         std::fill(lookup, lookup + TUPLE_VALUES, 0);  // page 5: " In all the experiments, the weights were initially set to 0"
     }
-    // TODO: save and read lookup table from a file
-
-    // returns ending board from training game
-    // TODO: record and return loss instead
-    board_t train(int& fours) {
+    board_t test_model(int& fours) {
         const board_t tile_val0 = generate_random_tile_val();
         const board_t tile_val1 = generate_random_tile_val();
         fours += (tile_val0 == 2) + (tile_val1 == 2);
         board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
 
-        while (!game_over(board)) {
+        while (!game_over(board) && get_max_tile(board) < TILE_CT - 1) {
+            const board_t old_board = board;
+
+            int attempts = 0x10000;
+            while (old_board == board) {
+                const int dir = find_best_move(board);
+                assert(0 <= dir && dir < 4);
+                board = make_move(board, dir);
+
+                if (game_over(board)) return board;
+
+                assert(--attempts > 0);  // abort the game if it seems stuck
+            }
+
+            const board_t new_tile_val = generate_random_tile_val();
+            if (new_tile_val == 2) ++fours;
+            board = add_random_tile(board, new_tile_val);
+        }
+
+        return board;
+    }
+
+    // TODO: save and read lookup table from a file
+
+    // returns ending board from training game
+    // TODO: record and return loss? is there a well-defined loss here?
+    board_t train_model(int& fours) {
+        const board_t tile_val0 = generate_random_tile_val();
+        const board_t tile_val1 = generate_random_tile_val();
+        fours += (tile_val0 == 2) + (tile_val1 == 2);
+        board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
+
+        while (!game_over(board) && get_max_tile(board) < TILE_CT - 1) {
             const int best_move = find_best_move(board);
             const board_t after_board = make_move(board, best_move);
             const board_t rand_tile = generate_random_tile_val();
@@ -55,7 +88,20 @@ class TD0: GameSimulator {
 
         return board;
     }
+
+    private:
+    std::array<int, N_TUPLE> get_tuples(const board_t board) {
+        std::array<int, N_TUPLE> tuples;
+        for (int i = 0; i < N_TUPLE; ++i) {
+            for (int j = 0; j < TUPLE_SIZE; ++j) {
+                tuples[i] *= TILE_CT;
+                tuples[i] += (board >> TUPLES[i][j]) & 0xF;
+            }
+        }
+        return tuples;
+    }
     float evaluate(const board_t board) {
+        if (get_max_tile(board) == TILE_CT - 1) return WINNING_EVAL - approximate_score(board);  // incentivize winning as soon as possible
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
         const board_t flip_vh_board = flip_v(flip_h_board);
@@ -63,18 +109,6 @@ class TD0: GameSimulator {
                _evaluate(flip_h_board) + _evaluate(transpose(flip_h_board)) +
                _evaluate(flip_v_board) + _evaluate(transpose(flip_v_board)) +
                _evaluate(flip_vh_board) + _evaluate(transpose(flip_vh_board));
-    }
-
-    private:
-    std::array<int, N_TUPLE> get_tuples(const board_t board) {
-        std::array<int, N_TUPLE> tuples;
-        for (int i = 0; i < N_TUPLE; ++i) {
-            for (int j = 0; j < TUPLE_SIZE; ++j) {
-                tuples[i] <<= 4;
-                tuples[i] |= (board >> TUPLES[i][j]) & 0xF;
-            }
-        }
-        return tuples;
     }
     float _evaluate(const board_t board) {
         float evaluation = 0;
