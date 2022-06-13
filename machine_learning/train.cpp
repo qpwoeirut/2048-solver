@@ -2,7 +2,7 @@
 #include "td0.hpp"
 
 
-constexpr float LEARNING_RATE = 0.0001;
+constexpr double LEARNING_RATE = 0.0001;
 constexpr int EPOCHS = 100;
 
 constexpr int MAX_GAMES = 10000;
@@ -47,6 +47,7 @@ void print_results(const int games) {
 }
 
 void play_training_games() {
+    const long long start_time = get_current_time_ms();
     for (int i = 0; i < TRAIN_GAMES; ++i) {
         int fours = 0;
         const board_t board = model.train_model(fours);
@@ -59,6 +60,9 @@ void play_training_games() {
     }
     print_results(TRAIN_GAMES);
     clear_results();
+    const long long end_time = get_current_time_ms();
+    const double time_taken = (end_time - start_time) / 1000.0;
+    std::cout << "Time: " << time_taken << std::endl;
 }
 
 void play_testing_games() {
@@ -77,8 +81,8 @@ void play_testing_games() {
 }
 
 int main() {
-    std::cout << "Learning rate = " << LEARNING_RATE << std::endl;
     std::cout.precision(8);
+    std::cout << "Learning rate = " << LEARNING_RATE << std::endl;
     for (int i = 0; i < EPOCHS; ++i) {
         std::cout << "Epoch #" << i+1 << " of " << EPOCHS << std::endl;
         play_training_games();
