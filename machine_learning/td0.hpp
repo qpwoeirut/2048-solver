@@ -1,6 +1,7 @@
 #ifndef TD0_HPP
 #define TD0_HPP
 
+#include <fstream>
 #include "../game.hpp"
 
 // based on http://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf
@@ -40,6 +41,21 @@ class TD0: GameSimulator {
     TD0(const float _learning_rate): learning_rate(_learning_rate) {
         std::fill(lookup, lookup + TUPLE_VALUES, 0);  // page 5: " In all the experiments, the weights were initially set to 0"
     }
+    TD0(const float _learning_rate, const std::string& filename): learning_rate(_learning_rate) {
+        std::ifstream fin(filename);
+        assert(fin.is_open());  // check if file was opened successfully
+        std::string line;
+        int idx = 0;
+        while (std::getline(fin, line)) {
+            assert(fin.good());
+            size_t eq_pos = line.find('=');
+            if (eq_pos != std::string::npos) {
+                idx = stoi(line.substr(0, eq_pos));
+                line = line.substr(eq_pos + 1);
+            }
+            lookup[idx++] = stof(line);
+        }
+    }
     board_t test_model(int& fours) {
         const board_t tile_val0 = generate_random_tile_val();
         const board_t tile_val1 = generate_random_tile_val();
@@ -68,8 +84,6 @@ class TD0: GameSimulator {
         return board;
     }
 
-    // TODO: save and read lookup table from a file
-
     // returns ending board from training game
     // TODO: record and return loss? is there a well-defined loss here?
     board_t train_model(int& fours) {
@@ -92,6 +106,21 @@ class TD0: GameSimulator {
 
         return board;
     }
+    void save(const std::string& filename) {
+        std::ofstream fout(filename);
+        assert(fout.is_open());
+        fout << std::fixed;
+        fout.precision(16);
+        for (int i = 0; i < TUPLE_VALUES; ++i) {
+            if (lookup[i] != 0) {
+                if (i == 0 || lookup[i-1] == 0) {
+                    fout << i << '=';
+                }
+                fout << lookup[i] << '\n';
+            }
+        }
+        fout.close();
+    }
 
     private:
     std::array<int, N_TUPLE> get_tuples(const board_t board) {
@@ -106,7 +135,10 @@ class TD0: GameSimulator {
         return tuples;
     }
     float evaluate(const board_t board) {
-        if (get_max_tile(board) == TILE_CT - 1) return WINNING_EVAL - 2 * approximate_score(board);  // incentivize winning as soon as possible
+        // incentivize winning as soon as possible
+        // # of fours is estimated by taking approximate # of moves and dividing by 10
+        // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
+        if (get_max_tile(board) == TILE_CT - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
         const board_t flip_vh_board = flip_v(flip_h_board);
@@ -145,7 +177,11 @@ class TD0: GameSimulator {
         return best_move;
     }
     void learn_evaluation(const board_t after_board, const board_t new_board) {
-        if (game_over(new_board)) return;
+        if (game_over(new_board)) {
+            // all future rewards will be 0, since the game has ended
+            update_lookup(after_board, -evaluate(after_board));
+            return;
+        }
         const int best_next_move = find_best_move(new_board);
         const board_t next_afterstate = make_move(new_board, best_next_move);
         const int next_reward = calculate_reward(new_board, next_afterstate);

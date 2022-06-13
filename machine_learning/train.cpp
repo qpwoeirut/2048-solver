@@ -1,9 +1,13 @@
+#include <filesystem>
 #include <iostream>
 #include "td0.hpp"
 
-
 constexpr double LEARNING_RATE = 0.0002;
-constexpr int EPOCHS = 100;
+constexpr int EPOCHS = 300;
+constexpr int SAVE_INTERVAL = 30;
+static_assert(EPOCHS % SAVE_INTERVAL == 0);
+
+const std::string MODEL_NAME = "model_8-6_" + std::to_string(LEARNING_RATE);
 
 constexpr int TRAIN_GAMES = 10000;
 constexpr int TEST_GAMES = 100000;
@@ -81,12 +85,15 @@ void play_testing_games() {
 }
 
 int main() {
+    std::filesystem::create_directory(MODEL_NAME);
     std::cout.precision(8);
     std::cout << "Learning rate = " << LEARNING_RATE << std::endl;
-    for (int i = 0; i < EPOCHS; ++i) {
-        std::cout << "Epoch #" << i+1 << " of " << EPOCHS << std::endl;
+    for (int i = 1; i <= EPOCHS; ++i) {
+        std::cout << "Epoch #" << i << " of " << EPOCHS << std::endl;
         play_training_games();
         std::cout << std::endl;
+
+        if (i % SAVE_INTERVAL == 0) model.save(MODEL_NAME + "/" + MODEL_NAME + "_" + std::to_string(i) + ".txt");
     }
 
     std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
