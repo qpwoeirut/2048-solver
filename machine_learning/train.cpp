@@ -2,12 +2,12 @@
 #include "td0.hpp"
 
 
-constexpr double LEARNING_RATE = 0.0005;
+constexpr double LEARNING_RATE = 0.0002;
 constexpr int EPOCHS = 100;
 
-constexpr int MAX_GAMES = 10000;
-constexpr int TRAIN_GAMES = MAX_GAMES;
+constexpr int TRAIN_GAMES = 10000;
 constexpr int TEST_GAMES = 100000;
+constexpr int MAX_GAMES = std::max(TRAIN_GAMES, TEST_GAMES);
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 11;  // for now, the model will stop playing once 2048 is reached
@@ -89,6 +89,6 @@ int main() {
         std::cout << std::endl;
     }
 
-    std::cout << "Running " << TRAIN_GAMES << " training games" << std::endl;
+    std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
     play_testing_games();
 }
