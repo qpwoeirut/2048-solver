@@ -25,23 +25,31 @@ class TD0: GameSimulator {
         {0, 4, 8, 12, 16, 32},
         {16, 20, 24, 28, 32, 48},
         {0, 4, 8, 12, 16, 28},
-        {16, 20, 24, 28, 32, 44}
+        {16, 20, 24, 28, 32, 44},
     };
 
-    // stop once 2048 is reached. as higher tiles are reached, the model seems to lose accuracy in the earlier stages
-    static constexpr int TILE_CT = 12;
-    static constexpr int TUPLE_VALUES = N_TUPLE * 2985984; // 2985984 = 12^6
-
-    static constexpr float WINNING_EVAL = 1e6;
-    
-    float lookup[TUPLE_VALUES];  // lookup table for each tuple's score
-
+    const int tile_ct, tuple_values;
     const float learning_rate;
+
+    static constexpr float WINNING_EVAL = 1e8;
+    
+    float* lookup;  // lookup table for each tuple's score
+
     public:
-    TD0(const float _learning_rate): learning_rate(_learning_rate) {
-        std::fill(lookup, lookup + TUPLE_VALUES, 0);  // page 5: " In all the experiments, the weights were initially set to 0"
+    TD0(const int _tile_ct, const float _learning_rate):
+        tile_ct(_tile_ct),
+        tuple_values(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
+        learning_rate(_learning_rate)
+    {
+        lookup = new float[tuple_values]();  // page 5: " In all the experiments, the weights were initially set to 0"
     }
-    TD0(const float _learning_rate, const std::string& filename): learning_rate(_learning_rate) {
+    TD0(const int _tile_ct, const float _learning_rate, const std::string& filename):
+        tile_ct(_tile_ct),
+        tuple_values(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
+        learning_rate(_learning_rate)
+    {
+        lookup = new float[tuple_values]();
+
         std::ifstream fin(filename);
         assert(fin.is_open());  // check if file was opened successfully
         std::string line;
@@ -62,7 +70,7 @@ class TD0: GameSimulator {
         fours += (tile_val0 == 2) + (tile_val1 == 2);
         board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
 
-        while (!game_over(board) && get_max_tile(board) < TILE_CT - 1) {
+        while (!game_over(board) && get_max_tile(board) < tile_ct - 1) {
             const board_t old_board = board;
 
             int attempts = 0x10000;
@@ -92,7 +100,7 @@ class TD0: GameSimulator {
         fours += (tile_val0 == 2) + (tile_val1 == 2);
         board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
 
-        while (!game_over(board) && get_max_tile(board) < TILE_CT - 1) {
+        while (!game_over(board) && get_max_tile(board) < tile_ct - 1) {
             const int best_move = find_best_move(board);
             const board_t after_board = make_move(board, best_move);
             const board_t rand_tile = generate_random_tile_val();
@@ -110,7 +118,7 @@ class TD0: GameSimulator {
         std::ofstream fout(filename);
         assert(fout.is_open());
         fout.precision(20);
-        for (int i = 0; i < TUPLE_VALUES; ++i) {
+        for (int i = 0; i < tuple_values; ++i) {
             if (lookup[i] != 0) {
                 if (i == 0 || lookup[i-1] == 0) {
                     fout << i << '=';
@@ -127,7 +135,7 @@ class TD0: GameSimulator {
         for (int i = 0; i < N_TUPLE; ++i) {
             tuples[i] = 0;
             for (int j = 0; j < TUPLE_SIZE; ++j) {
-                tuples[i] *= TILE_CT;
+                tuples[i] *= tile_ct;
                 tuples[i] += (board >> TUPLES[i][j]) & 0xF;
             }
         }
@@ -137,7 +145,7 @@ class TD0: GameSimulator {
         // incentivize winning as soon as possible
         // # of fours is estimated by taking approximate # of moves and dividing by 10
         // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
-        if (get_max_tile(board) == TILE_CT - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
+        if (get_max_tile(board) == tile_ct - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
         const board_t flip_vh_board = flip_v(flip_h_board);
