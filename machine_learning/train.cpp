@@ -2,6 +2,7 @@
 #include "td0.hpp"
 
 
+constexpr float LEARNING_RATE = 0.0001;
 constexpr int EPOCHS = 100;
 
 constexpr int MAX_GAMES = 10000;
@@ -15,7 +16,7 @@ int results[MAX_TILE + 1];
 int moves[MAX_GAMES];
 int scores[MAX_GAMES];
 
-TD0 model(0.001);
+TD0 model(LEARNING_RATE);
 
 float calculate_average(const int arr[], const int n) {
     long long sum = 0;
@@ -76,6 +77,8 @@ void play_testing_games() {
 }
 
 int main() {
+    std::cout << "Learning rate = " << LEARNING_RATE << std::endl;
+    std::cout.precision(8);
     for (int i = 0; i < EPOCHS; ++i) {
         std::cout << "Epoch #" << i+1 << " of " << EPOCHS << std::endl;
         play_training_games();
