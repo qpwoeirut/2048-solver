@@ -5,6 +5,7 @@ This stores some loose ideas that I might try in the future.
 * Previous [ML work](https://arxiv.org/pdf/1604.05085.pdf)
   * This is far more complicated than anything I'll be able to do myself, given my lack of experience
     * Started by implementing this [paper](http://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf) from the same authors
+  * [Other](https://arxiv.org/pdf/2111.11090.pdf) [work](https://arxiv.org/pdf/1606.07374.pdf)
 * Compute a massive lookup table for some small subset of states
   * restrict to 2^10 and below?
   * assume that some amount of states are always empty
