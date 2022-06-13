@@ -4,9 +4,9 @@
 
 constexpr int EPOCHS = 100;
 
-constexpr int MAX_GAMES = 20000;
+constexpr int MAX_GAMES = 10000;
 constexpr int TRAIN_GAMES = MAX_GAMES;
-constexpr int TEST_GAMES = 1000;
+constexpr int TEST_GAMES = 100000;
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 11;  // for now, the model will stop playing once 2048 is reached
