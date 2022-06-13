@@ -2,7 +2,7 @@
 #include "td0.hpp"
 
 
-constexpr double LEARNING_RATE = 0.0001;
+constexpr double LEARNING_RATE = 0.0005;
 constexpr int EPOCHS = 100;
 
 constexpr int MAX_GAMES = 10000;
