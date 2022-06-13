@@ -3,10 +3,17 @@
 This stores some loose ideas that I might try in the future.
 
 * Previous [ML work](https://arxiv.org/pdf/1604.05085.pdf)
+  * This is far more complicated than anything I'll be able to do myself, given my lack of experience
+    * This older [paper](http://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf) from the same authors is simpler; I'll start with that
+  * The n-tuple network structure seems useful though, and I can probably use it myself
+    * Limit the model to just trying to win (get 2048) for simplicity
+      * If all goes well, this can be similar to how the paper has different learning stages
+  * Totally random idea: what if the model's evaluation is reflective of your likelihood of losing instead of your max score?
+    * Does this actually help at all?
 * Compute a massive lookup table for some small subset of states
-    * restrict to 2^10 and below?
-    * assume that some amount of states are always empty
-    * even with above conditions, this will still be at least 10^12 states, probably too big
+  * restrict to 2^10 and below?
+  * assume that some amount of states are always empty
+  * even with above conditions, this will still be at least 10^12 states, probably too big
 * "snake" heuristic
 * some sort of "distance" heuristic between tiles of adjacent values
 * penalty heuristic for distance between tiles of same values (didn't really work)
