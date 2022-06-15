@@ -128,12 +128,23 @@ class TD0: GameSimulator {
         }
         fout.close();
     }
-    std::string get_name() {
-        return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(tile_ct) + "_" + std::to_string(learning_rate);
+    float evaluate(const board_t board) const{
+        // incentivize winning as soon as possible
+        // # of fours is estimated by taking approximate # of moves and dividing by 10
+        // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
+        if (get_max_tile(board) == tile_ct - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
+        const board_t flip_h_board = flip_h(board);
+        const board_t flip_v_board = flip_v(board);
+        const board_t flip_vh_board = flip_v(flip_h_board);
+        return std::max(0.0f,  // all evaluations are assumed to be non-negative
+                        _evaluate(board) + _evaluate(transpose(board)) +
+                        _evaluate(flip_h_board) + _evaluate(transpose(flip_h_board)) +
+                        _evaluate(flip_v_board) + _evaluate(transpose(flip_v_board)) +
+                        _evaluate(flip_vh_board) + _evaluate(transpose(flip_vh_board)));
     }
 
     private:
-    std::array<int, N_TUPLE> get_tuples(const board_t board) {
+    const std::array<int, N_TUPLE> get_tuples(const board_t board) const {
         std::array<int, N_TUPLE> tuples;
         for (int i = 0; i < N_TUPLE; ++i) {
             tuples[i] = 0;
@@ -144,31 +155,18 @@ class TD0: GameSimulator {
         }
         return tuples;
     }
-    float evaluate(const board_t board) {
-        // incentivize winning as soon as possible
-        // # of fours is estimated by taking approximate # of moves and dividing by 10
-        // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
-        if (get_max_tile(board) == tile_ct - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
-        const board_t flip_h_board = flip_h(board);
-        const board_t flip_v_board = flip_v(board);
-        const board_t flip_vh_board = flip_v(flip_h_board);
-        return _evaluate(board) + _evaluate(transpose(board)) +
-               _evaluate(flip_h_board) + _evaluate(transpose(flip_h_board)) +
-               _evaluate(flip_v_board) + _evaluate(transpose(flip_v_board)) +
-               _evaluate(flip_vh_board) + _evaluate(transpose(flip_vh_board));
-    }
-    float _evaluate(const board_t board) {
+    const float _evaluate(const board_t board) const {
         float evaluation = 0;
         for (const int tuple: get_tuples(board)) {
             evaluation += lookup[tuple];
         }
         return evaluation;
     }
-    int calculate_reward(const board_t board, const board_t after_board) {
+    const int calculate_reward(const board_t board, const board_t after_board) const {
         // difference of approximations works here since each board will have the same amount of fours spawn
         return approximate_score(after_board) - approximate_score(board);
     }
-    int find_best_move(const board_t board) {
+    const int find_best_move(const board_t board) const {
         int best_move = -1;
         float best_score = -1e9;
         for (int i = 0; i < 4; ++i) {

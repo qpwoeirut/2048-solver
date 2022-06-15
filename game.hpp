@@ -98,7 +98,7 @@ class GameSimulator {
         empty_tile_gen.seed(rng_seed);
     }
 
-    board_t make_move(board_t board, const int dir) {  // 0=left, 1=up, 2=right, 3=down
+    board_t make_move(board_t board, const int dir) const {  // 0=left, 1=up, 2=right, 3=down
         if (dir & 1) board = transpose(board);
         board = ((board_t)shift[dir >> 1][(board >> 48) & 0xFFFF] << 48) |
                 ((board_t)shift[dir >> 1][(board >> 32) & 0xFFFF] << 32) |
@@ -132,7 +132,7 @@ class GameSimulator {
         return new_board;
     }
 
-    bool game_over(const board_t board) {
+    bool game_over(const board_t board) const {
         return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3));// || board == WINNING_BOARD;
     }
 
