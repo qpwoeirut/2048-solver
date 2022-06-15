@@ -89,7 +89,7 @@ class ExpectimaxStrategy: public Strategy {
     const eval_t helper(const board_t board, const int cur_depth, const int fours) {
         if (simulator.game_over(board)) {
             const eval_t score = MULT * evaluator(board);
-            return score - (score >> 4);  // subtract score / 16 as penalty for dying
+            return (score - (score >> 2)) << 2;  // subtract score / 4 as penalty for dying, then pack
         }
         if (cur_depth == 0 || fours >= 4) {  // selecting 4 fours has a 0.01% chance, which is negligible
             return (MULT * evaluator(board)) << 2;  // move doesn't matter
@@ -105,7 +105,7 @@ class ExpectimaxStrategy: public Strategy {
         }
 
         eval_t best_score = heuristics::MIN_EVAL;
-        int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
+        int best_move = -1;
         for (int i=0; i<4; ++i) {
             eval_t expected_score = 0;
             const board_t new_board = simulator.make_move(board, i);
