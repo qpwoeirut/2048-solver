@@ -1,6 +1,7 @@
 # 2048-solver
 
 /machine_learning/model_8-6_16_0.000250/model_8-6_16_0.000250_300.txt
+model_*.dat
 
 .DS_Store
 build
