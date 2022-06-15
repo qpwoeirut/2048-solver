@@ -85,7 +85,7 @@ class TD0: GameSimulator {
         fours += (tile_val0 == 2) + (tile_val1 == 2);
         board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
 
-        while (!game_over(board) && get_max_tile(board) < tile_ct - 1) {
+        while (!game_over(board)) {// && get_max_tile(board) < tile_ct - 1) {
             const board_t old_board = board;
 
             int attempts = 0x10000;
@@ -115,7 +115,7 @@ class TD0: GameSimulator {
         fours += (tile_val0 == 2) + (tile_val1 == 2);
         board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
 
-        while (!game_over(board) && get_max_tile(board) < tile_ct - 1) {
+        while (!game_over(board)) {// && get_max_tile(board) < tile_ct - 1) {
             const int best_move = find_best_move(board);
             const board_t after_board = make_move(board, best_move);
             const board_t rand_tile = generate_random_tile_val();
@@ -147,7 +147,7 @@ class TD0: GameSimulator {
         // incentivize winning as soon as possible
         // # of fours is estimated by taking approximate # of moves and dividing by 10
         // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
-        if (get_max_tile(board) == tile_ct - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
+        //if (get_max_tile(board) == tile_ct - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
         if (game_over(board)) return 0;
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
@@ -265,7 +265,8 @@ void TD0::load_best() {
     emscripten_fetch(&attr, "../model.dat");
 }
 #else
-TD0 TD0::best_model = TD0(0, "machine_learning/model_8-6_16_0.000250/model_8-6_16_0.000250_300.txt");
+//TD0 TD0::best_model = TD0(0, "machine_learning/model_8-6_16_0.000250/model_8-6_16_0.000250_300.txt");
+TD0 TD0::best_model = TD0(0);  // FIXME
 bool TD0::best_model_loaded = true;
 void TD0::load_best() { /* do nothing, model already loaded */ }
 #endif

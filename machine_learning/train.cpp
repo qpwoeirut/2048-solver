@@ -2,9 +2,9 @@
 #include <iostream>
 #include "td0.hpp"
 
-constexpr double LEARNING_RATE = 0.00025;
-constexpr int EPOCHS = 300;
-constexpr int SAVE_INTERVAL = 50;
+constexpr double LEARNING_RATE = 0.0001;
+constexpr int EPOCHS = 1000;
+constexpr int SAVE_INTERVAL = 100;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
 constexpr int TRAIN_GAMES = 10000;
@@ -12,7 +12,7 @@ constexpr int TEST_GAMES = 100000;
 constexpr int MAX_GAMES = std::max(TRAIN_GAMES, TEST_GAMES);
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
-constexpr int MAX_TILE = 15;
+constexpr int MAX_TILE = 14;
 
 int results[MAX_TILE + 1];
 int moves[MAX_GAMES];
