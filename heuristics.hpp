@@ -1,3 +1,9 @@
+#include <chrono>
+#include <thread>
+#include "util.hpp"
+#include "machine_learning/td0.hpp"
+
+
 namespace heuristics {
     // all heuristic evaluations must be non-negative
     constexpr eval_t MIN_EVAL = 0;
@@ -193,8 +199,16 @@ namespace heuristics {
                         _duplicate_score(board));  // penalize having duplicate tiles
     }
 
+    eval_t n_tuple_heuristic(const board_t board) {  // TODO: this is slightly inaccurate since model.evaluate is trained on afterstates
+        if (!TD0::best_model_loaded) {
+            std::cerr << "model isn't loaded yet! evaluation may be messed up." << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            // TODO: figure out a better action
+        }
+        return TD0::best_model.evaluate(board);
+    }
 
-    constexpr heuristic_t exports[8] = {
+    constexpr heuristic_t exports[9] = {
         score_heuristic,
         merge_heuristic,
         corner_heuristic,
@@ -202,6 +216,7 @@ namespace heuristics {
         full_wall_heuristic,
         strict_wall_heuristic,
         skewed_corner_heuristic,
-        monotonicity_heuristic
+        monotonicity_heuristic,
+        n_tuple_heuristic
     };
 }

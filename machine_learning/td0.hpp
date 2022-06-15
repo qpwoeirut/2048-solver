@@ -4,6 +4,10 @@
 #include <fstream>
 #include "../game.hpp"
 
+#ifdef WEBSITE
+#include <emscripten/fetch.h>
+#endif
+
 // based on http://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf
 // implements only the TD0 algorithm (Fig. 3 and Fig. 6)
 class TD0: GameSimulator {
@@ -43,15 +47,11 @@ class TD0: GameSimulator {
     {
         lookup = new float[tuple_values]();  // page 5: " In all the experiments, the weights were initially set to 0"
     }
-    TD0(const int _tile_ct, const float _learning_rate, const std::string& filename):
-        tile_ct(_tile_ct),
-        tuple_values(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
-        learning_rate(_learning_rate)
-    {
-        lookup = new float[tuple_values]();
-
+    TD0(const float _learning_rate): TD0(16, _learning_rate) {}
+    TD0(const int _tile_ct, const float _learning_rate, const std::string& filename): TD0(_tile_ct, _learning_rate) {
         std::ifstream fin(filename);
-        assert(fin.is_open());  // check if file was opened successfully
+        assert(fin.is_open());
+
         std::string line;
         int idx = 0;
         while (std::getline(fin, line)) {
@@ -64,6 +64,21 @@ class TD0: GameSimulator {
             lookup[idx++] = stof(line);
         }
     }
+    TD0(const float _learning_rate, const std::string& filename): TD0(16, _learning_rate, filename) {}
+
+    static TD0 best_model;
+    static bool best_model_loaded;
+    static void load_best();
+
+    void set_lookup(const int idx, const float new_val) {
+        assert(idx < tuple_values);
+        lookup[idx] = new_val;
+    }
+
+    const std::string get_name() const {
+        return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(tile_ct) + "_" + std::to_string(learning_rate);
+    }
+
     board_t test_model(int& fours) {
         const board_t tile_val0 = generate_random_tile_val();
         const board_t tile_val1 = generate_random_tile_val();
@@ -114,7 +129,7 @@ class TD0: GameSimulator {
 
         return board;
     }
-    void save(const std::string& filename) {
+    void save(const std::string& filename) const {
         std::ofstream fout(filename);
         assert(fout.is_open());
         fout.precision(20);
@@ -133,6 +148,7 @@ class TD0: GameSimulator {
         // # of fours is estimated by taking approximate # of moves and dividing by 10
         // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
         if (get_max_tile(board) == tile_ct - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
+        if (game_over(board)) return 0;
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
         const board_t flip_vh_board = flip_v(flip_h_board);
@@ -210,6 +226,49 @@ class TD0: GameSimulator {
         }
     }
 };
+
+
+#ifdef WEBSITE
+TD0 TD0::best_model = TD0(0);
+bool TD0::best_model_loaded = false;
+void TD0::load_best() {
+    emscripten_fetch_attr_t attr;
+    emscripten_fetch_attr_init(&attr);
+    strcpy(attr.requestMethod, "GET");
+    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+
+    attr.onsuccess = [](emscripten_fetch_t* fetch) {
+        std::cerr << "fetch succeeded!" << std::endl;
+        const std::string s(fetch->data, fetch->numBytes);
+        std::string line;
+        int idx = 0;
+        for (int i = 0; i < fetch->numBytes; ++i) {
+            if (fetch->data[i] == '=') {
+                idx = stoi(line);
+                line = "";
+            } else if (fetch->data[i] == '\n') {
+                TD0::best_model.set_lookup(idx, stof(line));
+                ++idx;
+                line = "";
+            } else {
+                line.push_back(fetch->data[i]);
+            }
+        }
+        emscripten_fetch_close(fetch);
+
+        TD0::best_model_loaded = true;
+    };
+    attr.onerror = [](emscripten_fetch_t* fetch) {
+        std::cerr << "failed with status code " << fetch->status << std::endl;
+        emscripten_fetch_close(fetch);
+    };
+    emscripten_fetch(&attr, "../model.dat");
+}
+#else
+TD0 TD0::best_model = TD0(0, "machine_learning/model_8-6_16_0.000250/model_8-6_16_0.000250_300.txt");
+bool TD0::best_model_loaded = true;
+void TD0::load_best() { /* do nothing, model already loaded */ }
+#endif
 
 #endif
 

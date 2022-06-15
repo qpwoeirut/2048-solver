@@ -12,6 +12,7 @@
 #include "../../strategies/UserPlayer.hpp"
 
 using emscripten::class_;
+using emscripten::function;
 
 EMSCRIPTEN_BINDINGS(players) {
     class_<ExpectimaxStrategy>("ExpectimaxStrategy")
@@ -45,5 +46,7 @@ EMSCRIPTEN_BINDINGS(players) {
     class_<SpamCornerPlayer>("SpamCornerPlayer")
         .constructor<>()
         .function("pick_move", &SpamCornerPlayer::pick_move);
+
+    function("td0_load_best", &TD0::load_best);
 }
 
