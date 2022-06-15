@@ -12,7 +12,7 @@
 // implements only the TD0 algorithm (Fig. 3 and Fig. 6)
 class TD0: GameSimulator {
     // tuple selection is from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
-    static constexpr int N_TUPLE = 8;
+    static constexpr int N_TUPLE = 4;
     static constexpr int TUPLE_SIZE = 6;
     /*
     bit indexes of the board, for reference (top left is most significant):
@@ -26,10 +26,10 @@ class TD0: GameSimulator {
         {4, 8, 20, 24, 36, 52},
         {0, 4, 16, 20, 32, 36},
         {4, 8, 20, 24, 36, 40},
-        {0, 4, 8, 12, 16, 32},
-        {16, 20, 24, 28, 32, 48},
-        {0, 4, 8, 12, 16, 28},
-        {16, 20, 24, 28, 32, 44},
+        //{0, 4, 8, 12, 16, 32},
+        //{16, 20, 24, 28, 32, 48},
+        //{0, 4, 8, 12, 16, 28},
+        //{16, 20, 24, 28, 32, 44},
     };
 
     const int tile_ct, tuple_values;
@@ -132,7 +132,7 @@ class TD0: GameSimulator {
     void save(const std::string& filename) const {
         std::ofstream fout(filename);
         assert(fout.is_open());
-        fout.precision(20);
+        fout.precision(16);
         for (int i = 0; i < tuple_values; ++i) {
             if (lookup[i] != 0) {
                 if (i == 0 || lookup[i-1] == 0) {
