@@ -2,9 +2,9 @@
 #include <iostream>
 #include "td0.hpp"
 
-constexpr double LEARNING_RATE = 0.0001;
-constexpr int EPOCHS = 1000;
-constexpr int SAVE_INTERVAL = 100;
+constexpr double LEARNING_RATE = 0.001;
+constexpr int EPOCHS = 20;
+constexpr int SAVE_INTERVAL = 4;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
 constexpr int TRAIN_GAMES = 10000;
