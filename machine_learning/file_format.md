@@ -1,13 +1,12 @@
 # Model File Format
 
-The saved model is stored in a text file of lines.
-Internally, only a large array of floats needs to be saved.
-The naive approach of storing every float leads to very large files.
-Since most values in the array are zero, only the values that are nonzero are saved.
+The model is stored in a binary file with the following contents.
+* the string "qp2048TD0", which acts as a file type identifier.
+* three 8-bit integers `m`, `n`, and `c`, representing the number of tuples, the size of each tuple, and tile cap respectively.
+* `m * n` 8-bit integers, representing the tuples. Each integer should be a multiple of 4 in the range `[0, 64)`.
+* `ceil(m * c^n / 8)` bytes, representing a boolean array of size `m * c^n`. Each entry denotes whether the model's float array is nonzero at that index.
+* `k` floats, where `k` is the number of set bits in the above boolean array. These floats are the weights for the model. Each float corresponds to one set bit.
 
-There are two types of lines in the file format.
-The first specifies which index of the array is represented by that line, in the form `idx=val`.
-The second holds only a value.
-Its index is determined by the index of the line before it.
-The file must start with the first line type.
+## Old Formats
+Old models were stored as a text file representing an entry into a sparse array per line.
 
