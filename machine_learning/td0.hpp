@@ -2,6 +2,7 @@
 #define TD0_HPP
 
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include "../game.hpp"
 
@@ -25,15 +26,15 @@ class TD0: GameSimulator {
     28 24 20 16
     12  8  4  0
     */
-    std::vector<std::vector<int>> TUPLES {
-        std::vector<int>{0, 4, 16, 20, 32, 48},
-        std::vector<int>{4, 8, 20, 24, 36, 52},
-        std::vector<int>{0, 4, 16, 20, 32, 36},
-        std::vector<int>{4, 8, 20, 24, 36, 40},
-        //std::vector<int>{0, 4, 8, 12, 16, 32},
-        //std::vector<int>{16, 20, 24, 28, 32, 48},
-        //std::vector<int>{0, 4, 8, 12, 16, 28},
-        //std::vector<int>{16, 20, 24, 28, 32, 44},
+    std::vector<int> TUPLES {  // flatten vector for speed
+        0, 4, 16, 20, 32, 48,
+        4, 8, 20, 24, 36, 52,
+        0, 4, 16, 20, 32, 36,
+        4, 8, 20, 24, 36, 40,
+        //0, 4, 8, 12, 16, 32,
+        //16, 20, 24, 28, 32, 48,
+        //0, 4, 8, 12, 16, 28,
+        //16, 20, 24, 28, 32, 44,
     };
 
     int TILE_CT, TUPLE_VALUES;
@@ -50,8 +51,7 @@ class TD0: GameSimulator {
         LEARNING_RATE(_learning_rate)
     {
         lookup = new float[TUPLE_VALUES]();  // page 5: " In all the experiments, the weights were initially set to 0"
-        assert(TUPLES.size() == N_TUPLE);
-        assert(TUPLES[0].size() == TUPLE_SIZE);
+        assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
     }
     TD0(const float _learning_rate, const std::string& filename): LEARNING_RATE(_learning_rate) {
         std::ifstream fin(filename, std::ios::binary);
@@ -66,14 +66,12 @@ class TD0: GameSimulator {
         TILE_CT = fin.get();
 
         TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
-        TUPLES.clear();
 
+        TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
         for (int i = 0; i < N_TUPLE; ++i) {
-            std::vector<int> tp(TUPLE_SIZE);
             for (int j = 0; j < TUPLE_SIZE; ++j) {
-                tp[j] = fin.get();
+                TUPLES[i * TUPLE_SIZE + j] = fin.get();
             }
-            TUPLES.push_back(tp);
         }
 
         std::string nonzero((TUPLE_VALUES + 7) / 8, '\0');
@@ -187,7 +185,7 @@ class TD0: GameSimulator {
         int tuple = 0;
         for (int j = 0; j < TUPLE_SIZE; ++j) {
             tuple *= TILE_CT;
-            tuple += (board >> TUPLES[i][j]) & 0xF;
+            tuple += (board >> TUPLES[i * TUPLE_SIZE + j]) & 0xF;
         }
         return tuple;
     }
@@ -272,14 +270,12 @@ void TD0::load_best() {
         TILE_CT = is.get();
 
         TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
-        TUPLES.clear();
 
-        for (int i = 0; i < N_TUPLES; ++i) {
-            std::vector<int> tp(TUPLE_SIZE);
+        TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
+        for (int i = 0; i < N_TUPLE; ++i) {
             for (int j = 0; j < TUPLE_SIZE; ++j) {
-                tp[j] = is.get();
+                TUPLES[i * TUPLE_SIZE + j] = fin.get();
             }
-            TUPLES.push_back(tp);
         }
 
         std::string nonzero((TUPLE_VALUES + 7) / 8);
