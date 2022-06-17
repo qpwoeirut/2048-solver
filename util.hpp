@@ -13,6 +13,7 @@ using heuristic_t = eval_t (*)(const board_t);
 static constexpr int ROWS = 0x10000;
 static constexpr row_t ROW_MASK = 0xFFFF;
 
+// precomputed array for reversing a row on the board
 consteval std::array<row_t, ROWS> generate_reversed() {
     std::array<row_t, ROWS> reversed;
     for (int row = 0; row < ROWS; ++row) {
@@ -97,12 +98,13 @@ int count_set(const uint16_t mask) {
 }
 
 int count_distinct_tiles(const board_t board) {
-    uint16_t tile_exists = 0;
+    uint16_t tile_exists = 0;  // bit mask of whether each tile exists
     for (int i = 0; i < 64; i += 4) tile_exists |= 1 << ((board >> i) & 0xF);
     tile_exists &= 0xFFFE;  // get rid of the LSB, since a 0 tile is empty, not an actual tile
     return count_set(tile_exists);
 }
 
+// sum of tiles on the board
 int board_sum(const board_t board) {
     int sum = 0;
     for (int i = 0; i < 64; i += 4) if (((board >> i) & 0xF) != 0) sum += 1 << ((board >> i) & 0xF);
@@ -131,6 +133,7 @@ int actual_score(const board_t board, const int fours) {
     return approximate_score(board) - 4 * fours;
 }
 
+// integer power function using binary exponentiation
 int ipow(int b, int p) {
     int ret = 1;
     while (p > 0) {

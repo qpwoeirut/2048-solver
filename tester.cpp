@@ -16,6 +16,7 @@
 #include "strategies/UserPlayer.hpp"
 
 
+// range for recording results
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
 constexpr int MAX_TILE = 16;  // 2^17 is largest possible tile, but it's practically impossible
 
@@ -23,13 +24,14 @@ constexpr int GAMES[5] = {500, 2000, 10000, 200000, 500000};
 constexpr int MAX_DEPTH = 5;
 constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 10, 9, 6};
 
+// small testing parameters for local testing to catch bugs
 //constexpr int GAMES[5] = {4, 10, 25, 50, 100};
 //constexpr int MAX_DEPTH = 4;
-//constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3};
+//constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3, 2};
 
 constexpr int THREADS = 4;
 
-std::atomic<int> results[MAX_TILE + 1];
+std::atomic<int> results[MAX_TILE + 1];  // counts how many games reached this tile (or higher)
 int moves[GAMES[4]];  // each index is only modified by one thread so atomic isn't necessary
 int scores[GAMES[4]];
 

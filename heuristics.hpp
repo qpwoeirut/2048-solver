@@ -13,7 +13,7 @@ namespace heuristics {
         return approximate_score(board);
     }
 
-    eval_t merge_heuristic(const board_t board) {  // count empty tiles on board
+    eval_t merge_heuristic(const board_t board) {
         return count_empty(to_tile_mask(board));
     }
 
@@ -55,9 +55,16 @@ namespace heuristics {
                                    2  * tile_val(board, 1, 0) + 1 * tile_val(board, 1, 1) +
                                    1  * tile_val(board, 0, 0);
 
-        return std::max({lower_left, upper_left, lower_right, upper_right});  // using initializer list takes about same time as 2 std::max calls
+        return std::max({lower_left, upper_left, lower_right, upper_right});  // using initializer list takes about same time as 3 std::max calls
     }
 
+    // compares boards lexicographically, going in a snake across a wall of the board with a gap on the side
+    // order (where x doesn't get counted):
+    // 0 1 2 x
+    // 5 4 3 x
+    // 6 7 8 x
+    // x x x x
+    // takes the maximum over all 4 walls, both transposed and not
     eval_t _wall_gap_heuristic(const board_t board) {
         const eval_t top    = (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) |
                               (tile_exp(board, 2, 3) << 20) | (tile_exp(board, 2, 2) << 24) | (tile_exp(board, 2, 1) << 28) |
@@ -75,12 +82,19 @@ namespace heuristics {
                               (tile_exp(board, 3, 1) << 20) | (tile_exp(board, 2, 1) << 24) | (tile_exp(board, 1, 1) << 28) |
                               (tile_exp(board, 3, 2) << 16) | (tile_exp(board, 2, 2) << 12) | (tile_exp(board, 1, 2) << 8);
 
-        return std::max({top, bottom, left, right}) + score_heuristic(board);
+        return std::max({top, bottom, left, right});
     }
     eval_t wall_gap_heuristic(const board_t board) {
         return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
+    // compares boards lexicographically, going in a snake across an entire wall of the board
+    // order (where x doesn't get counted):
+    // 0 1 2 3
+    // 7 6 5 4
+    // 8 x x x
+    // x x x x
+    // takes the maximum over all 4 walls, both transposed and not
     eval_t _full_wall_heuristic(const board_t board) {
         const eval_t top    = (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) | (tile_exp(board, 3, 0) << 28) |
                               (tile_exp(board, 2, 3) << 12) | (tile_exp(board, 2, 2) << 16) | (tile_exp(board, 2, 1) << 20) | (tile_exp(board, 2, 0) << 24) |
@@ -104,6 +118,7 @@ namespace heuristics {
         return std::max(_full_wall_heuristic(board), _full_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
+    // same as full_wall_heuristic, but with a penalty for tiles that are inverted in the order
     eval_t _strict_wall_heuristic(const board_t board) {
         const board_t vals[9] = {tile_exp(board, 3, 3), tile_exp(board, 3, 2), tile_exp(board, 3, 1), tile_exp(board, 3, 0),
                                  tile_exp(board, 2, 0), tile_exp(board, 2, 1), tile_exp(board, 2, 2), tile_exp(board, 2, 3),
@@ -125,10 +140,11 @@ namespace heuristics {
                          _strict_wall_heuristic(flip_h_board),  _strict_wall_heuristic(transpose(flip_h_board)),
                          _strict_wall_heuristic(flip_v_board),  _strict_wall_heuristic(transpose(flip_v_board)),
                          _strict_wall_heuristic(flip_vh_board), _strict_wall_heuristic(transpose(flip_vh_board)),
-                         0LL})
+                         0LL})  // make sure the evaluation is non-negative
              + score_heuristic(board);  // tiebreak by score
     }
 
+    // similar to corner_heuristic but with different weights
     eval_t _skewed_corner_heuristic(const board_t board) {
         const eval_t top    = 16 * tile_val(board, 3, 3) + 10 * tile_val(board, 3, 2) + 6 * tile_val(board, 3, 1) + 3 * tile_val(board, 3, 0) +
                               10 * tile_val(board, 2, 3) + 6  * tile_val(board, 2, 2) + 3 * tile_val(board, 2, 1) + 1 * tile_val(board, 2, 0) +
@@ -156,6 +172,8 @@ namespace heuristics {
         return std::max(_skewed_corner_heuristic(board), _skewed_corner_heuristic(transpose(board)));
     }
 
+    // duplicate tiles are only counted if they're not right next to each other
+    // for each duplicate pair, the value of the tile is added to the score
     eval_t _duplicate_score(const board_t board) {
         eval_t score = 0;
         for (int i = 0; i < 64; i += 4) {
@@ -168,6 +186,8 @@ namespace heuristics {
         return score;
     }
 
+    // generates monotonicity scores for each row
+    // rows with larger tiles receive higher scores but also larger penalties in the case where the row isn't monotonic
     consteval std::array<eval_t, ROWS> gen_monotonicity() {
         std::array<eval_t, ROWS> monotonicity;
         for (int row = 0; row < ROWS; ++row) {
@@ -199,10 +219,11 @@ namespace heuristics {
                         _duplicate_score(board));  // penalize having duplicate tiles
     }
 
+    // loads and uses the best ML model
     eval_t n_tuple_heuristic(const board_t board) {  // TODO: this is slightly inaccurate since model.evaluate is trained on afterstates
         if (!TD0::best_model_loaded) {
             std::cerr << "model isn't loaded yet! evaluation may be messed up." << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));  // pause a bit to let the model finish loading
             // TODO: figure out a better action
         }
         return TD0::best_model.evaluate(board);

@@ -12,10 +12,11 @@
 #include "strategies/SpamCornerPlayer.hpp"
 #include "strategies/UserPlayer.hpp"
 
-constexpr int MIN_TILE = 3;
-constexpr int MAX_TILE = 17;
+// range for recording results
+constexpr int MIN_TILE = 3;  // 2^3 = 8
+constexpr int MAX_TILE = 16; // 2^16 = 65536; theoretically 2^17 is possible but it's practically not
 
-int results[MAX_TILE];
+int results[MAX_TILE + 1];  // counts how many games reached this tile (or higher)
 long long score_total = 0;
 int move_total = 0;
 
@@ -32,7 +33,7 @@ const int play_game(Strategy& player) {
 }
 
 void test_player(Strategy& player, const int games) {
-    std::fill(results, results+MAX_TILE, 0);
+    std::fill(results, results + MAX_TILE + 1, 0);
 
     const long long start_time = get_current_time_ms();
     for (int i = 1; i <= games; ++i) {
@@ -44,10 +45,10 @@ void test_player(Strategy& player, const int games) {
 
     std::cout << "Playing " << games << " games took " << time_taken << " seconds (" << time_taken / games << " seconds per game)\n";
 
-    for (int i= MAX_TILE - 2; i >= 0; --i) {
+    for (int i= MAX_TILE - 1; i >= 0; --i) {
         results[i] += results[i + 1];
     }
-    for (int i= MIN_TILE; i < MAX_TILE; ++i) {
+    for (int i= MIN_TILE; i <= MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
     std::cout << "Average score: " << score_total * 1.0 / games << std::endl;

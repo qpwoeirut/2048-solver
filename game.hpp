@@ -11,6 +11,8 @@
 class Strategy;  // Strategy depends on GameSimulator and will be #include-ed at the bottom
 
 //static constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
+
+// generates the precomputed arrays to compute the results of making a move
 consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
     std::array<std::array<row_t, ROWS>, 2> shift;
     for (int row = 0; row < ROWS; ++row) {
@@ -36,7 +38,7 @@ consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
         }
 
 
-        // we can't handle a 65536 tile in this representation, but it's unlikely that this will happen
+        // we can't handle a 65536 tile in this representation, but it's unlikely that we'll ever reach that tile
         // for now just cap values at 2^15
         if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) {
             shift[0][row] = (std::min(r[0], 15) << 12) | (std::min(r[1], 15) << 8) | (std::min(r[2], 15) << 4) | std::min(r[3], 15);
@@ -48,6 +50,11 @@ consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
     return shift;
 }
 
+// the game mechanics include adding an tile to an empty position
+// to speed up the process, we can precompute where the empty tiles are for each possible board
+// since we only care about whether tiles are open or full, we can store a "tile mask" of the board where each tile is a boolean value
+// then for each tile mask we store the position of every empty tile
+// all empty tiles are in a single array, and a second array stores pointers to which sections correspond to which tile masks
 static constexpr int EMPTY_TILE_POSITIONS = 524288;  // exactly 524288 different values across all tile_masks
 static constexpr int EMPTY_MASKS = 0x10000;  // number of tile_masks, where an tile_mask stores whether a tile is empty
 consteval std::array<uint8_t, EMPTY_TILE_POSITIONS> generate_empty_tiles() {
@@ -159,7 +166,7 @@ board_t GameSimulator::play(Strategy& player, int& fours) {
 
             if (game_over(board)) return board;
 
-            assert(--attempts > 0);  // abort the game if it seems stuck
+            assert(--attempts > 0);  // abort the game if the strategy keeps picking an invalid move
         } 
 
         // 90% for 2^1 = 2, 10% for 2^2 = 4
@@ -171,6 +178,7 @@ board_t GameSimulator::play(Strategy& player, int& fours) {
     return board;
 }
     
+// similar to GameSimulator::play, but pauses the game for debugging purposes
 board_t GameSimulator::play_slow(Strategy& player, int& fours) {
     const board_t tile_val0 = generate_random_tile_val();
     const board_t tile_val1 = generate_random_tile_val();
@@ -194,7 +202,7 @@ board_t GameSimulator::play_slow(Strategy& player, int& fours) {
 
             if (game_over(board)) return board;
 
-            assert(--attempts > 0);  // abort the game if it seems stuck
+            assert(--attempts > 0);  // abort the game if the strategy keeps picking an invalid move
         } 
 
         // 90% for 2^1 = 2, 10% for 2^2 = 4
