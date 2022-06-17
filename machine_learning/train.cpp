@@ -2,6 +2,8 @@
 #include <iostream>
 #include "td0.hpp"
 
+#define TESTING
+
 constexpr double LEARNING_RATE = 0.01;
 constexpr int EPOCHS = 5;
 constexpr int SAVE_INTERVAL = 1;
@@ -19,7 +21,7 @@ int moves[MAX_GAMES];
 int scores[MAX_GAMES];
 
 #ifdef TESTING
-TD0 model(0, "model_4-6_15_0.001000/model_4-6_15_0.001000_10.dat");
+TD0 model(0, "model_4-6_15_0.010000/model_4-6_15_0.010000_5.dat");
 #else
 TD0 model(MAX_TILE + 1, LEARNING_RATE);
 #endif
