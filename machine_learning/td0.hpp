@@ -58,7 +58,7 @@ class TD0: GameSimulator {
         assert(fin.is_open());
 
         std::string identifier(FILE_IDENTIFIER.size(), '\0');
-        fin.read(&identifier[0], sizeof(FILE_IDENTIFIER));
+        fin.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
 
         N_TUPLE = fin.get();
@@ -147,7 +147,9 @@ class TD0: GameSimulator {
     void save(const std::string& filename) const {
         std::ofstream fout(filename, std::ios::binary);
         assert(fout.is_open());
-        fout.write(FILE_IDENTIFIER.c_str(), sizeof(FILE_IDENTIFIER));
+
+        fout.write(FILE_IDENTIFIER.c_str(), FILE_IDENTIFIER.size());
+
         fout.put(static_cast<char>(N_TUPLE));
         fout.put(static_cast<char>(TUPLE_SIZE));
         fout.put(static_cast<char>(TILE_CT));
@@ -157,6 +159,7 @@ class TD0: GameSimulator {
             if ((i & 7) == 0) nonzero.push_back(static_cast<char>(0));
             nonzero.back() |= (lookup[i] != 0) << (i & 7);
         }
+        fout.write(nonzero.c_str(), nonzero.size());
         for (int i = 0; i < TUPLE_VALUES; ++i) {
             if (lookup[i] != 0) {
                 fout.write(reinterpret_cast<char*>(&lookup[i]), sizeof(lookup[i]));
