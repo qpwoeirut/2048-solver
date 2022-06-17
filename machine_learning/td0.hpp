@@ -15,10 +15,6 @@
 class TD0: GameSimulator {
     static const inline std::string FILE_IDENTIFIER = "qp2048TD0";
 
-    // tuple selection is from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
-    // defaults, can be changed if loading model from file
-    static constexpr int N_TUPLE = 8;
-    static constexpr int TUPLE_SIZE = 6;
     /*
     bit indexes of the board, for reference (top left is most significant):
     60 56 52 48
@@ -26,7 +22,19 @@ class TD0: GameSimulator {
     28 24 20 16
     12  8  4  0
     */
+
+#ifdef TRAINING_ONLY
+    // being able to set things as constexpr makes games run more than twice as fast, even if it makes things a bit ugly
+
+    // tuple selection is from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
+    static constexpr int N_TUPLE = 8;
+    static constexpr int TUPLE_SIZE = 6;
     static constexpr int TUPLES[N_TUPLE * TUPLE_SIZE] = {  // flatten for speed
+#else
+    // defaults, can be changed if loading model from file
+    int N_TUPLE = 8;
+    int TUPLE_SIZE = 6;
+    std::vector<int> TUPLES {
         0, 4, 16, 20, 32, 48,
         4, 8, 20, 24, 36, 52,
         0, 4, 16, 20, 32, 36,
@@ -36,6 +44,7 @@ class TD0: GameSimulator {
         0, 4, 8, 12, 16, 28,
         16, 20, 24, 28, 32, 44,
     };
+#endif
 
     int TILE_CT, TUPLE_VALUES;
     float LEARNING_RATE;
@@ -51,37 +60,52 @@ class TD0: GameSimulator {
         LEARNING_RATE(_learning_rate)
     {
         lookup = new float[TUPLE_VALUES]();  // page 5: " In all the experiments, the weights were initially set to 0"
-        //assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
+#ifndef TRAINING_ONLY
+        assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
+#endif
     }
-    //TD0(const float _learning_rate, const std::string& filename): LEARNING_RATE(_learning_rate) {
-    //    std::ifstream fin(filename, std::ios::binary);
-    //    assert(fin.is_open());
+#ifndef TRAINING_ONLY
+    TD0(const int _n_tuple, const int _tuple_size, const std::vector<int>& _tuples, const int _tile_ct, const float _learning_rate):
+        N_TUPLE(_n_tuple),
+        TUPLE_SIZE(_tuple_size),
+        TUPLES(_tuples.begin(), _tuples.end()),
+        TILE_CT(_tile_ct),
+        TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
+        LEARNING_RATE(_learning_rate)
+    {
+        lookup = new float[TUPLE_VALUES]();
+        assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
+    }
+    TD0(const float _learning_rate, const std::string& filename): LEARNING_RATE(_learning_rate) {
+        std::ifstream fin(filename, std::ios::binary);
+        assert(fin.is_open());
 
-    //    std::string identifier(FILE_IDENTIFIER.size(), '\0');
-    //    fin.read(&identifier[0], FILE_IDENTIFIER.size());
-    //    assert(identifier == FILE_IDENTIFIER);
+        std::string identifier(FILE_IDENTIFIER.size(), '\0');
+        fin.read(&identifier[0], FILE_IDENTIFIER.size());
+        assert(identifier == FILE_IDENTIFIER);
 
-    //    N_TUPLE = fin.get();
-    //    TUPLE_SIZE = fin.get();
-    //    TILE_CT = fin.get();
+        N_TUPLE = fin.get();
+        TUPLE_SIZE = fin.get();
+        TILE_CT = fin.get();
 
-    //    TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
+        TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
 
-    //    TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
-    //    for (int i = 0; i < N_TUPLE; ++i) {
-    //        for (int j = 0; j < TUPLE_SIZE; ++j) {
-    //            TUPLES[i * TUPLE_SIZE + j] = fin.get();
-    //        }
-    //    }
+        TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
+        for (int i = 0; i < N_TUPLE; ++i) {
+            for (int j = 0; j < TUPLE_SIZE; ++j) {
+                TUPLES[i * TUPLE_SIZE + j] = fin.get();
+            }
+        }
 
-    //    std::string nonzero((TUPLE_VALUES + 7) / 8, '\0');
-    //    fin.read(&nonzero[0], nonzero.size());
+        std::string nonzero((TUPLE_VALUES + 7) / 8, '\0');
+        fin.read(&nonzero[0], nonzero.size());
 
-    //    lookup = new float[TUPLE_VALUES]();
-    //    for (int i = 0; i < TUPLE_VALUES; ++i) {
-    //        if ((nonzero[i >> 3] >> (i & 7)) & 1) fin.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
-    //    }
-    //}
+        lookup = new float[TUPLE_VALUES]();
+        for (int i = 0; i < TUPLE_VALUES; ++i) {
+            if ((nonzero[i >> 3] >> (i & 7)) & 1) fin.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
+        }
+    }
+#endif
 
     static TD0 best_model;
     static bool best_model_loaded;
@@ -102,7 +126,7 @@ class TD0: GameSimulator {
 
             int attempts = 0x10000;
             while (old_board == board) {
-                const int dir = find_best_move(board);
+                const int dir = pick_move(board);
                 assert(0 <= dir && dir < 4);
                 board = make_move(board, dir);
 
@@ -128,7 +152,7 @@ class TD0: GameSimulator {
         board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
 
         while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
-            const int best_move = find_best_move(board);
+            const int best_move = pick_move(board);
             const board_t after_board = make_move(board, best_move);
             const board_t rand_tile = generate_random_tile_val();
             const board_t new_board = add_random_tile(after_board, rand_tile);
@@ -183,6 +207,24 @@ class TD0: GameSimulator {
                         _evaluate(flip_v_board) + _evaluate(transpose(flip_v_board)) +
                         _evaluate(flip_vh_board) + _evaluate(transpose(flip_vh_board)));
     }
+    const int pick_move(const board_t board) const {
+        int best_move = -1;
+        float best_score = 0;
+        for (int i = 0; i < 4; ++i) {
+            const board_t after_board = make_move(board, i);
+            if (board == after_board) continue;
+
+            const int reward = calculate_reward(board, after_board);
+            const float eval = reward + evaluate(after_board);
+            if (best_score <= eval) {
+                best_score = eval;
+                best_move = i;
+            }
+        }
+        assert(best_move != -1);
+
+        return best_move;
+    }
 
     private:
     const int get_tuple(const int i, const board_t board) const {
@@ -204,31 +246,13 @@ class TD0: GameSimulator {
         // difference of approximations works here since each board will have the same amount of fours spawn
         return approximate_score(after_board) - approximate_score(board);
     }
-    const int find_best_move(const board_t board) const {
-        int best_move = -1;
-        float best_score = 0;
-        for (int i = 0; i < 4; ++i) {
-            const board_t after_board = make_move(board, i);
-            if (board == after_board) continue;
-
-            const int reward = calculate_reward(board, after_board);
-            const float eval = reward + evaluate(after_board);
-            if (best_score <= eval) {
-                best_score = eval;
-                best_move = i;
-            }
-        }
-        assert(best_move != -1);
-
-        return best_move;
-    }
     void learn_evaluation(const board_t after_board, const board_t new_board) {
         if (game_over(new_board)) {
             // all future rewards will be 0, since the game has ended
             update_lookup(after_board, -evaluate(after_board));
             return;
         }
-        const int best_next_move = find_best_move(new_board);
+        const int best_next_move = pick_move(new_board);
         const board_t next_afterstate = make_move(new_board, best_next_move);
         const int next_reward = calculate_reward(new_board, next_afterstate);
         update_lookup(after_board, next_reward + evaluate(next_afterstate) - evaluate(after_board));
@@ -258,7 +282,7 @@ class TD0: GameSimulator {
 
 
 #ifdef WEBSITE
-TD0 TD0::best_model = TD0(0);
+TD0 TD0::best_model = TD0(0, 0.0f);
 bool TD0::best_model_loaded = false;
 void TD0::load_best() {
     emscripten_fetch_attr_t attr;
@@ -270,27 +294,29 @@ void TD0::load_best() {
         std::cerr << "fetch succeeded!" << std::endl;
         std::istringstream is(std::string(fetch->data, fetch->numBytes));
 
-        std::string identifier(FILE_IDENTIFIER.size());
-        is.read(&identifier[0], sizeof(FILE_IDENTIFIER));
+        std::string identifier(FILE_IDENTIFIER.size(), '\0');
+        is.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
 
-        N_TUPLES = is.get();
-        TUPLE_SIZE = is.get();
-        TILE_CT = is.get();
+        const int n_tuple = is.get();
+        const int tuple_size = is.get();
+        const int tile_ct = is.get();
 
-        TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
+        const int tuple_values = n_tuple * ipow(tile_ct, tuple_size);
 
-        TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
-        for (int i = 0; i < N_TUPLE; ++i) {
-            for (int j = 0; j < TUPLE_SIZE; ++j) {
-                TUPLES[i * TUPLE_SIZE + j] = fin.get();
+        std::vector<int> tuples(n_tuple * tuple_size);
+        for (int i = 0; i < n_tuple; ++i) {
+            for (int j = 0; j < tuple_size; ++j) {
+                tuples[i * tuple_size + j] = is.get();
             }
         }
 
-        std::string nonzero((TUPLE_VALUES + 7) / 8);
-        is.read(&nonzero[0], sizeof(nonzero));
-        for (int i = 0; i < TUPLE_VALUES; ++i) {
-            if ((nonzero[i >> 3] >> (i & 7)) & 1) is.read(&lookup[i], sizeof(float));
+        TD0::best_model = TD0(n_tuple, tuple_size, tuples, tile_ct, 0);
+
+        std::string nonzero((tuple_values + 7) / 8, '\0');
+        is.read(&nonzero[0], nonzero.size());
+        for (int i = 0; i < tuple_values; ++i) {
+            if ((nonzero[i >> 3] >> (i & 7)) & 1) is.read(reinterpret_cast<char*>(&(TD0::best_model.lookup[i])), sizeof(float));
         }
 
         emscripten_fetch_close(fetch);
@@ -303,9 +329,8 @@ void TD0::load_best() {
     };
     emscripten_fetch(&attr, "../model.dat");
 }
-#else
-//TD0 TD0::best_model = TD0(0, "machine_learning/model_8-6_16_0.000250/model_8-6_16_0.000250_300.txt");
-TD0 TD0::best_model = TD0(1, 0);  // FIXME
+#elif defined LOAD_BEST_MODEL
+TD0 TD0::best_model = TD0(0.0f, "machine_learning/model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat");
 bool TD0::best_model_loaded = true;
 void TD0::load_best() { /* do nothing, model already loaded */ }
 #endif
