@@ -75,7 +75,9 @@ class TD0: GameSimulator {
         }
 
         std::string nonzero((TUPLE_VALUES + 7) / 8, '\0');
-        fin.read(&nonzero[0], sizeof(nonzero));
+        fin.read(&nonzero[0], nonzero.size());
+
+        lookup = new float[TUPLE_VALUES]();
         for (int i = 0; i < TUPLE_VALUES; ++i) {
             if ((nonzero[i >> 3] >> (i & 7)) & 1) fin.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
         }
