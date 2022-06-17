@@ -17,8 +17,8 @@ class TD0: GameSimulator {
 
     // tuple selection is from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
     // defaults, can be changed if loading model from file
-    int N_TUPLE = 4;
-    int TUPLE_SIZE = 6;
+    static constexpr int N_TUPLE = 8;
+    static constexpr int TUPLE_SIZE = 6;
     /*
     bit indexes of the board, for reference (top left is most significant):
     60 56 52 48
@@ -26,15 +26,15 @@ class TD0: GameSimulator {
     28 24 20 16
     12  8  4  0
     */
-    std::vector<int> TUPLES {  // flatten vector for speed
+    static constexpr int TUPLES[N_TUPLE * TUPLE_SIZE] = {  // flatten for speed
         0, 4, 16, 20, 32, 48,
         4, 8, 20, 24, 36, 52,
         0, 4, 16, 20, 32, 36,
         4, 8, 20, 24, 36, 40,
-        //0, 4, 8, 12, 16, 32,
-        //16, 20, 24, 28, 32, 48,
-        //0, 4, 8, 12, 16, 28,
-        //16, 20, 24, 28, 32, 44,
+        0, 4, 8, 12, 16, 32,
+        16, 20, 24, 28, 32, 48,
+        0, 4, 8, 12, 16, 28,
+        16, 20, 24, 28, 32, 44,
     };
 
     int TILE_CT, TUPLE_VALUES;
@@ -51,37 +51,37 @@ class TD0: GameSimulator {
         LEARNING_RATE(_learning_rate)
     {
         lookup = new float[TUPLE_VALUES]();  // page 5: " In all the experiments, the weights were initially set to 0"
-        assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
+        //assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
     }
-    TD0(const float _learning_rate, const std::string& filename): LEARNING_RATE(_learning_rate) {
-        std::ifstream fin(filename, std::ios::binary);
-        assert(fin.is_open());
+    //TD0(const float _learning_rate, const std::string& filename): LEARNING_RATE(_learning_rate) {
+    //    std::ifstream fin(filename, std::ios::binary);
+    //    assert(fin.is_open());
 
-        std::string identifier(FILE_IDENTIFIER.size(), '\0');
-        fin.read(&identifier[0], FILE_IDENTIFIER.size());
-        assert(identifier == FILE_IDENTIFIER);
+    //    std::string identifier(FILE_IDENTIFIER.size(), '\0');
+    //    fin.read(&identifier[0], FILE_IDENTIFIER.size());
+    //    assert(identifier == FILE_IDENTIFIER);
 
-        N_TUPLE = fin.get();
-        TUPLE_SIZE = fin.get();
-        TILE_CT = fin.get();
+    //    N_TUPLE = fin.get();
+    //    TUPLE_SIZE = fin.get();
+    //    TILE_CT = fin.get();
 
-        TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
+    //    TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
 
-        TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
-        for (int i = 0; i < N_TUPLE; ++i) {
-            for (int j = 0; j < TUPLE_SIZE; ++j) {
-                TUPLES[i * TUPLE_SIZE + j] = fin.get();
-            }
-        }
+    //    TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
+    //    for (int i = 0; i < N_TUPLE; ++i) {
+    //        for (int j = 0; j < TUPLE_SIZE; ++j) {
+    //            TUPLES[i * TUPLE_SIZE + j] = fin.get();
+    //        }
+    //    }
 
-        std::string nonzero((TUPLE_VALUES + 7) / 8, '\0');
-        fin.read(&nonzero[0], nonzero.size());
+    //    std::string nonzero((TUPLE_VALUES + 7) / 8, '\0');
+    //    fin.read(&nonzero[0], nonzero.size());
 
-        lookup = new float[TUPLE_VALUES]();
-        for (int i = 0; i < TUPLE_VALUES; ++i) {
-            if ((nonzero[i >> 3] >> (i & 7)) & 1) fin.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
-        }
-    }
+    //    lookup = new float[TUPLE_VALUES]();
+    //    for (int i = 0; i < TUPLE_VALUES; ++i) {
+    //        if ((nonzero[i >> 3] >> (i & 7)) & 1) fin.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
+    //    }
+    //}
 
     static TD0 best_model;
     static bool best_model_loaded;
