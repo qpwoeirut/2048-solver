@@ -85,11 +85,6 @@ class TD0: GameSimulator {
     static bool best_model_loaded;
     static void load_best();
 
-    void set_lookup(const int idx, const float new_val) {
-        assert(idx < TUPLE_VALUES);
-        lookup[idx] = new_val;
-    }
-
     const std::string get_name() const {
         return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(TILE_CT) + "_" + std::to_string(LEARNING_RATE);
     }
