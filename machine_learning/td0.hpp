@@ -196,8 +196,7 @@ class TD0: GameSimulator {
     const float _evaluate(const board_t board) const {
         float evaluation = 0;
         for (int i = 0; i < N_TUPLE; ++i) {
-            const int tuple = get_tuple(i, board);
-            evaluation += lookup[tuple];
+            evaluation += lookup[get_tuple(i, board)];
         }
         return evaluation;
     }
@@ -234,19 +233,25 @@ class TD0: GameSimulator {
         const int next_reward = calculate_reward(new_board, next_afterstate);
         update_lookup(after_board, next_reward + evaluate(next_afterstate) - evaluate(after_board));
     }
-    void update_lookup(const board_t after_board, const float val) {
-        const board_t flip_h_board = flip_h(after_board);
-        const board_t flip_v_board = flip_v(after_board);
-        const board_t flip_vh_board = flip_v(flip_h_board);
-        _update_lookup(after_board, val);   _update_lookup(transpose(after_board), val);
-        _update_lookup(flip_h_board, val);  _update_lookup(transpose(flip_h_board), val);
-        _update_lookup(flip_v_board, val);  _update_lookup(transpose(flip_v_board), val);
-        _update_lookup(flip_vh_board, val); _update_lookup(transpose(flip_vh_board), val);
-    }
-    void _update_lookup(const board_t after_board, const float val) {
+    void update_lookup(const board_t after_board, float val) {
+        val *= LEARNING_RATE;
+
+        const board_t tafter_board  = transpose(after_board);
+        const board_t flip_h_board  = flip_h(after_board);  const board_t tflip_h_board  = transpose(flip_h_board);
+        const board_t flip_v_board  = flip_v(after_board);  const board_t tflip_v_board  = transpose(flip_v_board);
+        const board_t flip_vh_board = flip_v(flip_h_board); const board_t tflip_vh_board = transpose(flip_vh_board);
         for (int i = 0; i < N_TUPLE; ++i) {
-            const int tuple = get_tuple(i, after_board);
-            lookup[tuple] += LEARNING_RATE * val;
+            lookup[get_tuple(i, after_board)] += val;
+            lookup[get_tuple(i, tafter_board)] += val;
+
+            lookup[get_tuple(i, flip_h_board)] += val;
+            lookup[get_tuple(i, tflip_h_board)] += val;
+
+            lookup[get_tuple(i, flip_v_board)] += val;
+            lookup[get_tuple(i, tflip_v_board)] += val;
+
+            lookup[get_tuple(i, flip_vh_board)] += val;
+            lookup[get_tuple(i, tflip_vh_board)] += val;
         }
     }
 };
