@@ -206,7 +206,7 @@ class TD0: GameSimulator {
     }
     const int find_best_move(const board_t board) const {
         int best_move = -1;
-        float best_score = -1e9;
+        float best_score = 0;
         for (int i = 0; i < 4; ++i) {
             const board_t after_board = make_move(board, i);
             if (board == after_board) continue;
