@@ -2,9 +2,9 @@
 #include <iostream>
 #include "td0.hpp"
 
-constexpr double LEARNING_RATE = 0.001;
-constexpr int EPOCHS = 20;
-constexpr int SAVE_INTERVAL = 4;
+constexpr double LEARNING_RATE = 0.01;
+constexpr int EPOCHS = 5;
+constexpr int SAVE_INTERVAL = 1;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
 constexpr int TRAIN_GAMES = 10000;
@@ -18,7 +18,11 @@ int results[MAX_TILE + 1];
 int moves[MAX_GAMES];
 int scores[MAX_GAMES];
 
+#ifdef TESTING
+TD0 model(0, "model_4-6_15_0.001000/model_4-6_15_0.001000_10.dat");
+#else
 TD0 model(MAX_TILE + 1, LEARNING_RATE);
+#endif
 
 float calculate_average(const int arr[], const int n) {
     long long sum = 0;
@@ -68,6 +72,7 @@ void play_training_games() {
 }
 
 void play_testing_games() {
+    const long long start_time = get_current_time_ms();
     for (int i = 0; i < TEST_GAMES; ++i) {
         int fours = 0;
         const board_t board = model.test_model(fours);
@@ -80,19 +85,25 @@ void play_testing_games() {
     }
     print_results(TEST_GAMES);
     clear_results();
+    const long long end_time = get_current_time_ms();
+    const double time_taken = (end_time - start_time) / 1000.0;
+    std::cout << "Time: " << time_taken << std::endl;
 }
 
 int main() {
-    std::filesystem::create_directory(model.get_name());
     std::cout.precision(8);
     std::cout << "Learning rate = " << LEARNING_RATE << std::endl;
+
+#ifndef TESTING
+    std::filesystem::create_directory(model.get_name());
     for (int i = 1; i <= EPOCHS; ++i) {
         std::cout << "Epoch #" << i << " of " << EPOCHS << std::endl;
         play_training_games();
         std::cout << std::endl;
 
-        if (i % SAVE_INTERVAL == 0) model.save(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".txt");
+        if (i % SAVE_INTERVAL == 0) model.save(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat");
     }
+#endif
 
     std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
     play_testing_games();
