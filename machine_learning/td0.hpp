@@ -151,6 +151,10 @@ class TD0: GameSimulator {
         fout.put(static_cast<char>(TUPLE_SIZE));
         fout.put(static_cast<char>(TILE_CT));
 
+        for (int i = 0; i < N_TUPLE * TUPLE_SIZE; ++i) {
+            fout.put(static_cast<char>(TUPLES[i]));
+        }
+
         std::string nonzero;
         for (int i = 0; i < TUPLE_VALUES; ++i) {
             if ((i & 7) == 0) nonzero.push_back(static_cast<char>(0));
