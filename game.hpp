@@ -13,8 +13,8 @@ class Strategy;  // Strategy depends on GameSimulator and will be #include-ed at
 //static constexpr row_t WINNING_ROW = 0xFFFF; // 2^16 - 1, represents [32768, 32768, 32768, 32768], which is very unlikely
 
 // generates the precomputed arrays to compute the results of making a move
-consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
-    std::array<std::array<row_t, ROWS>, 2> shift;
+consteval std::array<row_t, ROWS> generate_shift() {
+    std::array<row_t, ROWS> shift;
     for (int row = 0; row < ROWS; ++row) {
         int r[4] = { (row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF };
 
@@ -40,12 +40,7 @@ consteval std::array<std::array<row_t, ROWS>, 2> generate_shift() {
 
         // we can't handle a 65536 tile in this representation, but it's unlikely that we'll ever reach that tile
         // for now just cap values at 2^15
-        if (r[0] >= 16 ||r[1] >= 16 || r[2] >= 16 || r[3] >= 16) {
-            shift[0][row] = (std::min(r[0], 15) << 12) | (std::min(r[1], 15) << 8) | (std::min(r[2], 15) << 4) | std::min(r[3], 15);
-        } else {
-            shift[0][row] = (r[0] << 12) | (r[1] << 8) | (r[2] << 4) | r[3];
-        }
-        shift[1][reversed[row]] = reversed[shift[0][row]];
+        shift[row] = (std::min(r[0], 15) << 12) | (std::min(r[1], 15) << 8) | (std::min(r[2], 15) << 4) | std::min(r[3], 15);
     }
     return shift;
 }
@@ -90,7 +85,7 @@ class GameSimulator {
 
     static constexpr uint16_t FULL_MASK = 0xFFFF;
 
-    static constexpr std::array<std::array<row_t, ROWS>, 2> shift = generate_shift();
+    static constexpr std::array<row_t, ROWS> shift = generate_shift();
 
     // this uses a fancy way of implementing adjacency lists in competitive programming
     // stores the empty tile positions for each tile_mask
@@ -107,16 +102,18 @@ class GameSimulator {
 
     board_t make_move(board_t board, const int dir) const {  // 0=left, 1=up, 2=right, 3=down
         if (dir & 1) board = transpose(board);
-        board = ((board_t)shift[dir >> 1][(board >> 48) & 0xFFFF] << 48) |
-                ((board_t)shift[dir >> 1][(board >> 32) & 0xFFFF] << 32) |
-                ((board_t)shift[dir >> 1][(board >> 16) & 0xFFFF] << 16) |
-                 (board_t)shift[dir >> 1][ board        & 0xFFFF];
+        if (dir >= 2) board = flip_h(board);
+        board = (static_cast<board_t>(shift[(board >> 48) & 0xFFFF]) << 48) |
+                (static_cast<board_t>(shift[(board >> 32) & 0xFFFF]) << 32) |
+                (static_cast<board_t>(shift[(board >> 16) & 0xFFFF]) << 16) |
+                (static_cast<board_t>(shift[ board        & 0xFFFF]));
         
         // checks if the 65536 tile is reached
 //        if (shift[dir >> 1][(board >> 48) & 0xFFFF] == WINNING_ROW ||
 //            shift[dir >> 1][(board >> 32) & 0xFFFF] == WINNING_ROW ||
 //            shift[dir >> 1][(board >> 16) & 0xFFFF] == WINNING_ROW ||
 //            shift[dir >> 1][ board        & 0xFFFF] == WINNING_ROW) return WINNING_BOARD;
+        if (dir >= 2) board = flip_h(board);
         return (dir & 1) ? transpose(board) : board;
     }
 

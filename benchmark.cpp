@@ -28,7 +28,7 @@ const int play_game(Strategy& player) {
 
     const int score = actual_score(board, fours);
     score_total += score;
-    std::cout << "Score: " << score << std::endl;
+    //std::cout << "Score: " << score << std::endl;
     return get_max_tile(board);
 }
 
@@ -55,15 +55,15 @@ void test_player(Strategy& player, const int games) {
     std::cout << "Total moves: " << move_total << std::endl;
 }
 
-//SpamCornerPlayer spam_corner_player{};
+SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
-ExpectimaxStrategy expectimax_strategy(3, heuristics::n_tuple_heuristic);
+//ExpectimaxStrategy expectimax_strategy(3, heuristics::n_tuple_heuristic);
 
 int main() {
     //const auto player = std::make_unique<RandomPlayer>();
     //test_player(*player, int(1e6));
 
-    //test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
+    test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
     int f = 0;
 
@@ -74,6 +74,6 @@ int main() {
     //test_player(minimax_strategy, 20);
 
     //expectimax_strategy.simulator.play_slow(expectimax_strategy, f);
-    test_player(expectimax_strategy, 5);
+    //test_player(expectimax_strategy, 5);
 }
 
