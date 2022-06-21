@@ -27,24 +27,28 @@ class TD0: GameSimulator {
     // being able to set things as constexpr makes games run more than twice as fast, even if it makes things a bit ugly
 
     // tuple selection is from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
-    static constexpr int N_TUPLE = 8;
-    static constexpr int TUPLE_SIZE = 6;
+    static constexpr int N_TUPLE = 12;
+    static constexpr int TUPLE_SIZE = 5;
     static constexpr int TUPLES[N_TUPLE * TUPLE_SIZE] = {  // flatten for speed
 #else
     // defaults, can be changed if loading model from file
-    int N_TUPLE = 8;
-    int TUPLE_SIZE = 6;
+    int N_TUPLE = 12;
+    int TUPLE_SIZE = 5;
     std::vector<int> TUPLES {
-        0, 4, 16, 20, 32, 48,
-        4, 8, 20, 24, 36, 52,
-        0, 4, 16, 20, 32, 36,
-        4, 8, 20, 24, 36, 40,
-        0, 4, 8, 12, 16, 32,
-        16, 20, 24, 28, 32, 48,
-        0, 4, 8, 12, 16, 28,
-        16, 20, 24, 28, 32, 44,
-    };
 #endif
+        0, 4, 8, 12, 16,
+        16, 20, 24, 28, 32,
+        0, 4, 8, 12, 20,
+        16, 20, 24, 28, 36,
+        0, 4, 8, 16, 20,
+        16, 20, 24, 32, 36,
+        0, 4, 8, 16, 32,
+        16, 20, 24, 32, 48,
+        0, 4, 8, 20, 24,
+        16, 20, 24, 36, 40,
+        4, 16, 20, 24, 36,
+        20, 24, 28, 36, 52,
+    };
 
     int TILE_CT, TUPLE_VALUES;
     float LEARNING_RATE;

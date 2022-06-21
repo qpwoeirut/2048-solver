@@ -3,8 +3,8 @@
 #include "td0.hpp"
 
 // at most one of these should be defined
-//#define TRAINING_ONLY
-#define TESTING
+#define TRAINING_ONLY
+//#define TESTING
 
 constexpr double LEARNING_RATE = 0.00015;
 constexpr int EPOCHS = 1000;
