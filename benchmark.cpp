@@ -61,25 +61,25 @@ void test_player(Strategy& player, const int games) {
     std::cout << "Total moves: " << move_total << std::endl;
 }
 
-SpamCornerPlayer spam_corner_player{};
-//MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
-ExpectimaxStrategy expectimax_strategy(3, heuristics::strict_wall_heuristic);
+//SpamCornerPlayer spam_corner_player{};
+MinimaxStrategy minimax_strategy(0, heuristics::strict_wall_heuristic);
+//ExpectimaxStrategy expectimax_strategy(3, heuristics::strict_wall_heuristic);
 
 int main() {
     //const auto player = std::make_unique<RandomPlayer>();
     //test_player(*player, int(1e6));
 
-    test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
+    //test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
-    std::string record = "";
+    //std::string record = "";
 
     //UserPlayer user_player{};
     //user_player.simulator.play(user_player, record);
 
     //minimax_strategy.play_slow(minimax_strategy, record);
-    //test_player(minimax_strategy, 20);
+    test_player(minimax_strategy, 5);
 
     //expectimax_strategy.simulator.play_slow(expectimax_strategy, record);
-    test_player(expectimax_strategy, 5);
+    //test_player(expectimax_strategy, 1);
 }
 
