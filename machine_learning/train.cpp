@@ -7,7 +7,7 @@
 //#define TESTING
 
 constexpr double LEARNING_RATE = 0.00015;
-constexpr int EPOCHS = 1000;
+constexpr int EPOCHS = 500;
 constexpr int SAVE_INTERVAL = 50;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
@@ -16,7 +16,7 @@ constexpr int TEST_GAMES = 100000;
 constexpr int MAX_GAMES = std::max(TRAIN_GAMES, TEST_GAMES);
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
-constexpr int MAX_TILE = 15;
+constexpr int MAX_TILE = 14;
 
 int results[MAX_TILE + 1];
 int moves[MAX_GAMES];
@@ -56,11 +56,11 @@ void print_results(const int games) {
     std::cout << "Score: " << calculate_average(scores, games) << ' ' << calculate_median(scores, games) << std::endl;
 }
 
-void play_training_games() {
+void play_games(const bool train, const int games) {
     const long long start_time = get_current_time_ms();
-    for (int i = 0; i < TRAIN_GAMES; ++i) {
+    for (int i = 0; i < games; ++i) {
         int fours = 0;
-        const board_t board = model.train_model(fours);
+        const board_t board = train ? model.train_model(fours) : model.test_model(fours);
         const int max_tile = get_max_tile(board);
         
         ++results[max_tile];
@@ -68,26 +68,7 @@ void play_training_games() {
         moves[i] = count_moves_made(board, fours);
         scores[i] = actual_score(board, fours);
     }
-    print_results(TRAIN_GAMES);
-    clear_results();
-    const long long end_time = get_current_time_ms();
-    const double time_taken = (end_time - start_time) / 1000.0;
-    std::cout << "Time: " << time_taken << std::endl;
-}
-
-void play_testing_games() {
-    const long long start_time = get_current_time_ms();
-    for (int i = 0; i < TEST_GAMES; ++i) {
-        int fours = 0;
-        const board_t board = model.test_model(fours);
-        const int max_tile = get_max_tile(board);
-        
-        ++results[max_tile];
-
-        moves[i] = count_moves_made(board, fours);
-        scores[i] = actual_score(board, fours);
-    }
-    print_results(TEST_GAMES);
+    print_results(games);
     clear_results();
     const long long end_time = get_current_time_ms();
     const double time_taken = (end_time - start_time) / 1000.0;
@@ -102,7 +83,7 @@ int main() {
     std::filesystem::create_directory(model.get_name());
     for (int i = 1; i <= EPOCHS; ++i) {
         std::cout << "Epoch #" << i << " of " << EPOCHS << std::endl;
-        play_training_games();
+        play_games(true, TRAIN_GAMES);
         std::cout << std::endl;
 
         if (i % SAVE_INTERVAL == 0) model.save(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat");
@@ -110,5 +91,6 @@ int main() {
 #endif
 
     std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
-    play_testing_games();
+    play_games(false, TEST_GAMES);
 }
+
