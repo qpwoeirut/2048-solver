@@ -173,14 +173,16 @@ void test_monte_carlo_strategy() {
     fout.close();
 }
 
+void run_board_echo() {
+    while (true) {
+        board_t b;
+        std::cin >> b;
+        print_board(b);
+    }
+}
+
 int main() {
-    //while (1) {
-    //    board_t b;
-    //    std::cin >> b;
-    //    print_board(b);
-    //}
-    //
-    //return 0;
+    //run_board_echo(); return 0;
 
     //int f = 0;
     //const auto player = std::make_unique<ExpectimaxStrategy>(-1, heuristics::corner_heuristic);
