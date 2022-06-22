@@ -50,12 +50,6 @@ On the most recent set of tests, it reaches 4096 99.4% of the time, gets the 819
 
 The [results file](/results-stage3.csv) has the latest statistics for all tested strategies.
 
-I've made significant improvements to the expectimax implementation which allow it to search more states, and I've recently got to the 16384 tile while testing.
-
-![Image of 16384 tile game](/images/Screen%20Shot%202022-05-18%20at%209.41.32%20AM-expectimax-corner.png)
-
-The strategy that achieved that score will be tested soon in Stage 3.
-
 
 ## Caveats
 The [Google sparsehash](https://github.com/sparsehash/sparsehash) repository needs to be installed.
