@@ -123,7 +123,7 @@ class TD0: GameSimulator {
         const board_t tile_val0 = generate_random_tile_val();
         const board_t tile_val1 = generate_random_tile_val();
         fours += (tile_val0 == 2) + (tile_val1 == 2);
-        board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
+        board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
 
         while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
             const board_t old_board = board;
@@ -141,7 +141,7 @@ class TD0: GameSimulator {
 
             const board_t new_tile_val = generate_random_tile_val();
             if (new_tile_val == 2) ++fours;
-            board = add_random_tile(board, new_tile_val);
+            board = add_tile(board, new_tile_val);
         }
 
         return board;
@@ -153,13 +153,13 @@ class TD0: GameSimulator {
         const board_t tile_val0 = generate_random_tile_val();
         const board_t tile_val1 = generate_random_tile_val();
         fours += (tile_val0 == 2) + (tile_val1 == 2);
-        board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
+        board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
 
         while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
             const int best_move = pick_move(board);
             const board_t after_board = make_move(board, best_move);
             const board_t rand_tile = generate_random_tile_val();
-            const board_t new_board = add_random_tile(after_board, rand_tile);
+            const board_t new_board = add_tile(after_board, rand_tile);
             fours += rand_tile == 2;
             
             learn_evaluation(after_board, new_board);

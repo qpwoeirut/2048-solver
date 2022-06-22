@@ -32,7 +32,7 @@ class MonteCarloPlayer: public Strategy {
 
             int current_score = 0;
             for (int j=0; j<trials; ++j) {
-                current_score += run_trial(simulator.add_random_tile(new_board, simulator.generate_random_tile_val()));
+                current_score += run_trial(simulator.add_tile(new_board, simulator.generate_random_tile_val()));
             }
             if (best_score <= current_score) {
                 best_score = current_score;
@@ -45,7 +45,7 @@ class MonteCarloPlayer: public Strategy {
     private:
     const int run_trial(board_t board) {
         while (!simulator.game_over(board)) {
-            board = simulator.add_random_tile(simulator.make_move(board, random_player.pick_move(board)),
+            board = simulator.add_tile(simulator.make_move(board, random_player.pick_move(board)),
                                               simulator.generate_random_tile_val());
         }
         return heuristics::score_heuristic(board);

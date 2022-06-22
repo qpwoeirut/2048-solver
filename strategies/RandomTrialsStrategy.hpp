@@ -53,7 +53,7 @@ class RandomTrialsStrategy: public Strategy {
 
             eval_t current_score = 0;
             for (int j=0; j<trials; ++j) {
-                current_score += helper(simulator.add_random_tile(new_board, simulator.generate_random_tile_val()),
+                current_score += helper(simulator.add_tile(new_board, simulator.generate_random_tile_val()),
                                         cur_depth - 1) >> 2;  // extract score
             }
             if (best_score <= current_score) {

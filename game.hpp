@@ -121,7 +121,7 @@ class GameSimulator {
         return 1ULL + ((empty_tile_distrib(empty_tile_gen) % 10) == 0);
     }
 
-    board_t add_random_tile(const board_t board, const board_t tile_val) {
+    board_t add_tile(const board_t board, const board_t tile_val) {
         const uint16_t tile_mask = to_tile_mask(board);
 
         // can't add a tile to a full board
@@ -150,7 +150,7 @@ board_t GameSimulator::play(Strategy& player, int& fours) {
     const board_t tile_val0 = generate_random_tile_val();
     const board_t tile_val1 = generate_random_tile_val();
     fours += (tile_val0 == 2) + (tile_val1 == 2);
-    board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
+    board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
 
     while (!game_over(board)) {
         const board_t old_board = board;
@@ -169,7 +169,7 @@ board_t GameSimulator::play(Strategy& player, int& fours) {
         // 90% for 2^1 = 2, 10% for 2^2 = 4
         const board_t new_tile_val = generate_random_tile_val();
         if (new_tile_val == 2) ++fours;
-        board = add_random_tile(board, new_tile_val);
+        board = add_tile(board, new_tile_val);
     }
 
     return board;
@@ -180,7 +180,7 @@ board_t GameSimulator::play_slow(Strategy& player, int& fours) {
     const board_t tile_val0 = generate_random_tile_val();
     const board_t tile_val1 = generate_random_tile_val();
     fours += (tile_val0 == 2) + (tile_val1 == 2);
-    board_t board = add_random_tile(add_random_tile(0, tile_val0), tile_val1);
+    board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
 
     int moves = 0;
     while (!game_over(board)) {
@@ -205,7 +205,7 @@ board_t GameSimulator::play_slow(Strategy& player, int& fours) {
         // 90% for 2^1 = 2, 10% for 2^2 = 4
         const board_t new_tile_val = generate_random_tile_val();
         if (new_tile_val == 2) ++fours;
-        board = add_random_tile(board, new_tile_val);
+        board = add_tile(board, new_tile_val);
     }
 
     return board;
