@@ -92,6 +92,8 @@ class GameSimulator {
     static constexpr std::array<uint8_t, EMPTY_TILE_POSITIONS> empty_tiles = generate_empty_tiles();
     static constexpr std::array<int, EMPTY_MASKS> empty_index = generate_empty_index();  // a pointer to where this tile_mask starts
 
+    static constexpr std::array<char, 4> MOVES = {'l', 'u', 'r', 'd'};  // use lowercase to make counting # of 4's placed easier
+
     std::mt19937 empty_tile_gen;
     std::uniform_int_distribution<> empty_tile_distrib{0, 720720 - 1};  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
 
@@ -121,7 +123,7 @@ class GameSimulator {
         return 1ULL + ((empty_tile_distrib(empty_tile_gen) % 10) == 0);
     }
 
-    board_t add_tile(const board_t board, const board_t tile_val) {
+    uint8_t pick_empty_position(const board_t board) {
         const uint16_t tile_mask = to_tile_mask(board);
 
         // can't add a tile to a full board
@@ -129,9 +131,16 @@ class GameSimulator {
         assert(tile_mask != FULL_MASK);
 
         const int option_count = empty_index[tile_mask + 1] - empty_index[tile_mask];
-        const uint8_t option = empty_tiles[empty_index[tile_mask] + (empty_tile_distrib(empty_tile_gen) % option_count)];
+        return empty_tiles[empty_index[tile_mask] + (empty_tile_distrib(empty_tile_gen) % option_count)];
+    }
+    board_t add_tile(const board_t board, const board_t tile_val) {
+        return board | (tile_val << pick_empty_position(board));
+    }
+    board_t add_tile(const board_t board, const board_t tile_val, std::string& record) {
+        const uint8_t position = pick_empty_position(board);
+        const board_t new_board = board | (tile_val << position);
 
-        const board_t new_board = board | (tile_val << option);
+        record.push_back((position / 4) + (tile_val == 1 ? 'a' : 'A'));
         
         return new_board;
     }
@@ -140,47 +149,49 @@ class GameSimulator {
         return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3));// || board == WINNING_BOARD;
     }
 
-    board_t play(Strategy&, int&);
-    board_t play_slow(Strategy&, int&);
+    board_t play(Strategy&, std::string&);
+    board_t play_slow(Strategy&, std::string&);
 };
 
 #include "strategies/Strategy.hpp"
 
-board_t GameSimulator::play(Strategy& player, int& fours) {
+board_t GameSimulator::play(Strategy& player, std::string& record) {
+    record.reserve(6000);  // reserve space for 6000 chars, enough for almost 3000 moves. should be enough for most games
     const board_t tile_val0 = generate_random_tile_val();
     const board_t tile_val1 = generate_random_tile_val();
-    fours += (tile_val0 == 2) + (tile_val1 == 2);
-    board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
+    board_t board = add_tile(0, tile_val0, record);
+    board = add_tile(board, tile_val1, record);
 
     while (!game_over(board)) {
         const board_t old_board = board;
 
         int attempts = 0x10000;
+        int dir;
         while (old_board == board) {
-            const int dir = player.pick_move(board);
+            dir = player.pick_move(board);
             assert(0 <= dir && dir < 4);
             board = make_move(board, dir);
 
-            if (game_over(board)) return board;
-
             assert(--attempts > 0);  // abort the game if the strategy keeps picking an invalid move
         } 
+        record.push_back(MOVES[dir]);
+
+        if (game_over(board)) return board;
 
         // 90% for 2^1 = 2, 10% for 2^2 = 4
         const board_t new_tile_val = generate_random_tile_val();
-        if (new_tile_val == 2) ++fours;
-        board = add_tile(board, new_tile_val);
+        board = add_tile(board, new_tile_val, record);
     }
 
     return board;
 }
     
 // similar to GameSimulator::play, but pauses the game for debugging purposes
-board_t GameSimulator::play_slow(Strategy& player, int& fours) {
+board_t GameSimulator::play_slow(Strategy& player, std::string& record) {
     const board_t tile_val0 = generate_random_tile_val();
     const board_t tile_val1 = generate_random_tile_val();
-    fours += (tile_val0 == 2) + (tile_val1 == 2);
-    board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
+    board_t board = add_tile(0, tile_val0, record);
+    board = add_tile(board, tile_val1, record);
 
     int moves = 0;
     while (!game_over(board)) {
@@ -192,20 +203,21 @@ board_t GameSimulator::play_slow(Strategy& player, int& fours) {
         const board_t old_board = board;
 
         int attempts = 0x10000;
+        int dir;
         while (old_board == board) {
-            const int dir = player.pick_move(board);
+            dir = player.pick_move(board);
             assert(0 <= dir && dir < 4);
             board = make_move(board, dir);
 
-            if (game_over(board)) return board;
-
             assert(--attempts > 0);  // abort the game if the strategy keeps picking an invalid move
         } 
+        record.push_back(MOVES[dir]);
+
+        if (game_over(board)) return board;
 
         // 90% for 2^1 = 2, 10% for 2^2 = 4
         const board_t new_tile_val = generate_random_tile_val();
-        if (new_tile_val == 2) ++fours;
-        board = add_tile(board, new_tile_val);
+        board = add_tile(board, new_tile_val, record);
     }
 
     return board;

@@ -71,12 +71,13 @@ long long test_player_thread(const std::unique_ptr<Strategy> player) {  // this 
     const long long start_time = get_current_time_ms();
     int game_idx = --games_remaining;
     while (game_idx >= 0) {
-        int fours = 0;
-        const board_t board = player->simulator.play(*player, fours);
+        std::string record = "";
+        const board_t board = player->simulator.play(*player, record);
         player->reset();
         const int max_tile = get_max_tile(board);
-
         ++results[max_tile];  // suffix sum type thing
+
+        const int fours = count_fours(record);
         moves[game_idx] = count_moves_made(board, fours);
         scores[game_idx] = actual_score(board, fours);
 
@@ -184,9 +185,9 @@ void run_board_echo() {
 int main() {
     //run_board_echo(); return 0;
 
-    //int f = 0;
+    //std::string record = "";
     //const auto player = std::make_unique<ExpectimaxStrategy>(-1, heuristics::corner_heuristic);
-    //player->simulator.play_slow(*player, f);
+    //player->simulator.play_slow(*player, record);
     //return 0;
 
     test_single_player("random", std::make_unique<RandomPlayer>(), GAMES[4]);

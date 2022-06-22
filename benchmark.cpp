@@ -20,24 +20,30 @@ int results[MAX_TILE + 1];  // counts how many games reached this tile (or highe
 long long score_total = 0;
 int move_total = 0;
 
-const int play_game(Strategy& player) {
-    int fours = 0;
-    const board_t board = player.simulator.play(player, fours);
-
+const int play_game(Strategy& player, const bool print_results) {
+    std::string record = "";
+    const board_t board = player.simulator.play(player, record);
+    
+    const int fours = count_fours(record);
     move_total += count_moves_made(board, fours);
 
     const int score = actual_score(board, fours);
     score_total += score;
-    //std::cout << "Score: " << score << std::endl;
+    if (print_results) {
+        std::cout << "Fours: " << fours << std::endl;
+        std::cout << "Score: " << score << std::endl;
+        std::cout << "Record: " << record << std::endl;
+    }
     return get_max_tile(board);
 }
 
 void test_player(Strategy& player, const int games) {
     std::fill(results, results + MAX_TILE + 1, 0);
+    score_total = move_total = 0;
 
     const long long start_time = get_current_time_ms();
     for (int i = 1; i <= games; ++i) {
-        const int max_tile = play_game(player);
+        const int max_tile = play_game(player, games <= 50);
         ++results[max_tile];  // suffix sum type thing
     }
     const long long end_time = get_current_time_ms();
@@ -57,7 +63,7 @@ void test_player(Strategy& player, const int games) {
 
 SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::score_heuristic);
-//ExpectimaxStrategy expectimax_strategy(3, heuristics::n_tuple_heuristic);
+ExpectimaxStrategy expectimax_strategy(3, heuristics::strict_wall_heuristic);
 
 int main() {
     //const auto player = std::make_unique<RandomPlayer>();
@@ -65,15 +71,15 @@ int main() {
 
     test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
-    int f = 0;
+    std::string record = "";
 
     //UserPlayer user_player{};
-    //user_player.simulator.play(user_player, f);
+    //user_player.simulator.play(user_player, record);
 
-    //minimax_strategy.play_slow(minimax_strategy, f);
+    //minimax_strategy.play_slow(minimax_strategy, record);
     //test_player(minimax_strategy, 20);
 
-    //expectimax_strategy.simulator.play_slow(expectimax_strategy, f);
-    //test_player(expectimax_strategy, 5);
+    //expectimax_strategy.simulator.play_slow(expectimax_strategy, record);
+    test_player(expectimax_strategy, 5);
 }
 

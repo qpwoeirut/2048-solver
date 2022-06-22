@@ -111,6 +111,10 @@ int board_sum(const board_t board) {
     return sum;
 }
 
+int count_fours(const std::string& record) {
+    return count_if(record.begin(), record.end(), isupper);
+}
+
 // every move, a 2 or 4 tile spawns, so we can calculate move count by board sum
 // the -2 is because the board starts with two tiles
 int count_moves_made(const board_t board, const int fours) {
