@@ -187,16 +187,23 @@ I'll have to do more research on ML strategies when the time comes.
 ## Links to Prior Work
 These are only the solvers that provided the success rates up-front or seemed good enough that I wanted to write them down.
 There are many more repos out there which didn't list success rates.
-* [macroxue's solver](https://github.com/macroxue/2048-ai) uses some strategy that I don't understand and reaches 32768 with a 74.0% success rate and 65536 with a 3.0% rate. It seems to use a large lookup table for difficult positions, combined with expectimax
-* [aszczepanski's solver](https://github.com/aszczepanski/2048) uses an n-tuple network with expectimax and reaches 32768 with a 69% success rate when making one move per second
-* [nneonneo's solver](https://github.com/nneonneo/2048-ai) uses expectimax and reaches 16384 with a 94% success rate
-* [MaartenBaert's solver](https://github.com/MaartenBaert/2048-ai-emscripten) uses expectimax and seems to be very good, although I didn't poke around enough to find tile success stats. Its README claims that it's slightly better than the above solver
-* [kcwu's solver](https://github.com/kcwu/2048-c) uses expectimax with a helper minimax search to avoid dying and reaches the 8192 tile with a 96% success rate
-* [ronzil's solver](https://github.com/ronzil/2048-AI) uses Monte Carlo tree search and reaches 2048 80% of the time when using 100 simulations per move and reaches 4096 70% of the time when using 10000 runs. It also has a [C++ implementation](https://github.com/ronzil/2048-ai-cpp)
-* [ovolve's solver](https://github.com/ovolve/2048-AI) uses minimax and reaches 2048 with a success rate of "about 90%"
-* [acrantel's solver](https://github.com/acrantel/2048) uses expectimax and reaches 2048 with a success rate of "approximately 80%"
-* [datumbox's solver](https://github.com/datumbox/Game-2048-AI-Solver) uses minimax and can reach 2048 "about 70-80%" of the time with a depth of 7
-* [vpn1997's solver](https://github.com/vpn1997/2048-Ai) uses expectimax and reaches 2048 with a 60% success rate
-* [xtrp's solver](https://github.com/xtrp/jupiter) uses Monte Carlo tree search and reaches 2048 with ~60% success rate when using 50 simulations per move
-* [navjindervirdee's solver](https://github.com/navjindervirdee/2048-deep-reinforcement-learning) uses deep reinforcement learning and reaches the 2048 tile 10% of the time
 
+| Type   | Link                                                                                            | Description                                                  | 2048                | 4096                | 8192  | 16384 | 32768 | 65536 |
+|--------|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------|---------------------|---------------------|-------|-------|-------|-------|
+| Non-ML | [macroxue's solver](https://github.com/macroxue/2048-ai)                                        | expectimax with a large lookup table for difficult positions | -                   | -                   | 99.7% | 98.7% | 80.5% | 3.5%  |
+| ML     | [moporgic's solver](https://github.com/moporgic/TDL2048)                                        | machine learning methods, including TD(0), TD(λ), n-step TD  | -                   | -                   | 99.8% | 98.8% | 72%   | 0.02% |
+| ML     | [aszczepanski's solver](https://github.com/aszczepanski/2048)                                   | expectimax with n-tuple network trained with TD(λ) ML        | -                   | -                   | 98%   | 97%   | 69%   | -     |
+| Non-ML | [nneonneo's solver](https://github.com/nneonneo/2048-ai)                                        | expectimax with several heuristics, weights tuned by CMA-ES  | 100%                | 100%                | 100%  | 94%   | 36%   | -     |
+| Non-ML | [MaartenBaert's solver](https://github.com/MaartenBaert/2048-ai-emscripten)                     | expectimax                                                   | -                   | -                   | -     | -     | -     | -     |
+| ML     | [tnmichael309's solver](https://github.com/tnmichael309/2048AI)                                 | expectimax with n-tuple network trained with TD(λ) ML        | 100%                | 99.8%               | 99.5% | 93.6% | 33.5% | -     |
+| Non-ML | [VictorGavrish's solver](https://github.com/VictorGavrish/ai2048)                               | expectimax with hand-tuned heuristics                        | 100%                | 100%                | 100%  | 93%   | 31%   | -     |
+| Non-ML | [ziap's solver](https://github.com/ziap/2048-wasm)                                              | expectimax with hand-tuned heuristics                        | 100%                | 100%                | 98%   | 85%   | 12%   | -     |
+| Non-ML | [kcwu's solver](https://github.com/kcwu/2048-c)                                                 | expectimax with helper minimax search to avoid dying         | 100%                | 100%                | 96%   | 67%   | 2%    | -     |
+| Non-ML | [ronzil's solver](https://github.com/ronzil/2048-ai-cpp)                                        | Monte Carlo tree search                                      | 100%                | 70%                 | 1%    | -     | -     | -     |
+| Non-ML | [ovolve's solver](https://github.com/ovolve/2048-AI)                                            | minimax with iterative deepening and alpha-beta pruning      | "about 90%"         | -                   | -     | -     | -     | -     |
+| Non-ML | [acrantel's solver](https://github.com/acrantel/2048)                                           | expectimax                                                   | "approximately 80%" | "approximately 25%" | -     | -     | -     | -     |
+| Non-ML | [datumbox's solver](https://github.com/datumbox/Game-2048-AI-Solver)                            | minimax                                                      | "about 70-80%"      | -                   | -     | -     | -     | -     |
+| Non-ML | [vpn1997's solver](https://github.com/vpn1997/2048-Ai)                                          | expectimax                                                   | 60%                 | -                   | -     | -     | -     | -     |
+| Non-ML | [xtrp's solver](https://github.com/xtrp/jupiter)                                                | Monte Carlo tree search                                      | "~60%"              | -                   | -     | -     | -     | -     |
+| ML     | [navjindervirdee's solver](https://github.com/navjindervirdee/2048-deep-reinforcement-learning) | deep reinforcement learning                                  | 10%                 | 0.05%               | -     | -     | -     | -     |
+| ML     | [mmcenta's solver](https://github.com/mmcenta/left-shift)                                       | Deep Q-Learning                                              | 3.8%                | -                   | -     | -     | -     | -     |
