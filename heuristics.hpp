@@ -120,13 +120,16 @@ namespace heuristics {
 
     // same as full_wall_heuristic, but with a penalty for tiles that are inverted in the order
     eval_t _strict_wall_heuristic(const board_t board) {
-        const board_t vals[9] = {tile_exp(board, 3, 3), tile_exp(board, 3, 2), tile_exp(board, 3, 1), tile_exp(board, 3, 0),
-                                 tile_exp(board, 2, 0), tile_exp(board, 2, 1), tile_exp(board, 2, 2), tile_exp(board, 2, 3),
-                                 tile_exp(board, 1, 3)};
+        const int vals[9] = {
+            static_cast<int>(tile_exp(board, 3, 3)), static_cast<int>(tile_exp(board, 3, 2)),
+            static_cast<int>(tile_exp(board, 3, 1)), static_cast<int>(tile_exp(board, 3, 0)),
+            static_cast<int>(tile_exp(board, 2, 0)), static_cast<int>(tile_exp(board, 2, 1)),
+            static_cast<int>(tile_exp(board, 2, 2)), static_cast<int>(tile_exp(board, 2, 3)),
+            static_cast<int>(tile_exp(board, 1, 3))};
         eval_t ret = vals[0];
         for (int i = 0; i < 8; ++i) {
             if (vals[i] < vals[i+1] && vals[i] != 0 && vals[i+1] != 0) {
-                return (ret - vals[i+1]) << (4 * (10 - i));
+                return (ret - vals[i+1]) * (1LL << (4 * (10 - i)));
             }
             ret = (ret << 4) | vals[i+1];
         }

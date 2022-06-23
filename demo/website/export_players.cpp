@@ -52,5 +52,15 @@ EMSCRIPTEN_BINDINGS(players) {
         .class_property("best_model", &TD0::best_model);
 
     function("td0_load_best", &TD0::load_best);
+
+    function("score_heuristic", &heuristics::score_heuristic);
+    function("merge_heuristic", &heuristics::merge_heuristic);
+    function("corner_heuristic", &heuristics::corner_heuristic);
+    function("wall_gap_heuristic", &heuristics::wall_gap_heuristic);
+    function("full_wall_heuristic", &heuristics::full_wall_heuristic);
+    function("strict_wall_heuristic", &heuristics::strict_wall_heuristic);
+    function("skewed_corner_heuristic", &heuristics::skewed_corner_heuristic);
+    function("monotonicity_heuristic", &heuristics::monotonicity_heuristic);
+    function("n_tuple_heuristic", &heuristics::n_tuple_heuristic);
 }
 
