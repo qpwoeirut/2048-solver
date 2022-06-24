@@ -7,7 +7,7 @@
 namespace heuristics {
     // all heuristic evaluations must be non-negative
     constexpr eval_t MIN_EVAL = 0;
-    constexpr eval_t MAX_EVAL = 16ULL << 40;  // from wall heuristics
+    constexpr eval_t MAX_EVAL = 16ULL << 41;  // from wall heuristics
 
     eval_t score_heuristic(const board_t board) {
         return approximate_score(board);
@@ -119,32 +119,52 @@ namespace heuristics {
     }
 
     // same as full_wall_heuristic, but with a penalty for tiles that are inverted in the order
-    eval_t _strict_wall_heuristic(const board_t board) {
-        const int vals[9] = {
-            static_cast<int>(tile_exp(board, 3, 3)), static_cast<int>(tile_exp(board, 3, 2)),
-            static_cast<int>(tile_exp(board, 3, 1)), static_cast<int>(tile_exp(board, 3, 0)),
-            static_cast<int>(tile_exp(board, 2, 0)), static_cast<int>(tile_exp(board, 2, 1)),
-            static_cast<int>(tile_exp(board, 2, 2)), static_cast<int>(tile_exp(board, 2, 3)),
-            static_cast<int>(tile_exp(board, 1, 3))};
-        eval_t ret = vals[0];
-        for (int i = 0; i < 8; ++i) {
-            if (vals[i] < vals[i+1] && vals[i] != 0 && vals[i+1] != 0) {
-                return (ret - vals[i+1]) * (1LL << (4 * (10 - i)));
+    eval_t _strict_wall_heuristic(const board_t board, const eval_t max_tile) {
+        eval_t ret = max_tile << 32;
+        if ((board & 0xF) < max_tile) return ret << 9;
+
+        // 60 56 52 48
+        // 44 40 36 32
+        // 28 24 20 16
+        // 12  8  4  0
+        constexpr int idxs[8] = {0, 4, 8, 12, 28, 24, 20, 16};
+
+        eval_t mx = std::max({
+            (board >> 32) & 0xF, (board >> 36) & 0xF, (board >> 40) & 0xF, (board >> 44) & 0xF,
+            (board >> 48) & 0xF, (board >> 52) & 0xF, (board >> 56) & 0xF, (board >> 60) & 0xF
+        });
+        int inv = -1;
+        for (int i = 7; i >= 0; --i) {
+            const eval_t val = (board >> idxs[i]) & 0xF;
+            if (val < mx && val > 0) {
+                inv = idxs[i];
+                ret = (max_tile << 32) - ((mx - val) << (4 * (7 - i)));
+            } else if (val > 0) {
+                mx = val;
+                ret += val << (4 * (7 - i));
             }
-            ret = (ret << 4) | vals[i+1];
         }
-        return ret << 8;
+        ret <<= 9;
+
+        if (inv != -1) {
+            if ((inv & 0b1100) != 0b1100) {  // not on left edge
+                ret += (1 << ((board >> (inv + 4)) & 0xF)) * (((board >> (inv + 4) & 0xF) <= ((board >> inv) & 0xF)) ? 1 : -1);
+            }
+            // no check required for going up, inversion location is guaranteed to not be on top edge
+            ret += (1 << ((board >> (inv + 16)) & 0xF)) * (((board >> (inv + 16) & 0xF) <= ((board >> inv) & 0xF)) ? 1 : -1);
+        }
+        return ret;
     }
     eval_t strict_wall_heuristic(const board_t board) {
+        const int max_tile = get_max_tile(board);
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
         const board_t flip_vh_board = flip_v(flip_h_board);
-        return std::max({_strict_wall_heuristic(board),         _strict_wall_heuristic(transpose(board)),
-                         _strict_wall_heuristic(flip_h_board),  _strict_wall_heuristic(transpose(flip_h_board)),
-                         _strict_wall_heuristic(flip_v_board),  _strict_wall_heuristic(transpose(flip_v_board)),
-                         _strict_wall_heuristic(flip_vh_board), _strict_wall_heuristic(transpose(flip_vh_board)),
-                         0LL})  // make sure the evaluation is non-negative
-             + score_heuristic(board);  // tiebreak by score
+        return std::max({_strict_wall_heuristic(board, max_tile),         _strict_wall_heuristic(transpose(board), max_tile),
+                         _strict_wall_heuristic(flip_h_board, max_tile),  _strict_wall_heuristic(transpose(flip_h_board), max_tile),
+                         _strict_wall_heuristic(flip_v_board, max_tile),  _strict_wall_heuristic(transpose(flip_v_board), max_tile),
+                         _strict_wall_heuristic(flip_vh_board, max_tile), _strict_wall_heuristic(transpose(flip_vh_board), max_tile),
+                         0LL});  // make sure the evaluation is non-negative
     }
 
     // similar to corner_heuristic but with different weights

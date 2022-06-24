@@ -37,7 +37,7 @@ class ExpectimaxStrategy: public Strategy {
 
     // speed things up with integer arithmetic
     // expected score * 10, 4 moves, 30 tile placements, multiplied by 4 to pack score and move, times 16 to pack cache
-    static constexpr eval_t MULT = 4e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4 * 16);
+    static constexpr eval_t MULT = 9e18 / (heuristics::MAX_EVAL * 10 * 4 * 30 * 4 * 16);
     static_assert(MULT > 1);
 
     public:
