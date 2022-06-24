@@ -118,10 +118,13 @@ namespace heuristics {
         return std::max(_full_wall_heuristic(board), _full_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
     }
 
+    inline eval_t _val_cmp(const int a, const int b) {
+        return (1 << a) * ((a <= b) ? 1 : -1);
+    }
+
     // same as full_wall_heuristic, but with a penalty for tiles that are inverted in the order
     eval_t _strict_wall_heuristic(const board_t board, const eval_t max_tile) {
-        eval_t ret = max_tile << 32;
-        if ((board & 0xF) < max_tile) return ret << 9;
+        if ((board & 0xF) < max_tile) return count_empty(to_tile_mask(board));  // fixing the position will be easier if the board has more space
 
         // 60 56 52 48
         // 44 40 36 32
@@ -134,12 +137,13 @@ namespace heuristics {
             (board >> 48) & 0xF, (board >> 52) & 0xF, (board >> 56) & 0xF, (board >> 60) & 0xF
         });
         int inv = -1;
+        eval_t ret = max_tile << 32;
         for (int i = 7; i >= 0; --i) {
             const eval_t val = (board >> idxs[i]) & 0xF;
-            if (val < mx && val > 0) {
+            if (val < mx) {
                 inv = idxs[i];
                 ret = (max_tile << 32) - ((mx - val) << (4 * (7 - i)));
-            } else if (val > 0) {
+            } else {
                 mx = val;
                 ret += val << (4 * (7 - i));
             }
@@ -147,11 +151,20 @@ namespace heuristics {
         ret <<= 9;
 
         if (inv != -1) {
+            const int inv_val = (board >> inv) & 0xF;
             if ((inv & 0b1100) != 0b1100) {  // not on left edge
-                ret += (1 << ((board >> (inv + 4)) & 0xF)) * (((board >> (inv + 4) & 0xF) <= ((board >> inv) & 0xF)) ? 1 : -1);
+                if (inv < 16) ret += _val_cmp((board >> (inv + 4)) & 0xF, inv_val);  // left side should be smaller only if inv is on first row
             }
             // no check required for going up, inversion location is guaranteed to not be on top edge
-            ret += (1 << ((board >> (inv + 16)) & 0xF)) * (((board >> (inv + 16) & 0xF) <= ((board >> inv) & 0xF)) ? 1 : -1);
+            ret += _val_cmp((board >> (inv + 16)) & 0xF, inv_val);
+            if ((inv & 0b1100) != 0) {  // not on right edge
+                if (inv >= 16) ret += _val_cmp((board >> (inv - 4)) & 0xF, inv_val);  // right side should be smaller only if inv is on second row
+            }
+        } else {
+            ret += _val_cmp((board >> 32) & 0xF, (board >> 16) & 0xF) + 
+                   _val_cmp((board >> 36) & 0xF, (board >> 20) & 0xF) + 
+                   _val_cmp((board >> 40) & 0xF, (board >> 24) & 0xF) + 
+                   _val_cmp((board >> 44) & 0xF, (board >> 28) & 0xF);
         }
         return ret;
     }
