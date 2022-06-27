@@ -1,7 +1,6 @@
 #include <chrono>
 #include <thread>
 #include "util.hpp"
-#include "machine_learning/td0.hpp"
 
 
 namespace heuristics {
@@ -255,17 +254,7 @@ namespace heuristics {
                         _duplicate_score(board));  // penalize having duplicate tiles
     }
 
-    // loads and uses the best ML model
-    eval_t n_tuple_heuristic(const board_t board) {  // TODO: this is slightly inaccurate since model.evaluate is trained on afterstates
-        if (!TD0::best_model_loaded) {
-            std::cerr << "model isn't loaded yet! evaluation may be messed up." << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));  // pause a bit to let the model finish loading
-            // TODO: figure out a better action
-        }
-        return TD0::best_model.evaluate(board);
-    }
-
-    constexpr heuristic_t exports[9] = {
+    constexpr heuristic_t exports[8] = {
         score_heuristic,
         merge_heuristic,
         corner_heuristic,
@@ -274,6 +263,5 @@ namespace heuristics {
         strict_wall_heuristic,
         skewed_corner_heuristic,
         monotonicity_heuristic,
-        n_tuple_heuristic
     };
 }
