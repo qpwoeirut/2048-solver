@@ -1,2 +1,0 @@
-Strategy,Games,Time Taken,Computation Time,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,Total Score,Median Score,Total Moves,Median Moves
-rotating,100,0,0,100,100,100,100,91,54,4,0,0,0,0,0,0,0,225380,2326,19639,193.5
