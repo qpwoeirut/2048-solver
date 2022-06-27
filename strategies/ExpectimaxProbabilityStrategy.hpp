@@ -19,7 +19,7 @@ class ExpectimaxProbabilityStrategy: public ExpectimaxStrategy {
     }
 
     const int pick_move(const board_t board) override {
-        const int move = helper(board, 1.0f, MAX_DEPTH - 1) & 3;
+        const int move = helper(board, 1.0f, MAX_DEPTH) & 3;
         update_cache_pointers();
         return move;
     }
@@ -30,11 +30,11 @@ class ExpectimaxProbabilityStrategy: public ExpectimaxStrategy {
             const eval_t score = MULT * evaluator(board);
             return (score - (score >> 2)) << 2;  // subtract score / 4 as penalty for dying, then pack
         }
-        if (cur_prob <= min_probability) {
+        if (cur_prob <= min_probability || cur_depth == 0) {
             return (MULT * evaluator(board)) << 2;  // move doesn't matter
         }
 
-        if (cur_prob >= min_probability * 16) {
+        if (cur_prob > min_probability * 8) {
             const cache_t::iterator it = cache.find(board);
             #ifdef REQUIRE_DETERMINISTIC
             if (it != cache.end() && (it->second & 0xF) == cur_depth) return it->second >> 4;
@@ -70,7 +70,7 @@ class ExpectimaxProbabilityStrategy: public ExpectimaxStrategy {
             }
         }
 
-        if (cur_prob >= min_probability * 16) {
+        if (cur_prob >= min_probability * 8) {
             add_to_cache(board, best_score, best_move, cur_depth);
         }
 

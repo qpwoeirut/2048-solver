@@ -159,7 +159,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
         const int speed = depth <= 0 || depth >= 4 ? 0 : 4 - depth;
         test_player(fout, player_name, std::make_unique<ExpectimaxDepthStrategy>(depth, heuristic), GAMES[speed]);
     }
-    for (double prob = 0.1; prob >= 0.00001; prob /= 10) {
+    for (double prob = 0.1; prob >= 0.0001; prob /= 10) {
         const int speed = (prob >= 0.1) + (prob >= 0.01) + (prob >= 0.001);
 
         std::string player_name = name + "-expmx(p=" + std::to_string(prob * 5) + ")";
@@ -192,7 +192,7 @@ int main() {
     //run_board_echo(); return 0;
 
     //std::string record = "";
-    //const auto player = std::make_unique<ExpectimaxDepthStrategy>(-1, heuristics::corner_heuristic);
+    //const auto player = std::make_unique<ExpectimaxProbabilityStrategy>(0.0001, heuristics::corner_heuristic);
     //player->simulator.play_slow(*player, record);
     //return 0;
 

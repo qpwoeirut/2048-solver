@@ -1,6 +1,7 @@
 #include <emscripten/bind.h>
 #include "../../game.hpp"
 #include "../../heuristics.hpp"
+#include "../../machine_learning/td0.hpp"
 #include "../../strategies/ExpectimaxDepthStrategy.hpp"
 #include "../../strategies/ExpectimaxProbabilityStrategy.hpp"
 #include "../../strategies/MinimaxStrategy.hpp"
@@ -21,7 +22,7 @@ EMSCRIPTEN_BINDINGS(players) {
         .function("pick_move", &ExpectimaxDepthStrategy::pick_move);
 
     class_<ExpectimaxProbabilityStrategy>("ExpectimaxProbabilityStrategy")
-        .constructor<const int, const int>()
+        .constructor<const float, const int>()
         .function("pick_move", &ExpectimaxProbabilityStrategy::pick_move);
 
     class_<MinimaxStrategy>("MinimaxStrategy")
@@ -66,6 +67,5 @@ EMSCRIPTEN_BINDINGS(players) {
     function("strict_wall_heuristic", &heuristics::strict_wall_heuristic);
     function("skewed_corner_heuristic", &heuristics::skewed_corner_heuristic);
     function("monotonicity_heuristic", &heuristics::monotonicity_heuristic);
-    function("n_tuple_heuristic", &heuristics::n_tuple_heuristic);
 }
 

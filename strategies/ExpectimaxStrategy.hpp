@@ -11,7 +11,7 @@ class ExpectimaxStrategy: public Strategy {
     const heuristic_t evaluator;
     ExpectimaxStrategy(const heuristic_t _evaluator): evaluator(_evaluator) {}
 
-    static constexpr int MAX_DEPTH = 16;
+    static constexpr int MAX_DEPTH = 10;
     static constexpr int USUAL_CACHE = 1 << 16;
 
     static constexpr board_t INVALID_BOARD  = 0x1111111111111111ULL;  // used as the empty_key for the dense_hash_map cache
