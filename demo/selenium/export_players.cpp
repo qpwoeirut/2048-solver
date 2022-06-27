@@ -1,7 +1,8 @@
 #include <pybind11/pybind11.h>
 #include "../../game.hpp"
 #include "../../heuristics.hpp"
-#include "../../strategies/ExpectimaxStrategy.hpp"
+#include "../../strategies/ExpectimaxDepthStrategy.hpp"
+#include "../../strategies/ExpectimaxProbabilityStrategy.hpp"
 #include "../../strategies/MinimaxStrategy.hpp"
 #include "../../strategies/MonteCarloPlayer.hpp"
 #include "../../strategies/OrderedPlayer.hpp"
@@ -17,9 +18,13 @@ using pybind11::init;
 PYBIND11_MODULE(players, m) {
     m.doc() = "Solving strategies for 2048 written in C++ and exported to Python";
 
-    class_<ExpectimaxStrategy>(m, "ExpectimaxStrategy")
+    class_<ExpectimaxDepthStrategy>(m, "ExpectimaxDepthStrategy")
         .def(init<const int, const int>())
-        .def("pick_move", &ExpectimaxStrategy::pick_move);
+        .def("pick_move", &ExpectimaxDepthStrategy::pick_move);
+
+    class_<ExpectimaxProbabilityStrategy>(m, "ExpectimaxProbabilityStrategy")
+        .def(init<const int, const int>())
+        .def("pick_move", &ExpectimaxProbabilityStrategy::pick_move);
 
     class_<MinimaxStrategy>(m, "MinimaxStrategy")
         .def(init<const int, const int>())

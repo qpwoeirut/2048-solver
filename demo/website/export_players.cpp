@@ -1,7 +1,8 @@
 #include <emscripten/bind.h>
 #include "../../game.hpp"
 #include "../../heuristics.hpp"
-#include "../../strategies/ExpectimaxStrategy.hpp"
+#include "../../strategies/ExpectimaxDepthStrategy.hpp"
+#include "../../strategies/ExpectimaxProbabilityStrategy.hpp"
 #include "../../strategies/MinimaxStrategy.hpp"
 #include "../../strategies/MonteCarloPlayer.hpp"
 #include "../../strategies/OrderedPlayer.hpp"
@@ -15,9 +16,13 @@ using emscripten::class_;
 using emscripten::function;
 
 EMSCRIPTEN_BINDINGS(players) {
-    class_<ExpectimaxStrategy>("ExpectimaxStrategy")
+    class_<ExpectimaxDepthStrategy>("ExpectimaxDepthStrategy")
         .constructor<const int, const int>()
-        .function("pick_move", &ExpectimaxStrategy::pick_move);
+        .function("pick_move", &ExpectimaxDepthStrategy::pick_move);
+
+    class_<ExpectimaxProbabilityStrategy>("ExpectimaxProbabilityStrategy")
+        .constructor<const int, const int>()
+        .function("pick_move", &ExpectimaxProbabilityStrategy::pick_move);
 
     class_<MinimaxStrategy>("MinimaxStrategy")
         .constructor<const int, const int>()

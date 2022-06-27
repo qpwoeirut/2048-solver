@@ -63,7 +63,7 @@ void test_player(Strategy& player, const int games) {
 
 //SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::strict_wall_heuristic);
-ExpectimaxStrategy expectimax_strategy(0, heuristics::strict_wall_heuristic);
+ExpectimaxDepthStrategy expectimax_strategy(-1, heuristics::strict_wall_heuristic);
 
 int main() {
     //const auto player = std::make_unique<RandomPlayer>();
@@ -80,6 +80,6 @@ int main() {
     //test_player(minimax_strategy, 5);
 
     //expectimax_strategy.simulator.play_slow(expectimax_strategy, record);
-    test_player(expectimax_strategy, 10);
+    test_player(expectimax_strategy, 5);
 }
 

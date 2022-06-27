@@ -1,48 +1,40 @@
-#ifndef EXPECTIMAX_DEPTH_STRATEGY_HPP
-#define EXPECTIMAX_DEPTH_STRATEGY_HPP
+#ifndef EXPECTIMAX_PROBABILITY_STRATEGY_HPP
+#define EXPECTIMAX_PROBABILITY_STRATEGY_HPP
 
 #include "ExpectimaxStrategy.hpp"
 
-class ExpectimaxDepthStrategy: public ExpectimaxStrategy {
+class ExpectimaxProbabilityStrategy: public ExpectimaxStrategy {
     public:
-    const int depth;  // note that depth increases runtime exponentially; non-positive depth uses depth picker
-    ExpectimaxDepthStrategy(const int _depth, const heuristic_t _evaluator): evaluator(_evaluator), depth(_depth) {
-        cache = cache_t(USUAL_CACHE);
-        cache.set_empty_key(INVALID_BOARD);
-        cache.set_deleted_key(INVALID_BOARD2);
-        cache.min_load_factor(0.3);  // shrink quickly
-        cache.max_load_factor(0.9);  // but expand slowly
+    const float min_probability;  // minimum probability a searched state should have
+    ExpectimaxProbabilityStrategy(const float min_prob, const heuristic_t _evaluator):
+        ExpectimaxStrategy(_evaluator), min_probability(min_prob)
+    {
+        init_cache();
     }
-    ExpectimaxDepthStrategy(const int _depth, const int heuristic_idx) :
-        ExpectimaxDepthStrategy(_depth, heuristics::exports[heuristic_idx]) {}
+    ExpectimaxProbabilityStrategy(const float min_prob, const int heuristic_idx) :
+        ExpectimaxProbabilityStrategy(min_prob, heuristics::exports[heuristic_idx]) {}
 
     std::unique_ptr<Strategy> clone() override {
-        return std::make_unique<ExpectimaxDepthStrategy>(depth, evaluator);
-    }
-
-    void reset() override {
-        cache.clear();
+        return std::make_unique<ExpectimaxProbabilityStrategy>(min_probability, evaluator);
     }
 
     const int pick_move(const board_t board) override {
-        const int depth_to_use = depth <= 0 ? pick_depth(board) - depth : depth;
-
-        const int move = helper(board, depth_to_use, 0) & 3;
+        const int move = helper(board, 1.0f, MAX_DEPTH - 1) & 3;
         update_cache_pointers();
         return move;
     }
 
     private:
-    const eval_t helper(const board_t board, const int cur_depth, const int fours) override {
+    const eval_t helper(const board_t board, const float cur_prob, const int cur_depth) {  // depth only used for cache
         if (simulator.game_over(board)) {
             const eval_t score = MULT * evaluator(board);
             return (score - (score >> 2)) << 2;  // subtract score / 4 as penalty for dying, then pack
         }
-        if (cur_depth == 0 || fours >= 4) {  // selecting 4 fours has a 0.01% chance, which is negligible
+        if (cur_prob <= min_probability) {
             return (MULT * evaluator(board)) << 2;  // move doesn't matter
         }
 
-        if (cur_depth >= CACHE_DEPTH) {
+        if (cur_prob >= min_probability * 16) {
             const cache_t::iterator it = cache.find(board);
             #ifdef REQUIRE_DETERMINISTIC
             if (it != cache.end() && (it->second & 0xF) == cur_depth) return it->second >> 4;
@@ -60,13 +52,16 @@ class ExpectimaxDepthStrategy: public ExpectimaxStrategy {
                 continue;
             } else {
                 const uint16_t empty_mask = to_tile_mask(new_board);
+                const int empty_count = count_empty(empty_mask);
+                const float two_prob = cur_prob * 0.9 / empty_count;
+                const float four_prob = cur_prob * 0.1 / empty_count;
                 for (int j=0; j<16; ++j) {
                     if (((empty_mask >> j) & 1) == 0) {
-                        expected_score += 9 * (helper(new_board | (1LL << (j << 2)), cur_depth - 1, fours) >> 2);
-                        expected_score += 1 * (helper(new_board | (2LL << (j << 2)), cur_depth - 1, fours + 1) >> 2);
+                        expected_score += 9 * (helper(new_board | (1LL << (j << 2)), two_prob, cur_depth - 1) >> 2);
+                        expected_score += 1 * (helper(new_board | (2LL << (j << 2)), four_prob, cur_depth - 1) >> 2);
                     }
                 }
-                expected_score /= count_empty(empty_mask) * 10;  // convert to actual expected score * MULT
+                expected_score /= empty_count * 10;  // convert to actual expected score * MULT
             }
 
             if (best_score <= expected_score) {
@@ -75,17 +70,11 @@ class ExpectimaxDepthStrategy: public ExpectimaxStrategy {
             }
         }
 
-        if (cur_depth >= CACHE_DEPTH) {
+        if (cur_prob >= min_probability * 16) {
             add_to_cache(board, best_score, best_move, cur_depth);
         }
 
         return (best_score << 2) | best_move;  // pack both score and move
-    }
-
-    const int pick_depth(const board_t board) {
-        const int tile_ct = count_set(to_tile_mask(board));
-        const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
-        return 2 + (score > 7) + (score > 10) + (score > 13) + (score > 14) + (score > 16);
     }
 };
 #endif

@@ -83,7 +83,7 @@ def main():
     # play_game(players.MonteCarloPlayer(5000))
 
     CORNER_HEURISTIC = 2
-    # play_game(players.ExpectimaxStrategy(0, CORNER_HEURISTIC))
+    # play_game(players.ExpectimaxDepthStrategy(0, CORNER_HEURISTIC))
             
 
 if __name__ == '__main__':

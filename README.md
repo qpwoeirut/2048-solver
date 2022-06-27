@@ -45,7 +45,7 @@ From Stage 3 onwards, games were run on an AWS EC2 Ubuntu c6g.xlarge instance.
 
 
 ## Results
-The best strategy right now is the [expectimax strategy](/strategies/ExpectimaxStrategy.hpp) with the [corner building heuristic](/heuristics.hpp).
+The best strategy right now is the [expectimax strategy](/strategies/ExpectimaxDepthStrategy.hpp) with the [corner building heuristic](/heuristics.hpp).
 On the most recent set of tests, it reaches 4096 99.4% of the time, gets the 8192 tile with a 91.8% success rate, and reaches 16384 in 34.6% of its games.
 
 The [results file](/results-stage3.csv) has the latest statistics for all tested strategies.

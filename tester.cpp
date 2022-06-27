@@ -5,7 +5,8 @@
 #include "game.hpp"
 #include "heuristics.hpp"
 #include "strategies/Strategy.hpp"
-#include "strategies/ExpectimaxStrategy.hpp"
+#include "strategies/ExpectimaxDepthStrategy.hpp"
+#include "strategies/ExpectimaxProbabilityStrategy.hpp"
 #include "strategies/MinimaxStrategy.hpp"
 #include "strategies/MonteCarloPlayer.hpp"
 #include "strategies/OrderedPlayer.hpp"
@@ -27,7 +28,7 @@ constexpr int TRIALS[MAX_DEPTH + 1] = {0, 10, 10, 10, 9, 6};
 // small testing parameters for local testing to catch bugs
 //constexpr int GAMES[5] = {4, 10, 25, 50, 100};
 //constexpr int MAX_DEPTH = 4;
-//constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3, 2};
+//constexpr int TRIALS[MAX_DEPTH + 1] = {0, 5, 5, 4, 3};
 
 constexpr int THREADS = 4;
 
@@ -146,9 +147,7 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
     write_headings(fout);
     for (int depth = -1; depth <= MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which use depth picker
         const std::string player_name = name + "-mnmx(d=" + std::to_string(depth) + ")";
-
         const int speed = depth <= 0 || depth >= 4 ? 0 : 4 - depth;
-
         test_player(fout, player_name, std::make_unique<MinimaxStrategy>(depth, heuristic), GAMES[speed]);
     }
     fout.close();
@@ -157,10 +156,17 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
     write_headings(fout);
     for (int depth = -1; depth < MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which uses depth picker; d=MAX_DEPTH will take too long
         const std::string player_name = name + "-expmx(d=" + std::to_string(depth) + ")";
-
         const int speed = depth <= 0 || depth >= 4 ? 0 : 4 - depth;
+        test_player(fout, player_name, std::make_unique<ExpectimaxDepthStrategy>(depth, heuristic), GAMES[speed]);
+    }
+    for (double prob = 0.1; prob >= 0.00001; prob /= 10) {
+        const int speed = (prob >= 0.1) + (prob >= 0.01) + (prob >= 0.001);
 
-        test_player(fout, player_name, std::make_unique<ExpectimaxStrategy>(depth, heuristic), GAMES[speed]);
+        std::string player_name = name + "-expmx(p=" + std::to_string(prob * 5) + ")";
+        test_player(fout, player_name, std::make_unique<ExpectimaxProbabilityStrategy>(prob * 5, heuristic), GAMES[speed]);
+
+        player_name = name + "-expmx(p=" + std::to_string(prob) + ")";
+        test_player(fout, player_name, std::make_unique<ExpectimaxProbabilityStrategy>(prob, heuristic), GAMES[speed]);
     }
     fout.close();
 }
@@ -186,7 +192,7 @@ int main() {
     //run_board_echo(); return 0;
 
     //std::string record = "";
-    //const auto player = std::make_unique<ExpectimaxStrategy>(-1, heuristics::corner_heuristic);
+    //const auto player = std::make_unique<ExpectimaxDepthStrategy>(-1, heuristics::corner_heuristic);
     //player->simulator.play_slow(*player, record);
     //return 0;
 
