@@ -2,7 +2,8 @@
 
 #include "game.hpp"
 #include "heuristics.hpp"
-#include "strategies/ExpectimaxStrategy.hpp"
+#include "strategies/ExpectimaxDepthStrategy.hpp"
+#include "strategies/ExpectimaxProbabilityStrategy.hpp"
 #include "strategies/MinimaxStrategy.hpp"
 #include "strategies/MonteCarloPlayer.hpp"
 #include "strategies/OrderedPlayer.hpp"
@@ -63,7 +64,8 @@ void test_player(Strategy& player, const int games) {
 
 //SpamCornerPlayer spam_corner_player{};
 //MinimaxStrategy minimax_strategy(0, heuristics::strict_wall_heuristic);
-ExpectimaxDepthStrategy expectimax_strategy(-1, heuristics::strict_wall_heuristic);
+//ExpectimaxDepthStrategy expectimax_depth_strategy(0, heuristics::monotonicity_heuristic);
+ExpectimaxProbabilityStrategy expectimax_probability_strategy(0.005, heuristics::monotonicity_heuristic);
 
 int main() {
     //const auto player = std::make_unique<RandomPlayer>();
@@ -79,7 +81,10 @@ int main() {
     //minimax_strategy.play_slow(minimax_strategy, record);
     //test_player(minimax_strategy, 5);
 
-    //expectimax_strategy.simulator.play_slow(expectimax_strategy, record);
-    test_player(expectimax_strategy, 5);
+    //expectimax_depth_strategy.simulator.play_slow(expectimax_depth_strategy, record);
+    //test_player(expectimax_depth_strategy, 10);
+
+    //expectimax_probability_strategy.simulator.play_slow(expectimax_probability_strategy, record);
+    test_player(expectimax_probability_strategy, 10);
 }
 
