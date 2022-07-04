@@ -229,8 +229,9 @@ namespace heuristics {
             const int r[4] = { (row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF };
             monotonicity[row] = (1 << r[0]) + (1 << r[1]) + (1 << r[2]) + (1 << r[3]);
             for (int i = 0; i < 3; ++i) {
-                if (r[i] < r[i + 1] && r[i] > 0) {
-                    monotonicity[row] -= 1LL << (3 * r[i + 1] - 2 * r[i]);
+                if (r[i] < r[i + 1]) {
+                    if (r[i] == 0) monotonicity[row] -= 1LL << (3 * r[i + 1] / 2);
+                    else monotonicity[row] -= 1LL << (3 * r[i + 1] - 2 * r[i]);
                 }
             }
         }
@@ -250,8 +251,10 @@ namespace heuristics {
                         monotonicity[(transposed_board >> 48) & 0xFFFF] +
                         monotonicity[(transposed_board >> 32) & 0xFFFF] +
                         monotonicity[(transposed_board >> 16) & 0xFFFF] +
-                        monotonicity[ transposed_board        & 0xFFFF] -
-                        _duplicate_score(board));  // penalize having duplicate tiles
+                        monotonicity[ transposed_board        & 0xFFFF] +
+                        std::max({monotonicity[(board >> 48) & 0xFFFF], monotonicity[board & 0xFFFF],
+                                  monotonicity[(transposed_board >> 48) & 0xFFFF], monotonicity[transposed_board & 0xFFFF]}) * 8) +
+               count_empty(to_tile_mask(board));  // if things go back and the main heuristic becomes 0, the best way to fix it is to clear up the board
     }
 
     constexpr heuristic_t exports[8] = {
