@@ -19,10 +19,8 @@ This stores some loose ideas that I might try in the future.
 * for wall heuristics, increase depth if the ordering has an "inversion"
 * use geo mean instead of arith mean for expectimax?
   * issues with overflow; GMP? seems rather slow
-* write a strict full wall builder heuristic which penalizes inversions
 * write a tester for difficult board positions to tune heuristics
-* figure out some import system
-  * hardcoding the path to sparsehash in export.sh nonideal
+* figure out some import system (CMake?)
 * make 3 cheater AIs: one that knows tile placements, one that controls tile placements and obviously cheats, one that controls tile placements but pretends that it doesn't
 * optimize cache time/memory more
   * is storing transposed/rotated states or searching for them in cache worth it? will need to benchmark. also might vary based on strategy
@@ -30,13 +28,10 @@ This stores some loose ideas that I might try in the future.
 * use compile-time lookup tables for heuristics?
 * `player.simulator.play(player, fours)` is rather ugly; clean up somehow?
 * at some point unit tests should exist
-* terminate search once the state has a sufficiently low probability, instead of by depth
 * also before running the full statistic-generation tests I should run a mini-test with a small amount of games to make sure everything works properly and won't take forever
 
 ## Website
-* persist AI settings with localstorage
 * add descriptions of each option
 * display the current search depth? and % completion of search?
 * make depth customizable
 * allow user to create their own multiplication weight heuristic
-* add replay of games?
