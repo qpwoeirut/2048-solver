@@ -254,7 +254,7 @@ namespace heuristics {
                         monotonicity[ transposed_board        & 0xFFFF] +
                         std::max({monotonicity[(board >> 48) & 0xFFFF], monotonicity[board & 0xFFFF],
                                   monotonicity[(transposed_board >> 48) & 0xFFFF], monotonicity[transposed_board & 0xFFFF]}) * 8) +
-               count_empty(to_tile_mask(board));  // if things go back and the main heuristic becomes 0, the best way to fix it is to clear up the board
+               count_empty(to_tile_mask(board));  // if things go bad and the main heuristic becomes 0, the best way to fix it is to clear up the board
     }
 
     constexpr heuristic_t exports[8] = {
