@@ -73,7 +73,7 @@ int main() {
 
     //test_player(spam_corner_player, int(1e5));  // spam_corner is the most efficient blind strategy
 
-    //std::string record = "";
+    std::string record = "";
 
     //UserPlayer user_player{};
     //user_player.simulator.play(user_player, record);
@@ -81,7 +81,10 @@ int main() {
     //minimax_strategy.play_slow(minimax_strategy, record);
     //test_player(minimax_strategy, 5);
 
-    //expectimax_depth_strategy.simulator.play_slow(expectimax_depth_strategy, record);
+    //expectimax_depth_strategy.simulator.play_slow(expectimax_depth_strategy, record, [](const board_t board) -> void {
+    //    std::cout << "Monotonicity: " << heuristics::monotonicity_heuristic(board) << std::endl;
+    //    std::cout << "Duplicate: " << heuristics::_duplicate_score(board) << std::endl;
+    //});
     //test_player(expectimax_depth_strategy, 10);
 
     //expectimax_probability_strategy.simulator.play_slow(expectimax_probability_strategy, record);

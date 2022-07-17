@@ -150,7 +150,7 @@ class GameSimulator {
     }
 
     board_t play(Strategy&, std::string&);
-    board_t play_slow(Strategy&, std::string&);
+    board_t play_slow(Strategy&, std::string&, void (*)(const board_t));
 };
 
 #include "strategies/Strategy.hpp"
@@ -187,7 +187,7 @@ board_t GameSimulator::play(Strategy& player, std::string& record) {
 }
     
 // similar to GameSimulator::play, but pauses the game for debugging purposes
-board_t GameSimulator::play_slow(Strategy& player, std::string& record) {
+board_t GameSimulator::play_slow(Strategy& player, std::string& record, void (*callback)(const board_t)) {
     const board_t tile_val0 = generate_random_tile_val();
     const board_t tile_val1 = generate_random_tile_val();
     board_t board = add_tile(0, tile_val0, record);
@@ -197,6 +197,7 @@ board_t GameSimulator::play_slow(Strategy& player, std::string& record) {
     while (!game_over(board)) {
         if (moves-- == 0) {
             print_board(board);
+            callback(board);
             std::cout << "Moves to jump? ";
             std::cin >> moves;
         }
