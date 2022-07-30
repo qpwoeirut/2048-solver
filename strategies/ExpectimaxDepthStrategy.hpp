@@ -81,7 +81,7 @@ class ExpectimaxDepthStrategy: public ExpectimaxStrategy {
     const int pick_depth(const board_t board) {
         const int tile_ct = count_set(to_tile_mask(board));
         const int score = count_distinct_tiles(board) + (tile_ct <= 6 ? 0 : (tile_ct - 6) >> 1);
-        return 2 + (score > 7) + (score > 10) + (score > 13) + (score > 14) + (score > 16);
+        return 2 + (score >= 8) + (score >= 11) + (score >= 14) + (score >= 15) + (score >= 17) + (score >= 19);
     }
 };
 #endif
