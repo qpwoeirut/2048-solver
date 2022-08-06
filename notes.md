@@ -48,6 +48,7 @@ This stores some loose ideas that I might try in the future.
 * investigate using worker-specific emscripten flags (BUILD_AS_WORKER, PROXY_TO_WORKER) or modularization (MODULARIZE, EXPORT_ES6)
 * investigate using emscripten's file packager for the `model.dat` file, compressing it, and using emscripten-ports to decompress
   * also investigate using indexeddb for fetching or turn FETCH_SUPPORT_INDEXEDDB off 
+* Parallelize searches within a single game
 
 ## Website
 * add descriptions of each option
