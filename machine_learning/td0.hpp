@@ -291,6 +291,7 @@ class TD0: GameSimulator {
 TD0 TD0::best_model = TD0(0, 0.0f);
 bool TD0::best_model_loaded = false;
 void TD0::load_best() {
+    if (TD0::best_model_loaded) return;  // avoid repeat downloads
     emscripten_fetch_attr_t attr;
     emscripten_fetch_attr_init(&attr);
     strcpy(attr.requestMethod, "GET");
