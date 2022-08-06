@@ -53,11 +53,9 @@ EMSCRIPTEN_BINDINGS(players) {
         .constructor<>()
         .function("pick_move", &SpamCornerPlayer::pick_move);
 
-    class_<TD0>("TD0")  // don't need constructor; will use TD0::load_best instead
-        .function("pick_move", &TD0::pick_move)
-        .class_property("best_model", &TD0::best_model);
-
-    function("td0_load_best", &TD0::load_best);
+    class_<ExportedTD0>("ExportedTD0")
+        .constructor<>()
+        .function("pick_move", &ExportedTD0::pick_move);
 
     function("score_heuristic", &heuristics::score_heuristic);
     function("merge_heuristic", &heuristics::merge_heuristic);

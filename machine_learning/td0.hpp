@@ -286,6 +286,8 @@ class TD0: GameSimulator {
 
 
 #ifdef WEBSITE
+#include <chrono>
+#include <thread>
 TD0 TD0::best_model = TD0(0, 0.0f);
 bool TD0::best_model_loaded = false;
 void TD0::load_best() {
@@ -333,11 +335,27 @@ void TD0::load_best() {
     };
     emscripten_fetch(&attr, "../model.dat");
 }
+
 #elif defined LOAD_BEST_MODEL
 TD0 TD0::best_model = TD0(0.0f, "machine_learning/model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat");
 bool TD0::best_model_loaded = true;
 void TD0::load_best() { /* do nothing, model already loaded */ }
-#endif
+#endif  // WEBSITE
+
+class ExportedTD0: public Strategy {
+    public:
+    ExportedTD0() { TD0::load_best(); }
+    const int pick_move(const board_t board) override {
+        if (TD0::best_model_loaded == false) {
+            std::cerr << "Waiting for model to load!" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        return TD0::best_model.pick_move(board);
+    }
+    std::unique_ptr<Strategy> clone() override {
+        return std::make_unique<ExportedTD0>();
+    }
+};
 
 #endif
 
