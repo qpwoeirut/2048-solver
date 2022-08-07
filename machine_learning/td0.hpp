@@ -323,8 +323,8 @@ class ExportedTD0: public Strategy {
 };
 
 #elif defined TESTING
-std::ifstream in("machine_learning/model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat", std::ios::binary);
-TD0 TD0::best_model = TD0(0.0f, in);
+std::ifstream fin("machine_learning/model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat", std::ios::binary);
+TD0 TD0::best_model = TD0(0.00015f, fin);
 bool TD0::best_model_loaded = true;
 void TD0::load_best() { /* do nothing, model already loaded */ }
 #endif  // WEBSITE
