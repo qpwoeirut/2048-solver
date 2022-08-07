@@ -161,6 +161,7 @@ class TD0: GameSimulator {
 
         return board;
     }
+    // changing the threshold up to 1 barely affects file size
     void save(const std::string& filename, const float threshold=0.0f) const {
         std::ofstream fout(filename, std::ios::binary);
         assert(fout.is_open());
@@ -304,7 +305,7 @@ void TD0::load_best() {
         std::cerr << "failed with status code " << fetch->status << std::endl;
         emscripten_fetch_close(fetch);
     };
-    emscripten_fetch(&attr, "../model.dat");
+    emscripten_fetch(&attr, "../model.bmp");  // model file has .bmp extension to force GitHub Pages to compress it
 }
 
 class ExportedTD0: public Strategy {
