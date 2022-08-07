@@ -1,10 +1,11 @@
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include "td0.hpp"
 
 // at most one of these should be defined
-#define TRAINING_ONLY
-//#define TESTING
+//#define TRAINING_ONLY
+#define TESTING
 
 constexpr double LEARNING_RATE = 0.00015;
 constexpr int EPOCHS = 500;
@@ -23,7 +24,7 @@ int moves[MAX_GAMES];
 int scores[MAX_GAMES];
 
 #ifdef TESTING
-TD0 model(0, "model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat");
+TD0 model(0, std::ifstream("model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat"));
 #else
 TD0 model(MAX_TILE + 1, LEARNING_RATE);
 #endif
@@ -90,7 +91,8 @@ int main() {
     }
 #endif
 
-    std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
-    play_games(false, TEST_GAMES);
+    //std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
+    //play_games(false, TEST_GAMES);
+    model.save("model_8-6_16_0.000150/model_8-6_16_0.000150_1000_0.0001.dat", 0.0001);
 }
 

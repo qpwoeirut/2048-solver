@@ -1,5 +1,5 @@
 clang++ -std=c++20 -O3 -Wall -pthread -funroll-loops -flto -mcpu=native -fconstexpr-steps=0x500000 benchmark.cpp -o benchmark.out \
--DREQUIRE_DETERMINISTIC -DLOAD_BEST_MODEL
+-DREQUIRE_DETERMINISTIC -DTESTING
 
 echo "Compiled benchmark.cpp!"
 ./benchmark.out

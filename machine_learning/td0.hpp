@@ -2,13 +2,8 @@
 #define TD0_HPP
 
 #include <fstream>
-#include <sstream>
 #include <vector>
 #include "../game.hpp"
-
-#ifdef WEBSITE
-#include <emscripten/fetch.h>
-#endif
 
 // based on http://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf
 // implements only the TD0 algorithm (Fig. 3 and Fig. 6)
@@ -80,33 +75,30 @@ class TD0: GameSimulator {
         lookup = new float[TUPLE_VALUES]();
         assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
     }
-    TD0(const float _learning_rate, const std::string& filename): LEARNING_RATE(_learning_rate) {
-        std::ifstream fin(filename, std::ios::binary);
-        assert(fin.is_open());
-
+    TD0(const float _learning_rate, std::istream& is): LEARNING_RATE(_learning_rate) {
         std::string identifier(FILE_IDENTIFIER.size(), '\0');
-        fin.read(&identifier[0], FILE_IDENTIFIER.size());
+        is.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
 
-        N_TUPLE = fin.get();
-        TUPLE_SIZE = fin.get();
-        TILE_CT = fin.get();
+        N_TUPLE = is.get();
+        TUPLE_SIZE = is.get();
+        TILE_CT = is.get();
 
         TUPLE_VALUES = N_TUPLE * ipow(TILE_CT, TUPLE_SIZE);
 
         TUPLES = std::vector<int>(N_TUPLE * TUPLE_SIZE);
         for (int i = 0; i < N_TUPLE; ++i) {
             for (int j = 0; j < TUPLE_SIZE; ++j) {
-                TUPLES[i * TUPLE_SIZE + j] = fin.get();
+                TUPLES[i * TUPLE_SIZE + j] = is.get();
             }
         }
 
         std::string nonzero((TUPLE_VALUES + 7) / 8, '\0');
-        fin.read(&nonzero[0], nonzero.size());
+        is.read(&nonzero[0], nonzero.size());
 
         lookup = new float[TUPLE_VALUES]();
         for (int i = 0; i < TUPLE_VALUES; ++i) {
-            if ((nonzero[i >> 3] >> (i & 7)) & 1) fin.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
+            if ((nonzero[i >> 3] >> (i & 7)) & 1) is.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
         }
     }
 #endif
@@ -169,7 +161,7 @@ class TD0: GameSimulator {
 
         return board;
     }
-    void save(const std::string& filename) const {
+    void save(const std::string& filename, const float threshold=0.0f) const {
         std::ofstream fout(filename, std::ios::binary);
         assert(fout.is_open());
 
@@ -186,7 +178,7 @@ class TD0: GameSimulator {
         std::string nonzero;
         for (int i = 0; i < TUPLE_VALUES; ++i) {
             if ((i & 7) == 0) nonzero.push_back(static_cast<char>(0));
-            nonzero.back() |= (lookup[i] != 0) << (i & 7);
+            nonzero.back() |= (abs(lookup[i]) <= threshold) << (i & 7);
         }
         fout.write(nonzero.c_str(), nonzero.size());
         for (int i = 0; i < TUPLE_VALUES; ++i) {
@@ -196,11 +188,12 @@ class TD0: GameSimulator {
         }
         fout.close();
     }
-    float evaluate(const board_t board) const{
+    float evaluate(const board_t board) const {
         // incentivize winning as soon as possible
         // # of fours is estimated by taking approximate # of moves and dividing by 10
         // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
         //if (get_max_tile(board) == TILE_CT - 1) return WINNING_EVAL - actual_score(board, 1015 / 10);
+
         if (game_over(board)) return 0;
         const board_t flip_h_board = flip_h(board);
         const board_t flip_v_board = flip_v(board);
@@ -287,7 +280,9 @@ class TD0: GameSimulator {
 
 #ifdef WEBSITE
 #include <chrono>
+#include <sstream>
 #include <thread>
+#include <emscripten/fetch.h>
 TD0 TD0::best_model = TD0(0, 0.0f);
 bool TD0::best_model_loaded = false;
 void TD0::load_best() {
@@ -300,34 +295,9 @@ void TD0::load_best() {
     attr.onsuccess = [](emscripten_fetch_t* fetch) {
         std::cerr << "fetch succeeded!" << std::endl;
         std::istringstream is(std::string(fetch->data, fetch->numBytes));
-
-        std::string identifier(FILE_IDENTIFIER.size(), '\0');
-        is.read(&identifier[0], FILE_IDENTIFIER.size());
-        assert(identifier == FILE_IDENTIFIER);
-
-        const int n_tuple = is.get();
-        const int tuple_size = is.get();
-        const int tile_ct = is.get();
-
-        const int tuple_values = n_tuple * ipow(tile_ct, tuple_size);
-
-        std::vector<int> tuples(n_tuple * tuple_size);
-        for (int i = 0; i < n_tuple; ++i) {
-            for (int j = 0; j < tuple_size; ++j) {
-                tuples[i * tuple_size + j] = is.get();
-            }
-        }
-
-        TD0::best_model = TD0(n_tuple, tuple_size, tuples, tile_ct, 0);
-
-        std::string nonzero((tuple_values + 7) / 8, '\0');
-        is.read(&nonzero[0], nonzero.size());
-        for (int i = 0; i < tuple_values; ++i) {
-            if ((nonzero[i >> 3] >> (i & 7)) & 1) is.read(reinterpret_cast<char*>(&(TD0::best_model.lookup[i])), sizeof(float));
-        }
-
         emscripten_fetch_close(fetch);
 
+        TD0::best_model = TD0(0.0f, is);
         TD0::best_model_loaded = true;
     };
     attr.onerror = [](emscripten_fetch_t* fetch) {
@@ -336,12 +306,6 @@ void TD0::load_best() {
     };
     emscripten_fetch(&attr, "../model.dat");
 }
-
-#elif defined LOAD_BEST_MODEL
-TD0 TD0::best_model = TD0(0.0f, "machine_learning/model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat");
-bool TD0::best_model_loaded = true;
-void TD0::load_best() { /* do nothing, model already loaded */ }
-#endif  // WEBSITE
 
 class ExportedTD0: public Strategy {
     public:
@@ -357,6 +321,13 @@ class ExportedTD0: public Strategy {
         return std::make_unique<ExportedTD0>();
     }
 };
+
+#elif defined TESTING
+std::ifstream in("machine_learning/model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat", std::ios::binary);
+TD0 TD0::best_model = TD0(0.0f, in);
+bool TD0::best_model_loaded = true;
+void TD0::load_best() { /* do nothing, model already loaded */ }
+#endif  // WEBSITE
 
 #endif
 
