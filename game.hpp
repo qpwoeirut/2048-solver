@@ -185,7 +185,7 @@ board_t GameSimulator::play(Strategy& player, std::string& record) {
 
     return board;
 }
-    
+
 // similar to GameSimulator::play, but pauses the game for debugging purposes
 board_t GameSimulator::play_slow(Strategy& player, std::string& record, void (*callback)(const board_t)) {
     const board_t tile_val0 = generate_random_tile_val();
