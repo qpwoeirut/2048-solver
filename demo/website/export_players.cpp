@@ -1,7 +1,7 @@
 #include <emscripten/bind.h>
 #include "../../game.hpp"
 #include "../../heuristics.hpp"
-#include "../../machine_learning/td0.hpp"
+#include "../../machine_learning/ExportedTD0.hpp"
 #include "../../strategies/ExpectimaxDepthStrategy.hpp"
 #include "../../strategies/ExpectimaxProbabilityStrategy.hpp"
 #include "../../strategies/MinimaxStrategy.hpp"

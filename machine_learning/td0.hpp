@@ -3,13 +3,11 @@
 
 #include <fstream>
 #include <vector>
-#include "../game.hpp"
+#include "BaseModel.hpp"
 
 // based on http://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf
 // implements only the TD0 algorithm (Fig. 3 and Fig. 6)
-class TD0: GameSimulator {
-    static const inline std::string FILE_IDENTIFIER = "qp2048TD0";
-
+class TD0: public BaseModel {
     /*
     bit indexes of the board, for reference (top left is most significant):
     60 56 52 48
@@ -47,13 +45,12 @@ class TD0: GameSimulator {
 
     int TILE_CT, TUPLE_VALUES;
     float LEARNING_RATE;
-
-    static constexpr float WINNING_EVAL = 1e8;
     
     float* lookup;  // lookup table for each tuple's score
 
     public:
     TD0(const int _tile_ct, const float _learning_rate):
+        BaseModel("qp2048TD0"),
         TILE_CT(_tile_ct),
         TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
         LEARNING_RATE(_learning_rate)
@@ -65,6 +62,7 @@ class TD0: GameSimulator {
     }
 #ifndef TRAINING_ONLY
     TD0(const int _n_tuple, const int _tuple_size, const std::vector<int>& _tuples, const int _tile_ct, const float _learning_rate):
+        BaseModel("qp2048TD0"),
         N_TUPLE(_n_tuple),
         TUPLE_SIZE(_tuple_size),
         TUPLES(_tuples.begin(), _tuples.end()),
@@ -75,7 +73,7 @@ class TD0: GameSimulator {
         lookup = new float[TUPLE_VALUES]();
         assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
     }
-    TD0(const float _learning_rate, std::istream& is): LEARNING_RATE(_learning_rate) {
+    TD0(const float _learning_rate, std::istream& is): BaseModel("qp2048TD0"), LEARNING_RATE(_learning_rate) {
         std::string identifier(FILE_IDENTIFIER.size(), '\0');
         is.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
@@ -102,67 +100,12 @@ class TD0: GameSimulator {
         }
     }
 #endif
-
-    static TD0 best_model;
-    static bool best_model_loaded;
-    static void load_best();
-
-    const std::string get_name() const {
+    const std::string get_name() const override {
         return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(TILE_CT) + "_" + std::to_string(LEARNING_RATE);
     }
 
-    board_t test_model(int& fours) {
-        const board_t tile_val0 = generate_random_tile_val();
-        const board_t tile_val1 = generate_random_tile_val();
-        fours += (tile_val0 == 2) + (tile_val1 == 2);
-        board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
-
-        while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
-            const board_t old_board = board;
-
-            int attempts = 0x10000;
-            while (old_board == board) {
-                const int dir = pick_move(board);
-                assert(0 <= dir && dir < 4);
-                board = make_move(board, dir);
-
-                if (game_over(board)) return board;
-
-                assert(--attempts > 0);  // abort the game if it seems stuck
-            }
-
-            const board_t new_tile_val = generate_random_tile_val();
-            if (new_tile_val == 2) ++fours;
-            board = add_tile(board, new_tile_val);
-        }
-
-        return board;
-    }
-
-    // returns ending board from training game
-    // TODO: record and return loss? is there a well-defined loss here?
-    board_t train_model(int& fours) {
-        const board_t tile_val0 = generate_random_tile_val();
-        const board_t tile_val1 = generate_random_tile_val();
-        fours += (tile_val0 == 2) + (tile_val1 == 2);
-        board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
-
-        while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
-            const int best_move = pick_move(board);
-            const board_t after_board = make_move(board, best_move);
-            const board_t rand_tile = generate_random_tile_val();
-            const board_t new_board = add_tile(after_board, rand_tile);
-            fours += rand_tile == 2;
-            
-            learn_evaluation(after_board, new_board);
-
-            board = new_board;
-        }
-
-        return board;
-    }
     // changing the threshold up to 1 barely affects file size
-    void save(const std::string& filename, const float threshold=0.0f) const {
+    void save(const std::string& filename, const float threshold=0.0f) const override {
         std::ofstream fout(filename, std::ios::binary);
         assert(fout.is_open());
 
@@ -189,7 +132,7 @@ class TD0: GameSimulator {
         }
         fout.close();
     }
-    float evaluate(const board_t board) const {
+    float evaluate(const board_t board) const override {
         // incentivize winning as soon as possible
         // # of fours is estimated by taking approximate # of moves and dividing by 10
         // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
@@ -205,7 +148,7 @@ class TD0: GameSimulator {
                         _evaluate(flip_v_board) + _evaluate(transpose(flip_v_board)) +
                         _evaluate(flip_vh_board) + _evaluate(transpose(flip_vh_board)));
     }
-    const int pick_move(const board_t board) const {
+    const int pick_move(const board_t board) const override {
         int best_move = -1;
         float best_score = 0;
         for (int i = 0; i < 4; ++i) {
@@ -223,6 +166,33 @@ class TD0: GameSimulator {
 
         return best_move;
     }
+
+    // returns ending board from training game
+    // TODO: record and return loss? is there a well-defined loss here?
+    board_t train_model(int& fours) override {
+        const board_t tile_val0 = generate_random_tile_val();
+        const board_t tile_val1 = generate_random_tile_val();
+        fours += (tile_val0 == 2) + (tile_val1 == 2);
+        board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
+
+        while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
+            const int best_move = pick_move(board);
+            const board_t after_board = make_move(board, best_move);
+            const board_t rand_tile = generate_random_tile_val();
+            const board_t new_board = add_tile(after_board, rand_tile);
+            fours += rand_tile == 2;
+
+            learn_evaluation(after_board, new_board);
+
+            board = new_board;
+        }
+
+        return board;
+    }
+
+    static TD0 best_model;
+    static bool best_model_loaded;
+    static void load_best();
 
     private:
     const int get_tuple(const int i, const board_t board) const {
@@ -277,58 +247,6 @@ class TD0: GameSimulator {
         }
     }
 };
-
-
-#ifdef WEBSITE
-#include <chrono>
-#include <sstream>
-#include <thread>
-#include <emscripten/fetch.h>
-TD0 TD0::best_model = TD0(0, 0.0f);
-bool TD0::best_model_loaded = false;
-void TD0::load_best() {
-    if (TD0::best_model_loaded) return;  // avoid repeat downloads
-    emscripten_fetch_attr_t attr;
-    emscripten_fetch_attr_init(&attr);
-    strcpy(attr.requestMethod, "GET");
-    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
-
-    attr.onsuccess = [](emscripten_fetch_t* fetch) {
-        std::cerr << "fetch succeeded!" << std::endl;
-        std::istringstream is(std::string(fetch->data, fetch->numBytes));
-        emscripten_fetch_close(fetch);
-
-        TD0::best_model = TD0(0.0f, is);
-        TD0::best_model_loaded = true;
-    };
-    attr.onerror = [](emscripten_fetch_t* fetch) {
-        std::cerr << "failed with status code " << fetch->status << std::endl;
-        emscripten_fetch_close(fetch);
-    };
-    emscripten_fetch(&attr, "../model.bmp");  // model file has .bmp extension to force GitHub Pages to compress it
-}
-
-class ExportedTD0: public Strategy {
-    public:
-    ExportedTD0() { TD0::load_best(); }
-    const int pick_move(const board_t board) override {
-        if (TD0::best_model_loaded == false) {
-            std::cerr << "Waiting for model to load!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-        }
-        return TD0::best_model.pick_move(board);
-    }
-    std::unique_ptr<Strategy> clone() override {
-        return std::make_unique<ExportedTD0>();
-    }
-};
-
-#elif defined TESTING
-std::ifstream fin("machine_learning/model_8-6_16_0.000150/model_8-6_16_0.000150_1000.dat", std::ios::binary);
-TD0 TD0::best_model = TD0(0.00015f, fin);
-bool TD0::best_model_loaded = true;
-void TD0::load_best() { /* do nothing, model already loaded */ }
-#endif  // WEBSITE
 
 #endif
 

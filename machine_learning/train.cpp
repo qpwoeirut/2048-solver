@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include "td0.hpp"
+#include "ExportedTD0.hpp"
 
 constexpr double LEARNING_RATE = 0.00015;
 constexpr int EPOCHS = 500;
