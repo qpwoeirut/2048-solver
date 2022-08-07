@@ -16,20 +16,15 @@ This stores some loose ideas that I might try in the future.
 * "snake" heuristic
 * some sort of "distance" heuristic between tiles of adjacent values
 * penalty heuristic for distance between tiles of same values (didn't really work)
-* try converting corner/wall building heuristics to be difference between adjacent tiles multiplied by a weight
-  * this is essentially a monotonicity heuristic i think?
 * instead of monotonicity for an entire row/column, just have penalties for "trapped" tiles on the edge
 * use concept of "afterstates" to cut down the depth searched by one
 * for wall heuristics, increase depth if the ordering has an "inversion"
-* use geo mean instead of arith mean for expectimax?
-  * issues with overflow; GMP? seems rather slow
 * write a tester for difficult board positions to tune heuristics
 * figure out some import system (CMake?, [check examples](https://github.com/ttroy50/cmake-examples/blob/master/01-basic/H-third-party-library/CMakeLists.txt))
 * make 3 cheater AIs: one that knows tile placements, one that controls tile placements and obviously cheats, one that controls tile placements but pretends that it doesn't
 * optimize cache time/memory more
   * is storing transposed/rotated states or searching for them in cache worth it? will need to benchmark. also might vary based on strategy
 * investigate using better variant of alpha-beta pruning with search order heuristic
-* use compile-time lookup tables for heuristics?
 * `player.simulator.play(player, fours)` is rather ugly; clean up somehow?
 * at some point unit tests should exist
 * also before running the full statistic-generation tests I should run a mini-test with a small amount of games to make sure everything works properly and won't take forever
@@ -54,7 +49,12 @@ This stores some loose ideas that I might try in the future.
 * Parallelize searches within a single game
 
 ## Website
-* add descriptions of each option
 * display the current search depth? and % completion of search?
 * make depth customizable
 * allow user to create their own multiplication weight heuristic
+
+## Probably infeasible/unhelpful
+* use geo mean instead of arith mean for expectimax?
+  * issues with overflow; GMP? seems rather slow
+* try converting corner/wall building heuristics to be difference between adjacent tiles multiplied by a weight
+  * this is essentially a monotonicity heuristic i think?
