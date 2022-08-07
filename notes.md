@@ -7,6 +7,8 @@ This stores some loose ideas that I might try in the future.
     * Started by implementing this [paper](https://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf) from the same authors
   * [Other](https://arxiv.org/pdf/2111.11090.pdf) [work](https://arxiv.org/pdf/1606.07374.pdf)
 * For ML, instead of encoding tile values, encode tile exponents' difference with largest exponent
+  * Store differences from 0-7 and 8+, and have another network that stores exponents from 0-7 and 8+
+  * Allows for tuples of size 6, 9^6 is smaller than current tuple size (15^5) and 14^6
 * Compute a massive lookup table for some small subset of states
   * restrict to 2^10 and below?
   * assume that some amount of states are always empty
