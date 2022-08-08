@@ -1,6 +1,6 @@
 // at most one of these should be defined
-//#define TRAINING_ONLY
-#define TESTING
+#define TRAINING_ONLY
+//#define TESTING
 
 #include <filesystem>
 #include <fstream>
@@ -87,13 +87,13 @@ int main() {
         play_games(true, TRAIN_GAMES);
         std::cout << std::endl;
 
-        std::ofstream fout(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat");
+        std::ofstream fout(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat", std::ios::binary);
         if (i % SAVE_INTERVAL == 0) model.save(fout);
         fout.close();
     }
 #endif
 
-    std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
-    play_games(false, TEST_GAMES);
+//    std::cout << "Running " << TEST_GAMES << " testing games" << std::endl;
+//    play_games(false, TEST_GAMES);
 }
 
