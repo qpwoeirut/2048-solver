@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class SpamCornerPlayer: public Strategy {
+class SpamCornerPlayer : public Strategy {
     std::mt19937 move_gen{std::mt19937()};
     std::uniform_int_distribution<> move_distrib{0, 3};
 
@@ -11,7 +11,7 @@ class SpamCornerPlayer: public Strategy {
         return move_distrib(move_gen);
     }
 
-    public:
+public:
     const int pick_move(const board_t board) override {
         const int move = random_move() & 1;
         if (board != simulator.make_move(board, move)) return move;
@@ -19,10 +19,10 @@ class SpamCornerPlayer: public Strategy {
         if (board != simulator.make_move(board, move ^ 2)) return move ^ 2;
         return move ^ 3;
     }
-    std::unique_ptr<Strategy> clone() override {
+
+    std::unique_ptr <Strategy> clone() override {
         return std::make_unique<SpamCornerPlayer>();
     }
 };
 
 #endif
-

@@ -3,8 +3,8 @@
 
 #include "Strategy.hpp"
 
-class UserPlayer: public Strategy {
-    public:
+class UserPlayer : public Strategy {
+public:
     const int pick_move(const board_t board) override {
         print_board(board);
         std::cout << "Next move? (L, U, R, D)\n";
@@ -24,11 +24,11 @@ class UserPlayer: public Strategy {
         return dir;
     }
 
-    std::unique_ptr<Strategy> clone() override {
+    std::unique_ptr <Strategy> clone() override {
         return std::make_unique<UserPlayer>();
     }
 
-    private:
+private:
     const inline int move_to_int(const char c) {
         if (c == 'L') return 0;
         if (c == 'U') return 1;

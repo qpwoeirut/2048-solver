@@ -6,16 +6,19 @@
 //using cache_t = std::unordered_map<board_t, eval_t>;
 using cache_t = google::dense_hash_map<board_t, eval_t>;  // https://github.com/sparsehash/sparsehash
 
-class ExpectimaxStrategy: public Strategy {
-    protected:
+class ExpectimaxStrategy : public Strategy {
+protected:
     const heuristic_t evaluator;
-    ExpectimaxStrategy(const heuristic_t _evaluator): evaluator(_evaluator) {}
+
+    ExpectimaxStrategy(const heuristic_t _evaluator) : evaluator(_evaluator) {}
 
     static constexpr int MAX_DEPTH = 10;
     static constexpr int USUAL_CACHE = 1 << 16;
 
-    static constexpr board_t INVALID_BOARD  = 0x1111111111111111ULL;  // used as the empty_key for the dense_hash_map cache
-    static constexpr board_t INVALID_BOARD2 = 0x2222222222222222ULL;  // used as the delete_key for the dense_hash_map cache
+    static constexpr board_t
+    INVALID_BOARD = 0x1111111111111111ULL;  // used as the empty_key for the dense_hash_map cache
+    static constexpr board_t
+    INVALID_BOARD2 = 0x2222222222222222ULL;  // used as the delete_key for the dense_hash_map cache
 
     // according to a single benchmark that I ran:
     // cache can reach up to 700k-ish
@@ -43,6 +46,7 @@ class ExpectimaxStrategy: public Strategy {
         cache.min_load_factor(0.3);  // shrink quickly
         cache.max_load_factor(0.9);  // but expand slowly
     }
+
     void add_to_cache(const board_t board, const eval_t score, const int move, const int depth) {
         cache[board] = (((score << 2) | move) << 4) | depth;
 
@@ -60,6 +64,7 @@ class ExpectimaxStrategy: public Strategy {
             }
         }
     }
+
     void update_cache_pointers() {
         while (q[0] < q[1]) {  // delete everything in range q_0 ... q_1
             cache.erase(deletion_queue[q[0]++]);
@@ -76,10 +81,10 @@ class ExpectimaxStrategy: public Strategy {
         q[3] = q_end;
     }
 
-    public:
+public:
     void reset() override {
         cache.clear();
     }
 };
-#endif
 
+#endif

@@ -7,7 +7,7 @@
 
 // based on http://www.cs.put.poznan.pl/wjaskowski/pub/papers/Szubert2014_2048.pdf
 // implements only the TD0 algorithm (Fig. 3 and Fig. 6)
-class TD0: public BaseModel {
+class TD0 : public BaseModel {
     /*
     bit indexes of the board, for reference (top left is most significant):
     60 56 52 48
@@ -27,53 +27,55 @@ class TD0: public BaseModel {
     // defaults, can be changed if loading model from file
     int N_TUPLE = 12;
     int TUPLE_SIZE = 5;
-    std::vector<int> TUPLES {
+    std::vector<int> TUPLES{
 #endif
-        0, 4, 8, 12, 16,
-        16, 20, 24, 28, 32,
-        0, 4, 8, 12, 20,
-        16, 20, 24, 28, 36,
-        0, 4, 8, 16, 20,
-        16, 20, 24, 32, 36,
-        0, 4, 8, 16, 32,
-        16, 20, 24, 32, 48,
-        0, 4, 8, 20, 24,
-        16, 20, 24, 36, 40,
-        4, 16, 20, 24, 36,
-        20, 24, 28, 36, 52,
+            0, 4, 8, 12, 16,
+            16, 20, 24, 28, 32,
+            0, 4, 8, 12, 20,
+            16, 20, 24, 28, 36,
+            0, 4, 8, 16, 20,
+            16, 20, 24, 32, 36,
+            0, 4, 8, 16, 32,
+            16, 20, 24, 32, 48,
+            0, 4, 8, 20, 24,
+            16, 20, 24, 36, 40,
+            4, 16, 20, 24, 36,
+            20, 24, 28, 36, 52,
     };
 
     int TILE_CT, TUPLE_VALUES;
     float LEARNING_RATE;
-    
+
     float* lookup;  // lookup table for each tuple's score
 
-    public:
-    TD0(const int _tile_ct, const float _learning_rate):
-        BaseModel("qp2048TD0"),
-        TILE_CT(_tile_ct),
-        TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
-        LEARNING_RATE(_learning_rate)
-    {
+public:
+    TD0(const int _tile_ct, const float _learning_rate) :
+            BaseModel("qp2048TD0"),
+            TILE_CT(_tile_ct),
+            TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
+            LEARNING_RATE(_learning_rate) {
         lookup = new float[TUPLE_VALUES]();  // page 5: " In all the experiments, the weights were initially set to 0"
 #ifndef TRAINING_ONLY
         assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
 #endif
     }
+
 #ifndef TRAINING_ONLY
-    TD0(const int _n_tuple, const int _tuple_size, const std::vector<int>& _tuples, const int _tile_ct, const float _learning_rate):
-        BaseModel("qp2048TD0"),
-        N_TUPLE(_n_tuple),
-        TUPLE_SIZE(_tuple_size),
-        TUPLES(_tuples.begin(), _tuples.end()),
-        TILE_CT(_tile_ct),
-        TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
-        LEARNING_RATE(_learning_rate)
-    {
+
+    TD0(const int _n_tuple, const int _tuple_size, const std::vector<int>& _tuples, const int _tile_ct,
+        const float _learning_rate) :
+            BaseModel("qp2048TD0"),
+            N_TUPLE(_n_tuple),
+            TUPLE_SIZE(_tuple_size),
+            TUPLES(_tuples.begin(), _tuples.end()),
+            TILE_CT(_tile_ct),
+            TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
+            LEARNING_RATE(_learning_rate) {
         lookup = new float[TUPLE_VALUES]();
         assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
     }
-    TD0(const float _learning_rate, std::istream& is): BaseModel("qp2048TD0"), LEARNING_RATE(_learning_rate) {
+
+    TD0(const float _learning_rate, std::istream& is) : BaseModel("qp2048TD0"), LEARNING_RATE(_learning_rate) {
         std::string identifier(FILE_IDENTIFIER.size(), '\0');
         is.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
@@ -99,13 +101,16 @@ class TD0: public BaseModel {
             if ((nonzero[i >> 3] >> (i & 7)) & 1) is.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
         }
     }
+
 #endif
+
     const std::string get_name() const override {
-        return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(TILE_CT) + "_" + std::to_string(LEARNING_RATE);
+        return "model_" + std::to_string(N_TUPLE) + "-" + std::to_string(TUPLE_SIZE) + "_" + std::to_string(TILE_CT) +
+               "_" + std::to_string(LEARNING_RATE);
     }
 
     // changing the threshold up to 1 barely affects file size
-    void save(std::ostream& fout, const float threshold=0.0f) const override {
+    void save(std::ostream& fout, const float threshold = 0.0f) const override {
         fout.write(FILE_IDENTIFIER.c_str(), FILE_IDENTIFIER.size());
 
         fout.put(static_cast<char>(N_TUPLE));
@@ -128,6 +133,7 @@ class TD0: public BaseModel {
             }
         }
     }
+
     float evaluate(const board_t board) const override {
         // incentivize winning as soon as possible
         // # of fours is estimated by taking approximate # of moves and dividing by 10
@@ -144,6 +150,7 @@ class TD0: public BaseModel {
                         _evaluate(flip_v_board) + _evaluate(transpose(flip_v_board)) +
                         _evaluate(flip_vh_board) + _evaluate(transpose(flip_vh_board)));
     }
+
     const int pick_move(const board_t board) const override {
         int best_move = -1;
         float best_score = 0;
@@ -165,9 +172,10 @@ class TD0: public BaseModel {
 
     static TD0 best_model;
     static bool best_model_loaded;
+
     static void load_best();
 
-    private:
+private:
     const int get_tuple(const int i, const board_t board) const {
         int tuple = 0;
         for (int j = 0; j < TUPLE_SIZE; ++j) {
@@ -176,6 +184,7 @@ class TD0: public BaseModel {
         }
         return tuple;
     }
+
     const float _evaluate(const board_t board) const {
         float evaluation = 0;
         for (int i = 0; i < N_TUPLE; ++i) {
@@ -183,10 +192,12 @@ class TD0: public BaseModel {
         }
         return evaluation;
     }
+
     const int calculate_reward(const board_t board, const board_t after_board) const {
         // difference of approximations works here since each board will have the same amount of fours spawn
         return approximate_score(after_board) - approximate_score(board);
     }
+
     void learn_evaluation(const board_t after_board, const board_t new_board) override {
         if (game_over(new_board)) {
             // all future rewards will be 0, since the game has ended
@@ -198,6 +209,7 @@ class TD0: public BaseModel {
         const int next_reward = calculate_reward(new_board, next_afterstate);
         update_lookup(after_board, next_reward + evaluate(next_afterstate) - evaluate(after_board));
     }
+
     void update_lookup(const board_t after_board, float val) {
         val *= LEARNING_RATE;
 
@@ -222,4 +234,3 @@ class TD0: public BaseModel {
 };
 
 #endif
-

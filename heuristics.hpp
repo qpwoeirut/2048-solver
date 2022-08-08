@@ -19,12 +19,15 @@ namespace heuristics {
     inline board_t tile_exp(const board_t board, const int pos) {
         return (board >> pos) & 0xF;
     }
+
     inline board_t tile_exp(const board_t board, const int r, const int c) {
         return (board >> (((r << 2) | c) << 2)) & 0xF;
     }
+
     inline board_t tile_val(const board_t board, const int pos) {
         return tile_exp(board, pos) == 0 ? 0 : 1 << tile_exp(board, pos);
     }
+
     inline board_t tile_val(const board_t board, const int r, const int c) {
         return tile_val(board, ((r << 2) | c) << 2);
     }
@@ -54,7 +57,8 @@ namespace heuristics {
                                    2  * tile_val(board, 1, 0) + 1 * tile_val(board, 1, 1) +
                                    1  * tile_val(board, 0, 0);
 
-        return std::max({lower_left, upper_left, lower_right, upper_right});  // using initializer list takes about same time as 3 std::max calls
+        // using initializer list takes about same time as 3 std::max calls
+        return std::max({lower_left, upper_left, lower_right, upper_right});
     }
 
     // compares boards lexicographically, going in a snake across a wall of the board with a gap on the side
@@ -65,26 +69,32 @@ namespace heuristics {
     // x x x x
     // takes the maximum over all 4 walls, both transposed and not
     eval_t _wall_gap_heuristic(const board_t board) {
-        const eval_t top    = (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) |
-                              (tile_exp(board, 2, 3) << 20) | (tile_exp(board, 2, 2) << 24) | (tile_exp(board, 2, 1) << 28) |
-                              (tile_exp(board, 1, 3) << 16) | (tile_exp(board, 1, 2) << 12) | (tile_exp(board, 1, 1) << 8);
+        const eval_t top =
+                (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) |
+                (tile_exp(board, 2, 3) << 20) | (tile_exp(board, 2, 2) << 24) | (tile_exp(board, 2, 1) << 28) |
+                (tile_exp(board, 1, 3) << 16) | (tile_exp(board, 1, 2) << 12) | (tile_exp(board, 1, 1) << 8);
 
-        const eval_t bottom = (tile_exp(board, 0, 0) << 40) | (tile_exp(board, 0, 1) << 36) | (tile_exp(board, 0, 2) << 32) |
-                              (tile_exp(board, 1, 0) << 20) | (tile_exp(board, 1, 1) << 24) | (tile_exp(board, 1, 2) << 28) |
-                              (tile_exp(board, 2, 0) << 16) | (tile_exp(board, 2, 1) << 12) | (tile_exp(board, 2, 2) << 8);
+        const eval_t bottom =
+                (tile_exp(board, 0, 0) << 40) | (tile_exp(board, 0, 1) << 36) | (tile_exp(board, 0, 2) << 32) |
+                (tile_exp(board, 1, 0) << 20) | (tile_exp(board, 1, 1) << 24) | (tile_exp(board, 1, 2) << 28) |
+                (tile_exp(board, 2, 0) << 16) | (tile_exp(board, 2, 1) << 12) | (tile_exp(board, 2, 2) << 8);
 
-        const eval_t left   = (tile_exp(board, 0, 3) << 40) | (tile_exp(board, 1, 3) << 36) | (tile_exp(board, 2, 3) << 32) |
-                              (tile_exp(board, 0, 2) << 20) | (tile_exp(board, 1, 2) << 24) | (tile_exp(board, 2, 2) << 28) |
-                              (tile_exp(board, 0, 1) << 16) | (tile_exp(board, 1, 1) << 12) | (tile_exp(board, 2, 1) << 8);
+        const eval_t left =
+                (tile_exp(board, 0, 3) << 40) | (tile_exp(board, 1, 3) << 36) | (tile_exp(board, 2, 3) << 32) |
+                (tile_exp(board, 0, 2) << 20) | (tile_exp(board, 1, 2) << 24) | (tile_exp(board, 2, 2) << 28) |
+                (tile_exp(board, 0, 1) << 16) | (tile_exp(board, 1, 1) << 12) | (tile_exp(board, 2, 1) << 8);
 
-        const eval_t right  = (tile_exp(board, 3, 0) << 40) | (tile_exp(board, 2, 0) << 36) | (tile_exp(board, 1, 0) << 32) |
-                              (tile_exp(board, 3, 1) << 20) | (tile_exp(board, 2, 1) << 24) | (tile_exp(board, 1, 1) << 28) |
-                              (tile_exp(board, 3, 2) << 16) | (tile_exp(board, 2, 2) << 12) | (tile_exp(board, 1, 2) << 8);
+        const eval_t right =
+                (tile_exp(board, 3, 0) << 40) | (tile_exp(board, 2, 0) << 36) | (tile_exp(board, 1, 0) << 32) |
+                (tile_exp(board, 3, 1) << 20) | (tile_exp(board, 2, 1) << 24) | (tile_exp(board, 1, 1) << 28) |
+                (tile_exp(board, 3, 2) << 16) | (tile_exp(board, 2, 2) << 12) | (tile_exp(board, 1, 2) << 8);
 
         return std::max({top, bottom, left, right});
     }
+
     eval_t wall_gap_heuristic(const board_t board) {
-        return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
+        return std::max(_wall_gap_heuristic(board), _wall_gap_heuristic(transpose(board))) + score_heuristic(board);
+        // tiebreak by score
     }
 
     // compares boards lexicographically, going in a snake across an entire wall of the board
@@ -95,26 +105,32 @@ namespace heuristics {
     // x x x x
     // takes the maximum over all 4 walls, both transposed and not
     eval_t _full_wall_heuristic(const board_t board) {
-        const eval_t top    = (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) | (tile_exp(board, 3, 0) << 28) |
-                              (tile_exp(board, 2, 3) << 12) | (tile_exp(board, 2, 2) << 16) | (tile_exp(board, 2, 1) << 20) | (tile_exp(board, 2, 0) << 24) |
-                              (tile_exp(board, 1, 3) << 8);
+        const eval_t top =
+                (tile_exp(board, 3, 3) << 40) | (tile_exp(board, 3, 2) << 36) | (tile_exp(board, 3, 1) << 32) | (tile_exp(board, 3, 0) << 28) |
+                (tile_exp(board, 2, 3) << 12) | (tile_exp(board, 2, 2) << 16) | (tile_exp(board, 2, 1) << 20) | (tile_exp(board, 2, 0) << 24) |
+                (tile_exp(board, 1, 3) << 8);
 
-        const eval_t bottom = (tile_exp(board, 0, 0) << 40) | (tile_exp(board, 0, 1) << 36) | (tile_exp(board, 0, 2) << 32) | (tile_exp(board, 0, 3) << 28) |
-                              (tile_exp(board, 1, 0) << 12) | (tile_exp(board, 1, 1) << 16) | (tile_exp(board, 1, 2) << 20) | (tile_exp(board, 0, 3) << 24) |
-                              (tile_exp(board, 2, 0) << 8);
+        const eval_t bottom =
+                (tile_exp(board, 0, 0) << 40) | (tile_exp(board, 0, 1) << 36) | (tile_exp(board, 0, 2) << 32) | (tile_exp(board, 0, 3) << 28) |
+                (tile_exp(board, 1, 0) << 12) | (tile_exp(board, 1, 1) << 16) | (tile_exp(board, 1, 2) << 20) | (tile_exp(board, 0, 3) << 24) |
+                (tile_exp(board, 2, 0) << 8);
 
-        const eval_t left   = (tile_exp(board, 0, 3) << 40) | (tile_exp(board, 1, 3) << 36) | (tile_exp(board, 2, 3) << 32) | (tile_exp(board, 3, 3) << 28) |
-                              (tile_exp(board, 0, 2) << 12) | (tile_exp(board, 1, 2) << 16) | (tile_exp(board, 2, 2) << 20) | (tile_exp(board, 3, 2) << 24) |
-                              (tile_exp(board, 0, 1) << 8);
+        const eval_t left =
+                (tile_exp(board, 0, 3) << 40) | (tile_exp(board, 1, 3) << 36) | (tile_exp(board, 2, 3) << 32) | (tile_exp(board, 3, 3) << 28) |
+                (tile_exp(board, 0, 2) << 12) | (tile_exp(board, 1, 2) << 16) | (tile_exp(board, 2, 2) << 20) | (tile_exp(board, 3, 2) << 24) |
+                (tile_exp(board, 0, 1) << 8);
 
-        const eval_t right  = (tile_exp(board, 3, 0) << 40) | (tile_exp(board, 2, 0) << 36) | (tile_exp(board, 1, 0) << 32) | (tile_exp(board, 0, 0) << 28) |
-                              (tile_exp(board, 3, 1) << 12) | (tile_exp(board, 2, 1) << 16) | (tile_exp(board, 1, 1) << 20) | (tile_exp(board, 0, 1) << 24) |
-                              (tile_exp(board, 3, 2) << 8);
+        const eval_t right =
+                (tile_exp(board, 3, 0) << 40) | (tile_exp(board, 2, 0) << 36) | (tile_exp(board, 1, 0) << 32) | (tile_exp(board, 0, 0) << 28) |
+                (tile_exp(board, 3, 1) << 12) | (tile_exp(board, 2, 1) << 16) | (tile_exp(board, 1, 1) << 20) | (tile_exp(board, 0, 1) << 24) |
+                (tile_exp(board, 3, 2) << 8);
 
         return std::max({top, bottom, left, right});
     }
+
     eval_t full_wall_heuristic(const board_t board) {
-        return std::max(_full_wall_heuristic(board), _full_wall_heuristic(transpose(board))) + score_heuristic(board);  // tiebreak by score
+        return std::max(_full_wall_heuristic(board), _full_wall_heuristic(transpose(board))) + score_heuristic(board);
+        // tiebreak by score
     }
 
     inline eval_t _val_cmp(const int a, const int b) {
@@ -123,7 +139,9 @@ namespace heuristics {
 
     // same as full_wall_heuristic, but with a penalty for tiles that are inverted in the order
     eval_t _strict_wall_heuristic(const board_t board, const eval_t max_tile) {
-        if ((board & 0xF) < max_tile) return count_empty(to_tile_mask(board));  // fixing the position will be easier if the board has more space
+        if ((board & 0xF) < max_tile)
+            // fixing the position will be easier if the board has more space
+            return count_empty(to_tile_mask(board));
 
         // 60 56 52 48
         // 44 40 36 32
@@ -152,21 +170,24 @@ namespace heuristics {
         if (inv != -1) {
             const int inv_val = (board >> inv) & 0xF;
             if ((inv & 0b1100) != 0b1100) {  // not on left edge
-                if (inv < 16) ret += _val_cmp((board >> (inv + 4)) & 0xF, inv_val);  // left side should be smaller only if inv is on first row
+                // left side should be smaller only if inv is on first row
+                if (inv < 16) ret += _val_cmp((board >> (inv + 4)) & 0xF, inv_val);
             }
             // no check required for going up, inversion location is guaranteed to not be on top edge
             ret += _val_cmp((board >> (inv + 16)) & 0xF, inv_val);
             if ((inv & 0b1100) != 0) {  // not on right edge
-                if (inv >= 16) ret += _val_cmp((board >> (inv - 4)) & 0xF, inv_val);  // right side should be smaller only if inv is on second row
+                // right side should be smaller only if inv is on second row
+                if (inv >= 16) ret += _val_cmp((board >> (inv - 4)) & 0xF, inv_val);
             }
         } else {
-            ret += _val_cmp((board >> 32) & 0xF, (board >> 16) & 0xF) + 
-                   _val_cmp((board >> 36) & 0xF, (board >> 20) & 0xF) + 
-                   _val_cmp((board >> 40) & 0xF, (board >> 24) & 0xF) + 
+            ret += _val_cmp((board >> 32) & 0xF, (board >> 16) & 0xF) +
+                   _val_cmp((board >> 36) & 0xF, (board >> 20) & 0xF) +
+                   _val_cmp((board >> 40) & 0xF, (board >> 24) & 0xF) +
                    _val_cmp((board >> 44) & 0xF, (board >> 28) & 0xF);
         }
         return ret;
     }
+
     eval_t strict_wall_heuristic(const board_t board) {
         const int max_tile = get_max_tile(board);
         const board_t flip_h_board = flip_h(board);
@@ -181,28 +202,33 @@ namespace heuristics {
 
     // similar to corner_heuristic but with different weights
     eval_t _skewed_corner_heuristic(const board_t board) {
-        const eval_t top    = 16 * tile_val(board, 3, 3) + 10 * tile_val(board, 3, 2) + 6 * tile_val(board, 3, 1) + 3 * tile_val(board, 3, 0) +
-                              10 * tile_val(board, 2, 3) + 6  * tile_val(board, 2, 2) + 3 * tile_val(board, 2, 1) + 1 * tile_val(board, 2, 0) +
-                              4  * tile_val(board, 1, 3) + 3  * tile_val(board, 1, 2) + 1 * tile_val(board, 1, 1) +
-                              1  * tile_val(board, 0, 3) + 1  * tile_val(board, 0, 2);
+        const eval_t top =
+                16 * tile_val(board, 3, 3) + 10 * tile_val(board, 3, 2) + 6 * tile_val(board, 3, 1) + 3 * tile_val(board, 3, 0) +
+                10 * tile_val(board, 2, 3) + 6  * tile_val(board, 2, 2) + 3 * tile_val(board, 2, 1) + 1 * tile_val(board, 2, 0) +
+                4  * tile_val(board, 1, 3) + 3  * tile_val(board, 1, 2) + 1 * tile_val(board, 1, 1) +
+                1  * tile_val(board, 0, 3) + 1  * tile_val(board, 0, 2);
 
-        const eval_t bottom = 16 * tile_val(board, 0, 0) + 10 * tile_val(board, 0, 1) + 6 * tile_val(board, 0, 2) + 3 * tile_val(board, 0, 3) +
-                              10 * tile_val(board, 1, 0) + 6  * tile_val(board, 1, 1) + 3 * tile_val(board, 1, 2) + 1 * tile_val(board, 1, 3) +
-                              4  * tile_val(board, 2, 0) + 3  * tile_val(board, 2, 1) + 1 * tile_val(board, 2, 2) +
-                              1  * tile_val(board, 3, 0) + 1  * tile_val(board, 3, 1);
+        const eval_t bottom =
+                16 * tile_val(board, 0, 0) + 10 * tile_val(board, 0, 1) + 6 * tile_val(board, 0, 2) + 3 * tile_val(board, 0, 3) +
+                10 * tile_val(board, 1, 0) + 6  * tile_val(board, 1, 1) + 3 * tile_val(board, 1, 2) + 1 * tile_val(board, 1, 3) +
+                4  * tile_val(board, 2, 0) + 3  * tile_val(board, 2, 1) + 1 * tile_val(board, 2, 2) +
+                1  * tile_val(board, 3, 0) + 1  * tile_val(board, 3, 1);
 
-        const eval_t left   = 16 * tile_val(board, 0, 3) + 10 * tile_val(board, 1, 3) + 6 * tile_val(board, 2, 3) + 3 * tile_val(board, 3, 3) +
-                              10 * tile_val(board, 0, 2) + 6  * tile_val(board, 1, 2) + 3 * tile_val(board, 2, 2) + 1 * tile_val(board, 3, 2) +
-                              4  * tile_val(board, 0, 1) + 3  * tile_val(board, 1, 1) + 1 * tile_val(board, 2, 1) +
-                              1  * tile_val(board, 0, 0) + 1  * tile_val(board, 1, 0);
+        const eval_t left =
+                16 * tile_val(board, 0, 3) + 10 * tile_val(board, 1, 3) + 6 * tile_val(board, 2, 3) + 3 * tile_val(board, 3, 3) +
+                10 * tile_val(board, 0, 2) + 6  * tile_val(board, 1, 2) + 3 * tile_val(board, 2, 2) + 1 * tile_val(board, 3, 2) +
+                4  * tile_val(board, 0, 1) + 3  * tile_val(board, 1, 1) + 1 * tile_val(board, 2, 1) +
+                1  * tile_val(board, 0, 0) + 1  * tile_val(board, 1, 0);
 
-        const eval_t right  = 16 * tile_val(board, 3, 0) + 10 * tile_val(board, 2, 0) + 6 * tile_val(board, 1, 0) + 3 * tile_val(board, 0, 0) +
-                              10 * tile_val(board, 3, 1) + 6  * tile_val(board, 2, 1) + 3 * tile_val(board, 1, 1) + 1 * tile_val(board, 0, 1) +
-                              4  * tile_val(board, 3, 2) + 3  * tile_val(board, 2, 2) + 1 * tile_val(board, 1, 2) +
-                              1  * tile_val(board, 3, 3) + 1  * tile_val(board, 2, 3);
+        const eval_t right =
+                16 * tile_val(board, 3, 0) + 10 * tile_val(board, 2, 0) + 6 * tile_val(board, 1, 0) + 3 * tile_val(board, 0, 0) +
+                10 * tile_val(board, 3, 1) + 6  * tile_val(board, 2, 1) + 3 * tile_val(board, 1, 1) + 1 * tile_val(board, 0, 1) +
+                4  * tile_val(board, 3, 2) + 3  * tile_val(board, 2, 2) + 1 * tile_val(board, 1, 2) +
+                1  * tile_val(board, 3, 3) + 1  * tile_val(board, 2, 3);
 
         return std::max({top, bottom, left, right});
     }
+
     eval_t skewed_corner_heuristic(const board_t board) {
         return std::max(_skewed_corner_heuristic(board), _skewed_corner_heuristic(transpose(board)));
     }
@@ -226,7 +252,7 @@ namespace heuristics {
     consteval std::array<eval_t, ROWS> gen_monotonicity() {
         std::array<eval_t, ROWS> monotonicity;
         for (int row = 0; row < ROWS; ++row) {
-            const int r[4] = { (row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF };
+            const int r[4] = {(row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF};
             monotonicity[row] = (1 << r[0]) + (1 << r[1]) + (1 << r[2]) + (1 << r[3]);
             for (int i = 0; i < 3; ++i) {
                 if (r[i] < r[i + 1]) {
@@ -240,6 +266,7 @@ namespace heuristics {
         }
         return monotonicity;
     }
+
     constexpr std::array<eval_t, ROWS> monotonicity = gen_monotonicity();
     eval_t monotonicity_heuristic(const board_t board) {
         const board_t transposed_board = transpose(board);

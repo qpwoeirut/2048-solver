@@ -24,7 +24,7 @@ int move_total = 0;
 const int play_game(Strategy& player, const bool print_results) {
     std::string record = "";
     const board_t board = player.simulator.play(player, record);
-    
+
     const int fours = count_fours(record);
     move_total += count_moves_made(board, fours);
 
@@ -52,10 +52,8 @@ void test_player(Strategy& player, const int games) {
 
     std::cout << "Playing " << games << " games took " << time_taken << " seconds (" << time_taken / games << " seconds per game)\n";
 
-    for (int i= MAX_TILE - 1; i >= 0; --i) {
-        results[i] += results[i + 1];
-    }
-    for (int i= MIN_TILE; i <= MAX_TILE; ++i) {
+    for (int i = MAX_TILE - 1; i >= 0; --i) results[i] += results[i + 1];
+    for (int i = MIN_TILE; i <= MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
     std::cout << "Average score: " << score_total * 1.0 / games << std::endl;

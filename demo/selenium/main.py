@@ -8,7 +8,6 @@ from selenium.common.exceptions import StaleElementReferenceException, NoSuchEle
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-
 MOVES = "awds"  # 0=left, 1=up, 2=right, 3=down
 POWERS_OF_TWO = [1 << x for x in range(18)]  # from 2 to 2^17
 LOG2 = {val: i for i, val in enumerate(POWERS_OF_TWO)}
@@ -84,8 +83,7 @@ def main():
 
     CORNER_HEURISTIC = 2
     # play_game(players.ExpectimaxDepthStrategy(0, CORNER_HEURISTIC))
-            
+
 
 if __name__ == '__main__':
     main()
-

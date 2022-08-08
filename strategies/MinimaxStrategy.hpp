@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class MinimaxStrategy: public Strategy {
+class MinimaxStrategy : public Strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
@@ -12,16 +12,18 @@ class MinimaxStrategy: public Strategy {
 
     heuristic_t evaluator;
 
-    public:
+public:
     int depth = 0;
+
     MinimaxStrategy(const int _depth, const heuristic_t _evaluator) {
         depth = _depth;
         evaluator = _evaluator;
     }
+
     MinimaxStrategy(const int _depth, const int heuristic_idx) :
-        MinimaxStrategy(_depth, heuristics::exports[heuristic_idx]) {}
-    
-    std::unique_ptr<Strategy> clone() override {
+            MinimaxStrategy(_depth, heuristics::exports[heuristic_idx]) {}
+
+    std::unique_ptr <Strategy> clone() override {
         return std::make_unique<MinimaxStrategy>(depth, evaluator);
     }
 
@@ -31,7 +33,7 @@ class MinimaxStrategy: public Strategy {
         return move;
     }
 
-    private:
+private:
     const eval_t helper(const board_t board, const int cur_depth, eval_t alpha, const eval_t beta0, const int fours) {
         if (simulator.game_over(board)) {
             const eval_t score = evaluator(board);
@@ -43,7 +45,7 @@ class MinimaxStrategy: public Strategy {
 
         eval_t best_score = heuristics::MIN_EVAL;
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
-        for (int i=0; i<4; ++i) {
+        for (int i = 0; i < 4; ++i) {
             eval_t current_score = heuristics::MAX_EVAL;  // next step will minimize this across all tile placements
             const board_t new_board = simulator.make_move(board, i);
             if (board == new_board) {
@@ -51,7 +53,7 @@ class MinimaxStrategy: public Strategy {
             } else {
                 const uint16_t tile_mask = to_tile_mask(new_board);
                 eval_t beta = beta0;
-                for (int j=0; j<16; ++j) {
+                for (int j = 0; j < 16; ++j) {
                     if (((tile_mask >> j) & 1) == 0) {
                         current_score = std::min(current_score,
                                                  helper(new_board | (1ULL << (j << 2)), cur_depth - 1, alpha, beta, fours) >> 2);
@@ -81,5 +83,5 @@ class MinimaxStrategy: public Strategy {
         return 2 + (score > 6) + (score > 9) + (score > 11) + (score > 14) + (score > 16);
     }
 };
-#endif
 
+#endif

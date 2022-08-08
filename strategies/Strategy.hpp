@@ -12,15 +12,17 @@ std::mt19937 seed_generator{static_cast<unsigned int>(get_current_time_ms())};  
 #endif
 
 class Strategy {
-    public:
+public:
     GameSimulator simulator{static_cast<long long>(seed_generator())};
 
     virtual ~Strategy() = default;
-    virtual std::unique_ptr<Strategy> clone() = 0;
+
+    virtual std::unique_ptr <Strategy> clone() = 0;
+
     virtual const int pick_move(const board_t board) = 0;
+
     virtual void reset() {}  // most strategies won't require any resetting
 };
 
 
 #endif
-

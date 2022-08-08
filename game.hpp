@@ -16,7 +16,7 @@ class Strategy;  // Strategy depends on GameSimulator and will be #include-ed at
 consteval std::array<row_t, ROWS> generate_shift() {
     std::array<row_t, ROWS> shift;
     for (int row = 0; row < ROWS; ++row) {
-        int r[4] = { (row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF };
+        int r[4] = {(row >> 12) & 0xF, (row >> 8) & 0xF, (row >> 4) & 0xF, row & 0xF};
 
         // pull values to the left
         for (int i = 0; i < 3; ++i) {
@@ -65,6 +65,7 @@ consteval std::array<uint8_t, EMPTY_TILE_POSITIONS> generate_empty_tiles() {
     assert(idx == EMPTY_TILE_POSITIONS);
     return empty_tiles;
 }
+
 consteval std::array<int, EMPTY_MASKS> generate_empty_index() {
     std::array<int, EMPTY_MASKS> empty_index;
     int idx = 0;
@@ -95,9 +96,10 @@ class GameSimulator {
     static constexpr std::array<char, 4> MOVES = {'l', 'u', 'r', 'd'};  // use lowercase to make counting # of 4's placed easier
 
     std::mt19937 empty_tile_gen;
-    std::uniform_int_distribution<> empty_tile_distrib{0, 720720 - 1};  // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
+    std::uniform_int_distribution<> empty_tile_distrib{0, 720720 - 1};
+    // 720720 is lcm(1, 2, 3, ... , 15, 16), providing an even distribution
 
-    public:
+public:
     GameSimulator(const long long rng_seed = get_current_time_ms()) {
         empty_tile_gen.seed(rng_seed);
     }
@@ -109,7 +111,7 @@ class GameSimulator {
                 (static_cast<board_t>(shift[(board >> 32) & 0xFFFF]) << 32) |
                 (static_cast<board_t>(shift[(board >> 16) & 0xFFFF]) << 16) |
                 (static_cast<board_t>(shift[ board        & 0xFFFF]));
-        
+
         // checks if the 65536 tile is reached
 //        if (shift[dir >> 1][(board >> 48) & 0xFFFF] == WINNING_ROW ||
 //            shift[dir >> 1][(board >> 32) & 0xFFFF] == WINNING_ROW ||
@@ -133,30 +135,36 @@ class GameSimulator {
         const int option_count = empty_index[tile_mask + 1] - empty_index[tile_mask];
         return empty_tiles[empty_index[tile_mask] + (empty_tile_distrib(empty_tile_gen) % option_count)];
     }
+
     board_t add_tile(const board_t board, const board_t tile_val) {
         return board | (tile_val << pick_empty_position(board));
     }
+
     board_t add_tile(const board_t board, const board_t tile_val, std::string& record) {
         const uint8_t position = pick_empty_position(board);
         const board_t new_board = board | (tile_val << position);
 
         record.push_back((position / 4) + (tile_val == 1 ? 'a' : 'A'));
-        
+
         return new_board;
     }
 
     bool game_over(const board_t board) const {
-        return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) && board == make_move(board, 3));// || board == WINNING_BOARD;
+        return (board == make_move(board, 0) && board == make_move(board, 1) && board == make_move(board, 2) &&
+                board == make_move(board, 3));// || board == WINNING_BOARD;
     }
 
     board_t play(Strategy&, std::string&);
+
     board_t play_slow(Strategy&, std::string&, void (*)(const board_t));
 };
 
 #include "strategies/Strategy.hpp"
 
 board_t GameSimulator::play(Strategy& player, std::string& record) {
-    record.reserve(6000);  // reserve space for 6000 chars, enough for almost 3000 moves. should be enough for most games
+    // reserve space for 6000 chars, enough for almost 3000 moves. should be enough for most games
+    record.reserve(6000);
+
     const board_t tile_val0 = generate_random_tile_val();
     const board_t tile_val1 = generate_random_tile_val();
     board_t board = add_tile(0, tile_val0, record);
@@ -173,7 +181,7 @@ board_t GameSimulator::play(Strategy& player, std::string& record) {
             board = make_move(board, dir);
 
             assert(--attempts > 0);  // abort the game if the strategy keeps picking an invalid move
-        } 
+        }
         record.push_back(MOVES[dir]);
 
         if (game_over(board)) return board;
@@ -211,7 +219,7 @@ board_t GameSimulator::play_slow(Strategy& player, std::string& record, void (*c
             board = make_move(board, dir);
 
             assert(--attempts > 0);  // abort the game if the strategy keeps picking an invalid move
-        } 
+        }
         record.push_back(MOVES[dir]);
 
         if (game_over(board)) return board;

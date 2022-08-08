@@ -3,10 +3,10 @@
 
 #include "Strategy.hpp"
 
-class RotatingPlayer: public Strategy {
+class RotatingPlayer : public Strategy {
     int current_move = 0;
 
-    public:
+public:
     const int pick_move(const board_t board) override {
         do {
             current_move = (current_move + 1) % 4;
@@ -14,10 +14,9 @@ class RotatingPlayer: public Strategy {
         return current_move;
     }
 
-    std::unique_ptr<Strategy> clone() override {
+    std::unique_ptr <Strategy> clone() override {
         return std::make_unique<RotatingPlayer>();
     }
 };
 
 #endif
-

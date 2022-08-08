@@ -10,7 +10,8 @@
 constexpr double LEARNING_RATE = 0.00015;
 constexpr int EPOCHS = 500;
 constexpr int SAVE_INTERVAL = 50;
-static_assert(EPOCHS % SAVE_INTERVAL == 0);
+static_assert(EPOCHS
+% SAVE_INTERVAL == 0);
 
 constexpr int TRAIN_GAMES = 10000;
 constexpr int TEST_GAMES = 100000;
@@ -34,10 +35,11 @@ float calculate_average(const int arr[], const int n) {
     for (int i = 0; i < n; ++i) sum += arr[i];
     return float(sum) / n;
 }
+
 float calculate_median(const int arr[], const int n) {  // if n is even, returns mean of two middle elements
-    std::vector<int> tmp(arr, arr+n);
+    std::vector<int> tmp(arr, arr + n);
     sort(tmp.begin(), tmp.end());
-    return (n & 1) ? tmp[n / 2] : (tmp[(n-1) / 2] + tmp[n / 2]) / 2.0;
+    return (n & 1) ? tmp[n / 2] : (tmp[(n - 1) / 2] + tmp[n / 2]) / 2.0;
 }
 
 void clear_results() {
@@ -47,10 +49,8 @@ void clear_results() {
 }
 
 void print_results(const int games) {
-    for (int i = MAX_TILE - 1; i >= MIN_TILE; --i) {
-        results[i] += results[i+1];
-    }
-    for (int i= MIN_TILE; i <= MAX_TILE; ++i) {
+    for (int i = MAX_TILE - 1; i >= MIN_TILE; --i) results[i] += results[i + 1];
+    for (int i = MIN_TILE; i <= MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
     std::cout << "Moves: " << calculate_average(moves, games) << ' ' << calculate_median(moves, games) << std::endl;
@@ -63,7 +63,7 @@ void play_games(const bool train, const int games) {
         int fours = 0;
         const board_t board = train ? model.train_model(fours) : model.test_model(fours);
         const int max_tile = get_max_tile(board);
-        
+
         ++results[max_tile];
 
         moves[i] = count_moves_made(board, fours);
@@ -87,7 +87,7 @@ int main() {
         play_games(true, TRAIN_GAMES);
         std::cout << std::endl;
 
-        std::ofstream fout(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat", std::ios::binary);
+        std::ofstream fout(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat",std::ios::binary);
         if (i % SAVE_INTERVAL == 0) model.save(fout);
         fout.close();
     }

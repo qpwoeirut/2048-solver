@@ -37,12 +37,13 @@ int moves[GAMES[4]];  // each index is only modified by one thread so atomic isn
 int scores[GAMES[4]];
 
 long long calculate_total(const int arr[], const int n) {
-    return std::accumulate(arr, arr+n, 0LL);
+    return std::accumulate(arr, arr + n, 0LL);
 }
+
 float calculate_median(const int arr[], const int n) {  // if n is even, returns mean of two middle elements
-    std::vector<int> tmp(arr, arr+n);
+    std::vector<int> tmp(arr, arr + n);
     sort(tmp.begin(), tmp.end());
-    return (n & 1) ? tmp[n / 2] : (tmp[(n-1) / 2] + tmp[n / 2]) / 2.0;
+    return (n & 1) ? tmp[n / 2] : (tmp[(n - 1) / 2] + tmp[n / 2]) / 2.0;
 }
 
 void write_headings(std::ofstream& fout) {
@@ -55,7 +56,8 @@ void write_headings(std::ofstream& fout) {
     fout << std::endl;
 }
 
-void save_results(std::ofstream& fout, const std::string& player_name, const int games, const float time_taken, const float computation_time) {
+void save_results(std::ofstream& fout, const std::string& player_name, const int games, const float time_taken,
+                  const float computation_time) {
     assert(fout.is_open());
     fout << player_name << ',' << games << ',' << time_taken << ',' << computation_time;
     for (int i = MIN_TILE; i <= MAX_TILE; ++i) {
@@ -90,7 +92,7 @@ long long test_player_thread(const std::unique_ptr<Strategy> player) {  // this 
 
 void test_player(std::ofstream& fout, const std::string& player_name, std::unique_ptr<Strategy> player, const int games) {
     std::cout << "\n\nTesting " << player_name << " player..." << std::endl;
-    std::fill(results, results+MAX_TILE + 1, 0);
+    std::fill(results, results + MAX_TILE + 1, 0);
 
     games_remaining.store(games);
 
@@ -112,10 +114,8 @@ void test_player(std::ofstream& fout, const std::string& player_name, std::uniqu
     const float time_taken = (end_time - start_time) / 1000.0;
     std::cout << "Playing " << games << " games took " << time_taken << " seconds (" << time_taken / games << " seconds per game, computation time " << computation_time << ")\n";
 
-    for (int i= MAX_TILE - 1; i >= 0; --i) {
-        results[i] += results[i+1];
-    }
-    for (int i= MIN_TILE; i <= MAX_TILE; ++i) {
+    for (int i = MAX_TILE - 1; i >= 0; --i) results[i] += results[i + 1];
+    for (int i = MIN_TILE; i <= MAX_TILE; ++i) {
         std::cout << i << ' ' << results[i] << " (" << 100.0 * results[i] / games << ')' << std::endl;
     }
     save_results(fout, player_name, games, time_taken, computation_time);
@@ -154,7 +154,9 @@ void test_heuristic(const std::string& name, heuristic_t heuristic) {
 
     fout = std::ofstream("results/" + name + "-expmx.csv");
     write_headings(fout);
-    for (int depth = -1; depth < MAX_DEPTH; depth++) {  // include depth=-1 and depth=0, which uses depth picker; d=MAX_DEPTH will take too long
+
+    // include depth=-1 and depth=0, which uses depth picker; d=MAX_DEPTH will take too long
+    for (int depth = -1; depth < MAX_DEPTH; depth++) {
         const std::string player_name = name + "-expmx(d=" + std::to_string(depth) + ")";
         const int speed = depth <= 0 || depth >= 4 ? 0 : 4 - depth;
         test_player(fout, player_name, std::make_unique<ExpectimaxDepthStrategy>(depth, heuristic), GAMES[speed]);
@@ -211,4 +213,3 @@ int main() {
 
     std::cout << "Done!" << std::endl;
 }
-

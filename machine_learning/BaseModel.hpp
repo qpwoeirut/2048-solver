@@ -4,16 +4,20 @@
 #include <string>
 #include "../game.hpp"
 
-class BaseModel: public GameSimulator {
+class BaseModel : public GameSimulator {
     static constexpr float WINNING_EVAL = 1e8;
 
 public:
     std::string FILE_IDENTIFIER;
-    BaseModel(const std::string& file_id): FILE_IDENTIFIER(file_id) {}
+
+    BaseModel(const std::string& file_id) : FILE_IDENTIFIER(file_id) {}
 
     virtual const std::string get_name() const = 0;
+
     virtual const int pick_move(const board_t) const = 0;
+
     virtual void save(std::ostream&, const float) const = 0;
+
     virtual float evaluate(const board_t) const = 0;
 
     // returns ending board from training game
@@ -66,6 +70,7 @@ public:
 
         return board;
     }
+
 private:
     virtual void learn_evaluation(const board_t, const board_t) = 0;
 };

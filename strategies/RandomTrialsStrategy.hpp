@@ -3,7 +3,7 @@
 
 #include "Strategy.hpp"
 
-class RandomTrialsStrategy: public Strategy {
+class RandomTrialsStrategy : public Strategy {
     /*
         Parameters:
             depth: depth to search, should be positive; note that search space increases exponentially with depth
@@ -17,17 +17,19 @@ class RandomTrialsStrategy: public Strategy {
 
     heuristic_t evaluator;
 
-    public:
+public:
     int depth, trials;
+
     RandomTrialsStrategy(const int _depth, const int _trials, const heuristic_t _evaluator) {
         depth = _depth;
         trials = _trials;
         evaluator = _evaluator;
     }
-    RandomTrialsStrategy(const int _depth, const int _trials, const int heuristic_idx) :
-        RandomTrialsStrategy(_depth, _trials, heuristics::exports[heuristic_idx]) {}
 
-    std::unique_ptr<Strategy> clone() override {
+    RandomTrialsStrategy(const int _depth, const int _trials, const int heuristic_idx) :
+            RandomTrialsStrategy(_depth, _trials, heuristics::exports[heuristic_idx]) {}
+
+    std::unique_ptr <Strategy> clone() override {
         return std::make_unique<RandomTrialsStrategy>(depth, trials, evaluator);
     }
 
@@ -35,7 +37,7 @@ class RandomTrialsStrategy: public Strategy {
         return helper(board, depth) & 3;
     }
 
-    private:
+private:
     const eval_t helper(const board_t board, const int cur_depth) {
         if (simulator.game_over(board)) {
             const eval_t score = (evaluator(board) * MULT) << 2;
@@ -47,12 +49,12 @@ class RandomTrialsStrategy: public Strategy {
 
         eval_t best_score = 0;
         int best_move = 0;  // default best_move to 0; -1 causes issues with the packing in cases of full boards
-        for (int i=0; i<4; ++i) {
+        for (int i = 0; i < 4; ++i) {
             const board_t new_board = simulator.make_move(board, i);
             if (board == new_board) continue;
 
             eval_t current_score = 0;
-            for (int j=0; j<trials; ++j) {
+            for (int j = 0; j < trials; ++j) {
                 current_score += helper(simulator.add_tile(new_board, simulator.generate_random_tile_val()),
                                         cur_depth - 1) >> 2;  // extract score
             }
@@ -66,4 +68,3 @@ class RandomTrialsStrategy: public Strategy {
 };
 
 #endif
-

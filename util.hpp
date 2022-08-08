@@ -93,6 +93,7 @@ int count_empty(uint16_t mask) {
     }
     return empty_ct;
 }
+
 int count_set(const uint16_t mask) {
     return 16 - count_empty(mask);
 }
@@ -133,6 +134,7 @@ int approximate_score(const board_t board) {
     }
     return score;
 }
+
 int actual_score(const board_t board, const int fours) {
     return approximate_score(board) - 4 * fours;
 }
