@@ -8,17 +8,38 @@ class BaseModel : public GameSimulator {
     static constexpr float WINNING_EVAL = 1e8;
 
 public:
+    float LEARNING_RATE;
     std::string FILE_IDENTIFIER;
 
-    BaseModel(const std::string& file_id) : FILE_IDENTIFIER(file_id) {}
+    BaseModel(const std::string& file_id, const float _learning_rate) :
+            LEARNING_RATE(_learning_rate), FILE_IDENTIFIER(file_id) {}
 
     virtual const std::string get_name() const = 0;
 
-    virtual const int pick_move(const board_t) const = 0;
-
     virtual void save(std::ostream&, const float) const = 0;
 
-    virtual float evaluate(const board_t) const = 0;
+    virtual const float evaluate(const board_t board) const = 0;
+
+    virtual void learn_evaluation(const board_t, const board_t) = 0;
+
+    const int pick_move(const board_t board) const {
+        int best_move = -1;
+        float best_score = 0;
+        for (int i = 0; i < 4; ++i) {
+            const board_t after_board = make_move(board, i);
+            if (board == after_board) continue;
+
+            const int reward = calculate_reward(board, after_board);
+            const float eval = reward + evaluate(after_board);
+            if (best_score <= eval) {
+                best_score = eval;
+                best_move = i;
+            }
+        }
+        assert(best_move != -1);
+
+        return best_move;
+    }
 
     // returns ending board from training game
     // TODO: record and return loss? is there a well-defined loss here?
@@ -72,7 +93,7 @@ public:
     }
 
 private:
-    virtual void learn_evaluation(const board_t, const board_t) = 0;
+    virtual const int calculate_reward(const board_t, const board_t) const = 0;
 };
 
 #endif

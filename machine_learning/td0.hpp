@@ -18,42 +18,50 @@ class TD0 : public BaseModel {
 
 #ifdef TRAINING_ONLY
     // being able to set things as constexpr makes games run more than twice as fast, even if it makes things a bit ugly
-
-    // tuple selection is from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
-    static constexpr int N_TUPLE = 12;
-    static constexpr int TUPLE_SIZE = 5;
-    static constexpr int TUPLES[N_TUPLE * TUPLE_SIZE] = {  // flatten for speed
+    static constexpr int N_TUPLE = 8;
+    static constexpr int TUPLE_SIZE = 6;
+    static constexpr int TUPLES[N_TUPLE * TUPLE_SIZE] = // flatten for speed
 #else
     // defaults, can be changed if loading model from file
     int N_TUPLE = 12;
     int TUPLE_SIZE = 5;
-    std::vector<int> TUPLES{
+    std::vector<int> TUPLES =
 #endif
-            0, 4, 8, 12, 16,
-            16, 20, 24, 28, 32,
-            0, 4, 8, 12, 20,
-            16, 20, 24, 28, 36,
-            0, 4, 8, 16, 20,
-            16, 20, 24, 32, 36,
-            0, 4, 8, 16, 32,
-            16, 20, 24, 32, 48,
-            0, 4, 8, 20, 24,
-            16, 20, 24, 36, 40,
-            4, 16, 20, 24, 36,
-            20, 24, 28, 36, 52,
-    };
+            {  // 8 tuples of size 6, from Fig. 3c of https://arxiv.org/pdf/1604.05085.pdf (later paper by same authors)
+                    0,  4,  16, 20, 32, 48,
+                    4,  8,  20, 24, 36, 52,
+                    0,  4,  16, 20, 32, 36,
+                    4,  8,  20, 24, 36, 40,
+                    0,  4,  8,  12, 16, 32,
+                    16, 20, 24, 28, 32, 48,
+                    0,  4,  8,  12, 16, 28,
+                    16, 20, 24, 28, 32, 44,
+            };
+//            {  // 12 tuples of size 5
+//                    0, 4, 8, 12, 16,
+//                    16, 20, 24, 28, 32,
+//                    0, 4, 8, 12, 20,
+//                    16, 20, 24, 28, 36,
+//                    0, 4, 8, 16, 20,
+//                    16, 20, 24, 32, 36,
+//                    0, 4, 8, 16, 32,
+//                    16, 20, 24, 32, 48,
+//                    0, 4, 8, 20, 24,
+//                    16, 20, 24, 36, 40,
+//                    4, 16, 20, 24, 36,
+//                    20, 24, 28, 36, 52,
+//            };
 
-    int TILE_CT, TUPLE_VALUES;
-    float LEARNING_RATE;
+    int TUPLE_VALUES;
 
     float* lookup;  // lookup table for each tuple's score
 
 public:
-    TD0(const int _tile_ct, const float _learning_rate) :
-            BaseModel("qp2048TD0"),
-            TILE_CT(_tile_ct),
+    int TILE_CT;
+    TD0(const int _tile_ct, const float _learning_rate, const std::string& file_id = "qp2048TD0") :
+            BaseModel(file_id, _learning_rate),
             TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
-            LEARNING_RATE(_learning_rate) {
+            TILE_CT(_tile_ct) {
         lookup = new float[TUPLE_VALUES]();  // page 5: " In all the experiments, the weights were initially set to 0"
 #ifndef TRAINING_ONLY
         assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
@@ -61,21 +69,20 @@ public:
     }
 
 #ifndef TRAINING_ONLY
-
     TD0(const int _n_tuple, const int _tuple_size, const std::vector<int>& _tuples, const int _tile_ct,
-        const float _learning_rate) :
-            BaseModel("qp2048TD0"),
+        const float _learning_rate, const std::string& file_id = "qp2048TD0") :
+            BaseModel(file_id, _learning_rate),
             N_TUPLE(_n_tuple),
             TUPLE_SIZE(_tuple_size),
             TUPLES(_tuples.begin(), _tuples.end()),
-            TILE_CT(_tile_ct),
             TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
-            LEARNING_RATE(_learning_rate) {
+            TILE_CT(_tile_ct) {
         lookup = new float[TUPLE_VALUES]();
         assert(TUPLES.size() == N_TUPLE * TUPLE_SIZE);
     }
 
-    TD0(const float _learning_rate, std::istream& is) : BaseModel("qp2048TD0"), LEARNING_RATE(_learning_rate) {
+    TD0(const float _learning_rate, std::istream& is, const std::string& file_id = "qp2048TD0") :
+            BaseModel(file_id, _learning_rate) {
         std::string identifier(FILE_IDENTIFIER.size(), '\0');
         is.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
@@ -134,7 +141,7 @@ public:
         }
     }
 
-    float evaluate(const board_t board) const override {
+    const float evaluate(const board_t board) const override {
         // incentivize winning as soon as possible
         // # of fours is estimated by taking approximate # of moves and dividing by 10
         // better to underestimate # of 4's; that overestimates the score and causes a slightly larger penalty
@@ -145,29 +152,22 @@ public:
         const board_t flip_v_board = flip_v(board);
         const board_t flip_vh_board = flip_v(flip_h_board);
         return std::max(0.0f,  // all evaluations are assumed to be non-negative
-                        _evaluate(board) + _evaluate(transpose(board)) +
-                        _evaluate(flip_h_board) + _evaluate(transpose(flip_h_board)) +
-                        _evaluate(flip_v_board) + _evaluate(transpose(flip_v_board)) +
-                        _evaluate(flip_vh_board) + _evaluate(transpose(flip_vh_board)));
+                        eval_single(board) + eval_single(transpose(board)) +
+                        eval_single(flip_h_board) + eval_single(transpose(flip_h_board)) +
+                        eval_single(flip_v_board) + eval_single(transpose(flip_v_board)) +
+                        eval_single(flip_vh_board) + eval_single(transpose(flip_vh_board)));
     }
 
-    const int pick_move(const board_t board) const override {
-        int best_move = -1;
-        float best_score = 0;
-        for (int i = 0; i < 4; ++i) {
-            const board_t after_board = make_move(board, i);
-            if (board == after_board) continue;
-
-            const int reward = calculate_reward(board, after_board);
-            const float eval = reward + evaluate(after_board);
-            if (best_score <= eval) {
-                best_score = eval;
-                best_move = i;
-            }
+    void learn_evaluation(const board_t after_board, const board_t new_board) override {
+        if (game_over(new_board)) {
+            // all future rewards will be 0, since the game has ended
+            update_lookup(after_board, -evaluate(after_board));
+            return;
         }
-        assert(best_move != -1);
-
-        return best_move;
+        const int best_next_move = pick_move(new_board);
+        const board_t next_afterstate = make_move(new_board, best_next_move);
+        const int next_reward = calculate_reward(new_board, next_afterstate);
+        update_lookup(after_board, next_reward + evaluate(next_afterstate) - evaluate(after_board));
     }
 
     static TD0 best_model;
@@ -185,7 +185,7 @@ private:
         return tuple;
     }
 
-    const float _evaluate(const board_t board) const {
+    const float eval_single(const board_t board) const {
         float evaluation = 0;
         for (int i = 0; i < N_TUPLE; ++i) {
             evaluation += lookup[get_tuple(i, board)];
@@ -193,21 +193,9 @@ private:
         return evaluation;
     }
 
-    const int calculate_reward(const board_t board, const board_t after_board) const {
+    const int calculate_reward(const board_t board, const board_t after_board) const override {
         // difference of approximations works here since each board will have the same amount of fours spawn
         return approximate_score(after_board) - approximate_score(board);
-    }
-
-    void learn_evaluation(const board_t after_board, const board_t new_board) override {
-        if (game_over(new_board)) {
-            // all future rewards will be 0, since the game has ended
-            update_lookup(after_board, -evaluate(after_board));
-            return;
-        }
-        const int best_next_move = pick_move(new_board);
-        const board_t next_afterstate = make_move(new_board, best_next_move);
-        const int next_reward = calculate_reward(new_board, next_afterstate);
-        update_lookup(after_board, next_reward + evaluate(next_afterstate) - evaluate(after_board));
     }
 
     void update_lookup(const board_t after_board, float val) {
