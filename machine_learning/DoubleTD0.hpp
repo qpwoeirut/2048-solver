@@ -37,11 +37,11 @@ public:
         return "abs" + abs_model->get_name() + "__rel" + rel_model->get_name();
     }
 
-    void save(std::ostream& fout, const float threshold = 0.0f) const override {
+    void save(std::ostream& fout) const override {
         fout.write(FILE_IDENTIFIER.c_str(), FILE_IDENTIFIER.size());
-        abs_model->save(fout, threshold);
+        abs_model->save(fout);
         fout.write(std::string(4, '\0'));  // 4 nulls between the two models' data
-        rel_model->save(fout, threshold);
+        rel_model->save(fout);
     }
 
     const float evaluate(const board_t board) const override {

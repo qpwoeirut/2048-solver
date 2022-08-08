@@ -13,10 +13,11 @@ public:
 
     BaseModel(const std::string& file_id, const float _learning_rate) :
             LEARNING_RATE(_learning_rate), FILE_IDENTIFIER(file_id) {}
+    virtual ~BaseModel() = default;
 
     virtual const std::string get_name() const = 0;
 
-    virtual void save(std::ostream&, const float) const = 0;
+    virtual void save(std::ostream&) const = 0;
 
     virtual const float evaluate(const board_t board) const = 0;
 

@@ -25,9 +25,9 @@ int moves[MAX_GAMES];
 int scores[MAX_GAMES];
 
 #ifdef TESTING
-TD0 model = TD0::best_model;
+std::unique_ptr<BaseModel> model(TD0::best_model);
 #else
-TD0 model(MAX_TILE + 1, LEARNING_RATE);
+std::unique_ptr<BaseModel> model(new TD0(MAX_TILE + 1, LEARNING_RATE));
 #endif
 
 float calculate_average(const int arr[], const int n) {
@@ -61,7 +61,7 @@ void play_games(const bool train, const int games) {
     const long long start_time = get_current_time_ms();
     for (int i = 0; i < games; ++i) {
         int fours = 0;
-        const board_t board = train ? model.train_model(fours) : model.test_model(fours);
+        const board_t board = train ? model->train_model(fours) : model->test_model(fours);
         const int max_tile = get_max_tile(board);
 
         ++results[max_tile];
@@ -81,14 +81,14 @@ int main() {
     std::cout << "Learning rate = " << LEARNING_RATE << std::endl;
 
 #ifndef TESTING
-    std::filesystem::create_directory("machine_learning/" + model.get_name());
+    std::filesystem::create_directory("machine_learning/" + model->get_name());
     for (int i = 1; i <= EPOCHS; ++i) {
         std::cout << "Epoch #" << i << " of " << EPOCHS << std::endl;
         play_games(true, TRAIN_GAMES);
         std::cout << std::endl;
 
-        std::ofstream fout(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat",std::ios::binary);
-        if (i % SAVE_INTERVAL == 0) model.save(fout);
+        std::ofstream fout(model->get_name() + "/" + model->get_name() + "_" + std::to_string(i) + ".dat",std::ios::binary);
+        if (i % SAVE_INTERVAL == 0) model->save(fout);
         fout.close();
     }
 #endif
