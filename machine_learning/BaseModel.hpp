@@ -15,7 +15,29 @@ public:
     virtual const int pick_move(const board_t) const = 0;
     virtual void save(const std::string&, const float) const = 0;
     virtual float evaluate(const board_t) const = 0;
-    virtual board_t train_model(int&) = 0;
+
+    // returns ending board from training game
+    // TODO: record and return loss? is there a well-defined loss here?
+    board_t train_model(int& fours) {
+        const board_t tile_val0 = generate_random_tile_val();
+        const board_t tile_val1 = generate_random_tile_val();
+        fours += (tile_val0 == 2) + (tile_val1 == 2);
+        board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
+
+        while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
+            const int best_move = pick_move(board);
+            const board_t after_board = make_move(board, best_move);
+            const board_t rand_tile = generate_random_tile_val();
+            const board_t new_board = add_tile(after_board, rand_tile);
+            fours += rand_tile == 2;
+
+            learn_evaluation(after_board, new_board);
+
+            board = new_board;
+        }
+
+        return board;
+    }
 
     board_t test_model(int& fours) {
         const board_t tile_val0 = generate_random_tile_val();
@@ -44,6 +66,8 @@ public:
 
         return board;
     }
+private:
+    virtual void learn_evaluation(const board_t, const board_t) = 0;
 };
 
 #endif
