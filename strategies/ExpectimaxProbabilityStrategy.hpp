@@ -14,7 +14,7 @@ public:
     ExpectimaxProbabilityStrategy(const float min_prob, const int heuristic_idx) :
             ExpectimaxProbabilityStrategy(min_prob, heuristics::exports[heuristic_idx]) {}
 
-    std::unique_ptr <Strategy> clone() override {
+    std::unique_ptr<Strategy> clone() override {
         return std::make_unique<ExpectimaxProbabilityStrategy>(min_probability, evaluator);
     }
 

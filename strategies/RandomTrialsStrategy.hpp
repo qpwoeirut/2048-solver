@@ -29,7 +29,7 @@ public:
     RandomTrialsStrategy(const int _depth, const int _trials, const int heuristic_idx) :
             RandomTrialsStrategy(_depth, _trials, heuristics::exports[heuristic_idx]) {}
 
-    std::unique_ptr <Strategy> clone() override {
+    std::unique_ptr<Strategy> clone() override {
         return std::make_unique<RandomTrialsStrategy>(depth, trials, evaluator);
     }
 

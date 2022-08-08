@@ -17,7 +17,7 @@ public:
 
     virtual ~Strategy() = default;
 
-    virtual std::unique_ptr <Strategy> clone() = 0;
+    virtual std::unique_ptr<Strategy> clone() = 0;
 
     virtual const int pick_move(const board_t board) = 0;
 

@@ -14,7 +14,7 @@ public:
         return current_move;
     }
 
-    std::unique_ptr <Strategy> clone() override {
+    std::unique_ptr<Strategy> clone() override {
         return std::make_unique<RotatingPlayer>();
     }
 };

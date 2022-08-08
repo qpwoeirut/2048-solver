@@ -16,7 +16,7 @@ public:
     ExpectimaxDepthStrategy(const int _depth, const int heuristic_idx) :
             ExpectimaxDepthStrategy(_depth, heuristics::exports[heuristic_idx]) {}
 
-    std::unique_ptr <Strategy> clone() override {
+    std::unique_ptr<Strategy> clone() override {
         return std::make_unique<ExpectimaxDepthStrategy>(depth, evaluator);
     }
 
