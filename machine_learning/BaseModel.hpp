@@ -13,7 +13,7 @@ public:
 
     virtual const std::string get_name() const = 0;
     virtual const int pick_move(const board_t) const = 0;
-    virtual void save(const std::string&, const float) const = 0;
+    virtual void save(std::ostream&, const float) const = 0;
     virtual float evaluate(const board_t) const = 0;
 
     // returns ending board from training game

@@ -105,10 +105,7 @@ class TD0: public BaseModel {
     }
 
     // changing the threshold up to 1 barely affects file size
-    void save(const std::string& filename, const float threshold=0.0f) const override {
-        std::ofstream fout(filename, std::ios::binary);
-        assert(fout.is_open());
-
+    void save(std::ostream& fout, const float threshold=0.0f) const override {
         fout.write(FILE_IDENTIFIER.c_str(), FILE_IDENTIFIER.size());
 
         fout.put(static_cast<char>(N_TUPLE));
@@ -130,7 +127,6 @@ class TD0: public BaseModel {
                 fout.write(reinterpret_cast<char*>(&lookup[i]), sizeof(lookup[i]));
             }
         }
-        fout.close();
     }
     float evaluate(const board_t board) const override {
         // incentivize winning as soon as possible
@@ -167,29 +163,6 @@ class TD0: public BaseModel {
         return best_move;
     }
 
-    // returns ending board from training game
-    // TODO: record and return loss? is there a well-defined loss here?
-    board_t train_model(int& fours) override {
-        const board_t tile_val0 = generate_random_tile_val();
-        const board_t tile_val1 = generate_random_tile_val();
-        fours += (tile_val0 == 2) + (tile_val1 == 2);
-        board_t board = add_tile(add_tile(0, tile_val0), tile_val1);
-
-        while (!game_over(board)) {// && get_max_tile(board) < TILE_CT - 1) {
-            const int best_move = pick_move(board);
-            const board_t after_board = make_move(board, best_move);
-            const board_t rand_tile = generate_random_tile_val();
-            const board_t new_board = add_tile(after_board, rand_tile);
-            fours += rand_tile == 2;
-
-            learn_evaluation(after_board, new_board);
-
-            board = new_board;
-        }
-
-        return board;
-    }
-
     static TD0 best_model;
     static bool best_model_loaded;
     static void load_best();
@@ -214,7 +187,7 @@ class TD0: public BaseModel {
         // difference of approximations works here since each board will have the same amount of fours spawn
         return approximate_score(after_board) - approximate_score(board);
     }
-    void learn_evaluation(const board_t after_board, const board_t new_board) {
+    void learn_evaluation(const board_t after_board, const board_t new_board) override {
         if (game_over(new_board)) {
             // all future rewards will be 0, since the game has ended
             update_lookup(after_board, -evaluate(after_board));

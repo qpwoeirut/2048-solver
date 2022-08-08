@@ -87,7 +87,9 @@ int main() {
         play_games(true, TRAIN_GAMES);
         std::cout << std::endl;
 
-        if (i % SAVE_INTERVAL == 0) model.save(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat");
+        std::ofstream fout(model.get_name() + "/" + model.get_name() + "_" + std::to_string(i) + ".dat");
+        if (i % SAVE_INTERVAL == 0) model.save(fout);
+        fout.close();
     }
 #endif
 
