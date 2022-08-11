@@ -1,28 +1,28 @@
 #ifndef DOUBLE_TD0_HPP
 #define DOUBLE_TD0_HPP
 
+#include <algorithm>
 #include "TD0.hpp"
 
 class DoubleTD0 : public BaseModel {
     std::unique_ptr<TD0> abs_model, rel_model;
 
 public:
-    const int USE_REL;
-    DoubleTD0(const float _learning_rate, std::unique_ptr<TD0> _abs_model, std::unique_ptr<TD0> _rel_model,
+    int USE_REL;
+    DoubleTD0(std::unique_ptr<TD0> _abs_model, std::unique_ptr<TD0> _rel_model,
               const int _use_rel = 4) :
-            BaseModel("qp2048DblTD0", _learning_rate), abs_model(std::move(_abs_model)),
+            BaseModel("qp2048DblTD0"), abs_model(std::move(_abs_model)),
             rel_model(std::move(_rel_model)), USE_REL(_use_rel) {
-        abs_model->LEARNING_RATE = LEARNING_RATE;
-        rel_model->LEARNING_RATE = LEARNING_RATE;
     }
 
 #ifndef TRAINING_ONLY
 
-    DoubleTD0(const float _learning_rate, std::istream& is, const int _use_rel = 4) :
-            BaseModel("qp2048DblTD0", _learning_rate), USE_REL(_use_rel) {
+    DoubleTD0(std::istream& is) : BaseModel("qp2048DblTD0") {
         std::string identifier(FILE_IDENTIFIER.size(), '\0');
         is.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
+
+        USE_REL = is.get();
 
         abs_model = std::make_unique<TD0>(_learning_rate, is);
 
@@ -39,19 +39,28 @@ public:
 
     void save(std::ostream& fout) const override {
         fout.write(FILE_IDENTIFIER.c_str(), FILE_IDENTIFIER.size());
+        fout.put(static_cast<char>(USE_REL));
         abs_model->save(fout);
-        fout.write(std::string(4, '\0'));  // 4 nulls between the two models' data
+        fout.write("\0\0\0\0", 4);  // 4 nulls between the two models' data
         rel_model->save(fout);
     }
 
     const float evaluate(const board_t board) const override {
-        return abs_model->evaluate(board) + rel_evaluate(board);
+        return abs_evaluate(board) + rel_evaluate(board);
+    }
+
+    const float abs_evaluate(const board_t board) const {
+        board_t capped_board = 0;
+        for (int i = 0; i < 64; i += 4) {
+            capped_board |= std::min(static_cast<int>((board >> i) & 0xF), abs_model->TILE_CT - 1) << i;
+        }
+        return abs_model->evaluate(capped_board);
     }
 
     const float rel_evaluate(const board_t board) const {
         const int max_tile = get_max_tile(board);
         return max_tile >= rel_model->TILE_CT + USE_REL ?
-               rel_model->evaluate(transform_board_relative(board, max_tile)) :
+               rel_model->evaluate(transform_board_relative(board, max_tile, rel_model->TILE_CT - 1)) :
                0.0f;
     }
 
@@ -61,8 +70,8 @@ public:
         if (after_max_tile >= rel_model->TILE_CT + USE_REL) {
             const int new_max_tile = get_max_tile(new_board);
             rel_model->learn_evaluation(
-                    transform_board_relative(after_board, after_max_tile),
-                    transform_board_relative(new_board, new_max_tile));
+                    transform_board_relative(after_board, after_max_tile, rel_model->TILE_CT - 1),
+                    transform_board_relative(new_board, new_max_tile, rel_model->TILE_CT - 1));
         }
     }
 
@@ -72,14 +81,14 @@ private:
         return approximate_score(after_board) - approximate_score(board);
     }
 
-    const int transform_board_relative(const board_t board, const int value) const {
+    const int transform_board_relative(const board_t board, const int value, const int cap) const {
         board_t new_board = 0;
         for (int i = 0; i < 64; i += 4) {
-            new_board |= (value - ((board >> i) & 0xF)) << i;
+            if ((board >> i) & 0xF) new_board |= std::min(value - static_cast<int>((board >> i) & 0xF) + 1, cap) << i;
         }
         return new_board;
     }
-}
+};
 
 #endif
 

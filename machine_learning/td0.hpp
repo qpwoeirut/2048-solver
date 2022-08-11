@@ -52,6 +52,7 @@ class TD0 : public BaseModel {
 //                    20, 24, 28, 36, 52,
 //            };
 
+    float LEARNING_RATE;
     int TUPLE_VALUES;
 
     float* lookup;  // lookup table for each tuple's score
@@ -59,7 +60,7 @@ class TD0 : public BaseModel {
 public:
     int TILE_CT;
     TD0(const int _tile_ct, const float _learning_rate, const std::string& file_id = "qp2048TD0") :
-            BaseModel(file_id, _learning_rate),
+            BaseModel(file_id), LEARNING_RATE(_learning_rate),
             TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
             TILE_CT(_tile_ct) {
         lookup = new float[TUPLE_VALUES]();  // page 5: " In all the experiments, the weights were initially set to 0"
@@ -71,7 +72,7 @@ public:
 #ifndef TRAINING_ONLY
     TD0(const int _n_tuple, const int _tuple_size, const std::vector<int>& _tuples, const int _tile_ct,
         const float _learning_rate, const std::string& file_id = "qp2048TD0") :
-            BaseModel(file_id, _learning_rate),
+            BaseModel(file_id), LEARNING_RATE(_learning_rate),
             N_TUPLE(_n_tuple),
             TUPLE_SIZE(_tuple_size),
             TUPLES(_tuples.begin(), _tuples.end()),
@@ -82,7 +83,7 @@ public:
     }
 
     TD0(const float _learning_rate, std::istream& is, const std::string& file_id = "qp2048TD0") :
-            BaseModel(file_id, _learning_rate) {
+            BaseModel(file_id), LEARNING_RATE(_learning_rate) {
         std::string identifier(FILE_IDENTIFIER.size(), '\0');
         is.read(&identifier[0], FILE_IDENTIFIER.size());
         assert(identifier == FILE_IDENTIFIER);
@@ -116,8 +117,7 @@ public:
                "_" + std::to_string(LEARNING_RATE);
     }
 
-    // changing the threshold up to 1 barely affects file size
-    void save(std::ostream& fout, const float threshold = 0.0f) const override {
+    void save(std::ostream& fout) const override {
         fout.write(FILE_IDENTIFIER.c_str(), FILE_IDENTIFIER.size());
 
         fout.put(static_cast<char>(N_TUPLE));
@@ -131,7 +131,7 @@ public:
         std::string nonzero;
         for (int i = 0; i < TUPLE_VALUES; ++i) {
             if ((i & 7) == 0) nonzero.push_back(static_cast<char>(0));
-            nonzero.back() |= (abs(lookup[i]) <= threshold) << (i & 7);
+            nonzero.back() |= (lookup[i] == 0) << (i & 7);
         }
         fout.write(nonzero.c_str(), nonzero.size());
         for (int i = 0; i < TUPLE_VALUES; ++i) {

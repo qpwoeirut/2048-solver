@@ -5,20 +5,22 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+
+#include "DoubleTD0.hpp"
 #include "ExportedTD0.hpp"
+#include "TD0.hpp"
 
 constexpr double LEARNING_RATE = 0.00015;
-constexpr int EPOCHS = 500;
+constexpr int EPOCHS = 1000;
 constexpr int SAVE_INTERVAL = 50;
-static_assert(EPOCHS
-% SAVE_INTERVAL == 0);
+static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
 constexpr int TRAIN_GAMES = 10000;
 constexpr int TEST_GAMES = 100000;
 constexpr int MAX_GAMES = std::max(TRAIN_GAMES, TEST_GAMES);
 
 constexpr int MIN_TILE = 3;   // getting 2^3 should always be guaranteed
-constexpr int MAX_TILE = 14;
+constexpr int MAX_TILE = 15;
 
 int results[MAX_TILE + 1];
 int moves[MAX_GAMES];
@@ -27,7 +29,7 @@ int scores[MAX_GAMES];
 #ifdef TESTING
 std::unique_ptr<BaseModel> model(TD0::best_model);
 #else
-std::unique_ptr<BaseModel> model(new TD0(MAX_TILE + 1, LEARNING_RATE));
+std::unique_ptr<BaseModel> model(new DoubleTD0(std::make_unique<TD0>(12, LEARNING_RATE), std::make_unique<TD0>(8, LEARNING_RATE)));
 #endif
 
 float calculate_average(const int arr[], const int n) {
@@ -87,7 +89,10 @@ int main() {
         play_games(true, TRAIN_GAMES);
         std::cout << std::endl;
 
-        std::ofstream fout(model->get_name() + "/" + model->get_name() + "_" + std::to_string(i) + ".dat",std::ios::binary);
+        const std::string filename = "machine_learning/" + model->get_name() + "/" + model->get_name() + "_" + std::to_string(i) + ".dat";
+        std::cerr << filename << std::endl;
+        std::ofstream fout(filename, std::ios::binary);
+        assert(fout.is_open());
         if (i % SAVE_INTERVAL == 0) model->save(fout);
         fout.close();
     }

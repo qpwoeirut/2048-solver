@@ -8,11 +8,9 @@ class BaseModel : public GameSimulator {
     static constexpr float WINNING_EVAL = 1e8;
 
 public:
-    float LEARNING_RATE;
     std::string FILE_IDENTIFIER;
 
-    BaseModel(const std::string& file_id, const float _learning_rate) :
-            LEARNING_RATE(_learning_rate), FILE_IDENTIFIER(file_id) {}
+    BaseModel(const std::string& file_id) : FILE_IDENTIFIER(file_id) {}
     virtual ~BaseModel() = default;
 
     virtual const std::string get_name() const = 0;
