@@ -60,7 +60,7 @@ class TD0 : public BaseModel {
 public:
     int TILE_CT;
     TD0(const int _tile_ct, const float _learning_rate, const std::string& file_id = "qp2048TD0") :
-            BaseModel(file_id), LEARNING_RATE(_learning_rate),
+            BaseModel(file_id), LEARNING_RATE(_learning_rate / N_TUPLE),
             TUPLE_VALUES(N_TUPLE * ipow(_tile_ct, TUPLE_SIZE)),
             TILE_CT(_tile_ct) {
         lookup = new float[TUPLE_VALUES]();  // page 5: " In all the experiments, the weights were initially set to 0"
@@ -72,7 +72,7 @@ public:
 #ifndef TRAINING_ONLY
     TD0(const int _n_tuple, const int _tuple_size, const std::vector<int>& _tuples, const int _tile_ct,
         const float _learning_rate, const std::string& file_id = "qp2048TD0") :
-            BaseModel(file_id), LEARNING_RATE(_learning_rate),
+            BaseModel(file_id), LEARNING_RATE(_learning_rate, / _n_tuple),
             N_TUPLE(_n_tuple),
             TUPLE_SIZE(_tuple_size),
             TUPLES(_tuples.begin(), _tuples.end()),
@@ -108,6 +108,8 @@ public:
         for (int i = 0; i < TUPLE_VALUES; ++i) {
             if ((nonzero[i >> 3] >> (i & 7)) & 1) is.read(reinterpret_cast<char*>(&lookup[i]), sizeof(float));
         }
+
+        LEARNING_RATE /= N_TUPLE;
     }
 
 #endif

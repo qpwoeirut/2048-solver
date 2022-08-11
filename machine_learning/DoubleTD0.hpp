@@ -58,8 +58,8 @@ public:
     }
 
     void update_lookup(const board_t after_board, float val) override {
-        abs_model->update_lookup(cap_board(after_board), val);
-        rel_model->update_lookup(transform_relative(after_board), val);
+        abs_model->update_lookup(cap_board(after_board), val / 2);
+        rel_model->update_lookup(transform_relative(after_board), val / 2);
     }
 
 private:
