@@ -8,9 +8,9 @@ class DoubleTD0 : public BaseModel {
     std::unique_ptr<TD0> abs_model, rel_model;
 
 public:
-    int USE_REL;
+    int USE_REL;  // relative model map tiles below this value to the same value
     DoubleTD0(std::unique_ptr<TD0> _abs_model, std::unique_ptr<TD0> _rel_model,
-              const int _use_rel = 4) :
+              const int _use_rel = 60) :
             BaseModel("qp2048DblTD0"), abs_model(std::move(_abs_model)),
             rel_model(std::move(_rel_model)), USE_REL(_use_rel) {
     }
@@ -50,29 +50,16 @@ public:
     }
 
     const float abs_evaluate(const board_t board) const {
-        board_t capped_board = 0;
-        for (int i = 0; i < 64; i += 4) {
-            capped_board |= std::min(static_cast<int>((board >> i) & 0xF), abs_model->TILE_CT - 1) << i;
-        }
-        return abs_model->evaluate(capped_board);
+        return abs_model->evaluate(cap_board(board));
     }
 
     const float rel_evaluate(const board_t board) const {
-        const int max_tile = get_max_tile(board);
-        return max_tile >= rel_model->TILE_CT + USE_REL ?
-               rel_model->evaluate(transform_board_relative(board, max_tile, rel_model->TILE_CT - 1)) :
-               0.0f;
+        return rel_model->evaluate(transform_relative(board));
     }
 
-    void learn_evaluation(const board_t after_board, const board_t new_board) override {
-        abs_model->learn_evaluation(after_board, new_board);
-        const int after_max_tile = get_max_tile(after_board);
-        if (after_max_tile >= rel_model->TILE_CT + USE_REL) {
-            const int new_max_tile = get_max_tile(new_board);
-            rel_model->learn_evaluation(
-                    transform_board_relative(after_board, after_max_tile, rel_model->TILE_CT - 1),
-                    transform_board_relative(new_board, new_max_tile, rel_model->TILE_CT - 1));
-        }
+    void update_lookup(const board_t after_board, float val) override {
+        abs_model->update_lookup(cap_board(after_board), val);
+        rel_model->update_lookup(transform_relative(after_board), val);
     }
 
 private:
@@ -81,10 +68,21 @@ private:
         return approximate_score(after_board) - approximate_score(board);
     }
 
-    const int transform_board_relative(const board_t board, const int value, const int cap) const {
-        board_t new_board = 0;
+    const board_t cap_board(const board_t board) const {
+        board_t capped_board = 0;
         for (int i = 0; i < 64; i += 4) {
-            if ((board >> i) & 0xF) new_board |= std::min(value - static_cast<int>((board >> i) & 0xF) + 1, cap) << i;
+            capped_board |= std::min((board >> i) & 0xF, static_cast<board_t>(abs_model->TILE_CT - 1)) << i;
+        }
+        return capped_board;
+    }
+
+    const board_t transform_relative(const board_t board) const {
+        board_t new_board = 0;
+        const int mx = get_max_tile(board);
+        for (int i = 0; i < 64; i += 4) {
+            const int val = (board >> i) & 0xF;
+            if (val >= USE_REL) new_board |= std::min(mx - ((board >> i) & 0xF), static_cast<board_t>(rel_model->TILE_CT - 2)) << i;
+            else if (val > 0) new_board |= static_cast<board_t>(rel_model->TILE_CT - 1) << i;
         }
         return new_board;
     }

@@ -19,7 +19,19 @@ public:
 
     virtual const float evaluate(const board_t board) const = 0;
 
-    virtual void learn_evaluation(const board_t, const board_t) = 0;
+    virtual void update_lookup(const board_t, const float) = 0;
+
+    void learn_evaluation(const board_t after_board, const board_t new_board) {
+        if (game_over(new_board)) {
+            // all future rewards will be 0, since the game has ended
+            update_lookup(after_board, -evaluate(after_board));
+            return;
+        }
+        const int best_next_move = pick_move(new_board);
+        const board_t next_afterstate = make_move(new_board, best_next_move);
+        const int next_reward = calculate_reward(new_board, next_afterstate);
+        update_lookup(after_board, next_reward + evaluate(next_afterstate) - evaluate(after_board));
+    }
 
     const int pick_move(const board_t board) const {
         int best_move = -1;

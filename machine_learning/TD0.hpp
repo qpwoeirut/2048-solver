@@ -158,16 +158,26 @@ public:
                         eval_single(flip_vh_board) + eval_single(transpose(flip_vh_board)));
     }
 
-    void learn_evaluation(const board_t after_board, const board_t new_board) override {
-        if (game_over(new_board)) {
-            // all future rewards will be 0, since the game has ended
-            update_lookup(after_board, -evaluate(after_board));
-            return;
+    void update_lookup(const board_t after_board, float val) override {
+        val *= LEARNING_RATE;
+
+        const board_t tafter_board  = transpose(after_board);
+        const board_t flip_h_board  = flip_h(after_board);  const board_t tflip_h_board  = transpose(flip_h_board);
+        const board_t flip_v_board  = flip_v(after_board);  const board_t tflip_v_board  = transpose(flip_v_board);
+        const board_t flip_vh_board = flip_v(flip_h_board); const board_t tflip_vh_board = transpose(flip_vh_board);
+        for (int i = 0; i < N_TUPLE; ++i) {
+            lookup[get_tuple(i, after_board)] += val;
+            lookup[get_tuple(i, tafter_board)] += val;
+
+            lookup[get_tuple(i, flip_h_board)] += val;
+            lookup[get_tuple(i, tflip_h_board)] += val;
+
+            lookup[get_tuple(i, flip_v_board)] += val;
+            lookup[get_tuple(i, tflip_v_board)] += val;
+
+            lookup[get_tuple(i, flip_vh_board)] += val;
+            lookup[get_tuple(i, tflip_vh_board)] += val;
         }
-        const int best_next_move = pick_move(new_board);
-        const board_t next_afterstate = make_move(new_board, best_next_move);
-        const int next_reward = calculate_reward(new_board, next_afterstate);
-        update_lookup(after_board, next_reward + evaluate(next_afterstate) - evaluate(after_board));
     }
 
     static TD0 best_model;
@@ -196,28 +206,6 @@ private:
     const int calculate_reward(const board_t board, const board_t after_board) const override {
         // difference of approximations works here since each board will have the same amount of fours spawn
         return approximate_score(after_board) - approximate_score(board);
-    }
-
-    void update_lookup(const board_t after_board, float val) {
-        val *= LEARNING_RATE;
-
-        const board_t tafter_board  = transpose(after_board);
-        const board_t flip_h_board  = flip_h(after_board);  const board_t tflip_h_board  = transpose(flip_h_board);
-        const board_t flip_v_board  = flip_v(after_board);  const board_t tflip_v_board  = transpose(flip_v_board);
-        const board_t flip_vh_board = flip_v(flip_h_board); const board_t tflip_vh_board = transpose(flip_vh_board);
-        for (int i = 0; i < N_TUPLE; ++i) {
-            lookup[get_tuple(i, after_board)] += val;
-            lookup[get_tuple(i, tafter_board)] += val;
-
-            lookup[get_tuple(i, flip_h_board)] += val;
-            lookup[get_tuple(i, tflip_h_board)] += val;
-
-            lookup[get_tuple(i, flip_v_board)] += val;
-            lookup[get_tuple(i, tflip_v_board)] += val;
-
-            lookup[get_tuple(i, flip_vh_board)] += val;
-            lookup[get_tuple(i, tflip_vh_board)] += val;
-        }
     }
 };
 
