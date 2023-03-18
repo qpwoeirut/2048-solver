@@ -20,9 +20,9 @@ consteval std::array<row_t, ROWS> generate_shift() {
 
         // pull values to the left
         for (int i = 0; i < 3; ++i) {
-            if (r[0] == 0 && r[1] > 0) std::swap(r[0], r[1]);
-            if (r[1] == 0 && r[2] > 0) std::swap(r[1], r[2]);
-            if (r[2] == 0 && r[3] > 0) std::swap(r[2], r[3]);
+            if (r[0] == 0 && r[1] > 0) r[0] = r[1], r[1] = 0;
+            if (r[1] == 0 && r[2] > 0) r[1] = r[2], r[2] = 0;
+            if (r[2] == 0 && r[3] > 0) r[2] = r[3], r[3] = 0;
         }
 
         // perform the merging
@@ -32,9 +32,9 @@ consteval std::array<row_t, ROWS> generate_shift() {
 
         // pull values to the left again
         for (int i = 0; i < 3; ++i) {
-            if (r[0] == 0 && r[1] > 0) std::swap(r[0], r[1]);
-            if (r[1] == 0 && r[2] > 0) std::swap(r[1], r[2]);
-            if (r[2] == 0 && r[3] > 0) std::swap(r[2], r[3]);
+            if (r[0] == 0 && r[1] > 0) r[0] = r[1], r[1] = 0;
+            if (r[1] == 0 && r[2] > 0) r[1] = r[2], r[2] = 0;
+            if (r[2] == 0 && r[3] > 0) r[2] = r[3], r[3] = 0;
         }
 
 
