@@ -10,7 +10,7 @@
 #include "ExportedTD0.hpp"
 #include "TD0.hpp"
 
-constexpr double LEARNING_RATE = 0.0001;
+constexpr double LEARNING_RATE = 0.001;
 constexpr int EPOCHS = 20;
 constexpr int SAVE_INTERVAL = 5;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
@@ -29,7 +29,7 @@ int scores[MAX_GAMES];
 #ifdef TESTING
 std::unique_ptr<BaseModel> model(TD0::best_model);
 #else
-std::unique_ptr<BaseModel> model(new DoubleTD0(std::make_unique<TD0>(14, LEARNING_RATE), std::make_unique<TD0>(8, LEARNING_RATE)));
+std::unique_ptr<BaseModel> model(new TD0(MAX_TILE + 1, LEARNING_RATE));
 #endif
 
 float calculate_average(const int arr[], const int n) {
