@@ -89,11 +89,13 @@ int main() {
         play_games(true, TRAIN_GAMES);
         std::cout << std::endl;
 
-        const std::string filename = "machine_learning/" + model->get_name() + "/" + model->get_name() + "_" + std::to_string(i) + ".dat";
-        std::ofstream fout(filename, std::ios::binary);
-        assert(fout.is_open());
-        if (i % SAVE_INTERVAL == 0) model->save(fout);
-        fout.close();
+        if (i % SAVE_INTERVAL == 0) {
+            const std::string filename = "machine_learning/" + model->get_name() + "/" + model->get_name() + "_" + std::to_string(i) + ".dat";
+            std::ofstream fout(filename, std::ios::binary);
+            assert(fout.is_open());
+            model->save(fout);
+            fout.close();
+        }
     }
 #endif
 
