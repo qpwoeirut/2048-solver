@@ -11,8 +11,8 @@
 #include "TD0.hpp"
 
 constexpr double LEARNING_RATE = 0.001;
-constexpr int EPOCHS = 20;
-constexpr int SAVE_INTERVAL = 5;
+constexpr int EPOCHS = 2000;
+constexpr int SAVE_INTERVAL = 100;
 static_assert(EPOCHS % SAVE_INTERVAL == 0);
 
 constexpr int TRAIN_GAMES = 10000;
